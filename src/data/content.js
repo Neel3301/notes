@@ -117,4 +117,8 @@ export const uiComponentsDemoData = {
     { id: 'btn1', label: 'Start course', variant: 'cream' },
     { id: 'btn2', label: 'Outline Action', variant: 'outline' },
   ],
+  headings: [
+    { id: 'h1', text: 'Study\nPlanning', label: 'Multi-line Hero Display' },
+    { id: 'h2', text: 'Course\nOverview', label: 'Screen Header' },
+  ],
 };

@@ -4,10 +4,11 @@ import AppHeader from '../components/layout/AppHeader';
 import Pill from '../components/ui/Pill';
 import IconButton from '../components/ui/IconButton';
 import Button from '../components/ui/Button';
+import Heading from '../components/ui/Heading';
 
 /**
  * ComponentsScreen component
- * Component showcase page rendering AppHeader, Pill, IconButton, and Button components.
+ * Component showcase page rendering AppHeader, Pill, IconButton, Button, and Heading components.
  * All data passed via props as per project rules.
  */
 export default function ComponentsScreen({
@@ -17,6 +18,7 @@ export default function ComponentsScreen({
   pills = [],
   iconButtons = [],
   buttons = [],
+  headings = [],
 }) {
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
@@ -118,6 +120,23 @@ export default function ComponentsScreen({
             >
               {btn.label}
             </Button>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Heading Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">5. Heading (.text-display, line breaks)</h2>
+          <p className="text-label text-text-secondary">Hero title preserving multi-line breaks</p>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          {headings.map((h) => (
+            <div key={h.id} className="flex flex-col gap-1 p-3 bg-divider/20 rounded-card border border-border-subtle/50">
+              <span className="text-label text-text-secondary">{h.label}</span>
+              <Heading text={h.text} />
+            </div>
           ))}
         </div>
       </section>
