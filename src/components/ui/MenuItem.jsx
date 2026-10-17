@@ -35,7 +35,7 @@ export default function MenuItem({
       </span>
 
       {active && (
-        <span className="text-text-primary flex items-center justify-center pr-1 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+        <span className="text-text-primary flex items-center justify-center pr-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
           <ArrowUpRight className="w-6 h-6 stroke-[1.5]" />
         </span>
       )}

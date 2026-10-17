@@ -6,6 +6,7 @@ import ComponentsScreen from './screens/ComponentsScreen';
 import StudyPlanningScreen from './screens/StudyPlanningScreen';
 import CourseOverviewScreen from './screens/CourseOverviewScreen';
 import CourseDetailScreen from './screens/CourseDetailScreen';
+import MenuScreen from './screens/MenuScreen';
 import {
   tokenColors,
   tokenTypography,
@@ -15,6 +16,7 @@ import {
   studyPlanningData,
   courseOverviewData,
   courseDetailData,
+  menuData,
 } from './data/content';
 
 export default function App() {
@@ -87,6 +89,15 @@ export default function App() {
                 tabs={courseDetailData.tabs}
                 previewLessons={courseDetailData.previewLessons}
                 details={courseDetailData.details}
+              />
+            }
+          />
+          <Route
+            path="/menu"
+            element={
+              <MenuScreen
+                header={menuData.header}
+                items={menuData.items}
               />
             }
           />
