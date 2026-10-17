@@ -31,7 +31,7 @@ STEPS
 [x] 12. CourseOverview screen at /course-overview.
 [x] 13. CourseDetail screen at /course-detail (Tabs must switch when clicked).
 [x] 14. Menu overlay screen at /menu with a short Framer Motion fade-and-slide-up.
-[ ] 15. Connect everything with react-router: menu icon opens /menu, close goes back, Courses goes to /course-overview, Planning goes to /study-planning, tapping a card opens /course-detail, back arrow goes back. /study-planning is home. Wrap in PhoneShell. Test the whole flow in the browser.
+[x] 15. Connect everything with react-router: menu icon opens /menu, close goes back, Courses goes to /course-overview, Planning goes to /study-planning, tapping a card opens /course-detail, back arrow goes back. /study-planning is home. Wrap in PhoneShell. Test the whole flow in the browser.
 [ ] 16. Theme: keep current as default, add a light theme switchable from src/theme.js.
 [ ] 17. README.md (run, change content, switch theme, table of components and props, add a screen). Remove unused files.
 [ ] 18. Final full-flow test, fix any problem, then commit "Template ready".
