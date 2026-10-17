@@ -3,10 +3,11 @@ import { Calendar, ChevronDown, MoreVertical } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Pill from '../components/ui/Pill';
 import IconButton from '../components/ui/IconButton';
+import Button from '../components/ui/Button';
 
 /**
  * ComponentsScreen component
- * Component showcase page rendering AppHeader, Pill, and IconButton components.
+ * Component showcase page rendering AppHeader, Pill, IconButton, and Button components.
  * All data passed via props as per project rules.
  */
 export default function ComponentsScreen({
@@ -15,6 +16,7 @@ export default function ComponentsScreen({
   headerVariants = [],
   pills = [],
   iconButtons = [],
+  buttons = [],
 }) {
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
@@ -97,6 +99,26 @@ export default function ComponentsScreen({
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* 4. Button Component (Cream CTA) */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">4. Button (cream CTA)</h2>
+          <p className="text-label text-text-secondary">Signature cream button from course-detail.jpg</p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {buttons.map((btn) => (
+            <Button
+              key={btn.id}
+              variant={btn.variant}
+              onClick={() => console.log(`Clicked ${btn.label}`)}
+            >
+              {btn.label}
+            </Button>
+          ))}
         </div>
       </section>
     </div>

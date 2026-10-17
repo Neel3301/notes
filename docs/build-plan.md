@@ -38,3 +38,5 @@ STEPS
 
 PROGRESS NOTES
 (the agent writes short notes here when a step has a known remaining difference)
+
+<!-- CHECKPOINT id="ckpt_mvcm3b6y_y0mao2" time="2026-10-17T16:29:22.666Z" note="auto" fixes=0 questions=0 highlights=0 sections="" -->

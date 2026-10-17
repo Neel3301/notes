@@ -113,4 +113,8 @@ export const uiComponentsDemoData = {
     { id: 'ib1', name: 'IconButton (outlined)', variant: 'outlined', icon: 'Calendar', label: 'Calendar action' },
     { id: 'ib2', name: 'IconButton (plain)', variant: 'plain', icon: 'MoreVertical', label: 'More options' },
   ],
+  buttons: [
+    { id: 'btn1', label: 'Start course', variant: 'cream' },
+    { id: 'btn2', label: 'Outline Action', variant: 'outline' },
+  ],
 };

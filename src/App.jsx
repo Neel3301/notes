@@ -25,6 +25,7 @@ export default function App() {
                 headerVariants={headerDemoData.variants}
                 pills={uiComponentsDemoData.pills}
                 iconButtons={uiComponentsDemoData.iconButtons}
+                buttons={uiComponentsDemoData.buttons}
               />
             }
           />
