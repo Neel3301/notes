@@ -5,10 +5,11 @@ import Pill from '../components/ui/Pill';
 import IconButton from '../components/ui/IconButton';
 import Button from '../components/ui/Button';
 import Heading from '../components/ui/Heading';
+import CourseCard from '../components/course/CourseCard';
 
 /**
  * ComponentsScreen component
- * Component showcase page rendering AppHeader, Pill, IconButton, Button, and Heading components.
+ * Component showcase page rendering AppHeader, Pill, IconButton, Button, Heading, and CourseCard.
  * All data passed via props as per project rules.
  */
 export default function ComponentsScreen({
@@ -19,6 +20,7 @@ export default function ComponentsScreen({
   iconButtons = [],
   buttons = [],
   headings = [],
+  courseCards = [],
 }) {
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
@@ -137,6 +139,29 @@ export default function ComponentsScreen({
               <span className="text-label text-text-secondary">{h.label}</span>
               <Heading text={h.text} />
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. CourseCard Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">6. CourseCard (blue / light / yellow, ~236px)</h2>
+          <p className="text-label text-text-secondary">Flat color, no shadows, horizontal scroll container</p>
+        </div>
+
+        <div className="flex items-center gap-4 overflow-x-auto pb-4 no-scrollbar">
+          {courseCards.map((card) => (
+            <CourseCard
+              key={card.id}
+              color={card.color}
+              author={card.author}
+              title={card.title}
+              time={card.time}
+              liked={card.liked}
+              onClick={() => console.log(`Card clicked: ${card.title}`)}
+              onLikeToggle={() => console.log(`Liked toggled: ${card.title}`)}
+            />
           ))}
         </div>
       </section>

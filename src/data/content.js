@@ -121,4 +121,30 @@ export const uiComponentsDemoData = {
     { id: 'h1', text: 'Study\nPlanning', label: 'Multi-line Hero Display' },
     { id: 'h2', text: 'Course\nOverview', label: 'Screen Header' },
   ],
+  courseCards: [
+    {
+      id: 'cc1',
+      color: 'blue',
+      author: 'Olivia Bennett',
+      title: 'The\nScience\nof Nature',
+      time: '10:00 am – 11:30 am',
+      liked: undefined,
+    },
+    {
+      id: 'cc2',
+      color: 'light',
+      author: 'Marcus Levin',
+      title: 'Digital\nMedia\n& Society',
+      time: '2:45 pm – 4:15 pm',
+      liked: undefined,
+    },
+    {
+      id: 'cc3',
+      color: 'yellow',
+      author: 'Lena Brooks',
+      title: 'Intro\nto Frontend\nDevelopment',
+      time: undefined,
+      liked: false,
+    },
+  ],
 };

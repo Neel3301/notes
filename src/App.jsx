@@ -27,6 +27,7 @@ export default function App() {
                 iconButtons={uiComponentsDemoData.iconButtons}
                 buttons={uiComponentsDemoData.buttons}
                 headings={uiComponentsDemoData.headings}
+                courseCards={uiComponentsDemoData.courseCards}
               />
             }
           />

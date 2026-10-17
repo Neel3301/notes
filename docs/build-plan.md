@@ -21,7 +21,7 @@ STEPS
 [x] 2. Pill and IconButton (src/components/ui): Pill outlined fully rounded with optional icon and iconRight; IconButton circular outlined, plus variant plain for the three-dot icon.
 [ ] 3. Button (cream variant) like "Start course" in course-detail.png.
 [x] 4. Heading (.text-display style, keeps line breaks).
-[ ] 5. CourseCard (src/components/course): color blue/light/yellow, author, title with line breaks, time, liked. Width about 236px, flat color, no shadow.
+[x] 5. CourseCard (src/components/course): color blue/light/yellow, author, title with line breaks, time, liked. Width about 236px, flat color, no shadow.
 [ ] 6. DatePager like the "< Mon. 12 > Tue. 13" row: props current, next, onPrev, onNext.
 [ ] 7. SearchPill: outlined, rounded, search icon, working input.
 [ ] 8. LessonRow (number, title, optional description, optional thumbnail with play icon using a grey placeholder, divider) and Tabs (items, active, onChange).
