@@ -29,6 +29,7 @@ export default function App() {
                 headings={uiComponentsDemoData.headings}
                 courseCards={uiComponentsDemoData.courseCards}
                 datePager={uiComponentsDemoData.datePager}
+                searchPill={uiComponentsDemoData.searchPill}
               />
             }
           />

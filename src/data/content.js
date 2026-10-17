@@ -151,4 +151,7 @@ export const uiComponentsDemoData = {
     current: 'Mon. 12',
     next: 'Tue. 13',
   },
+  searchPill: {
+    placeholder: 'Course title',
+  },
 };

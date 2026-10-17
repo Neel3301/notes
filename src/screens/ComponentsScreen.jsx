@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Heading from '../components/ui/Heading';
 import CourseCard from '../components/course/CourseCard';
 import DatePager from '../components/ui/DatePager';
+import SearchPill from '../components/ui/SearchPill';
 
 /**
  * ComponentsScreen component
@@ -23,7 +24,9 @@ export default function ComponentsScreen({
   headings = [],
   courseCards = [],
   datePager = {},
+  searchPill = {},
 }) {
+  const [searchValue, setSearchValue] = React.useState('');
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
       {/* Header */}
@@ -183,6 +186,21 @@ export default function ComponentsScreen({
             onNext={() => console.log('Next date clicked')}
           />
         </div>
+      </section>
+
+      {/* 8. SearchPill Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">8. SearchPill (outlined, icon, working input)</h2>
+          <p className="text-label text-text-secondary">Interactive course title search from course-overview.jpg</p>
+        </div>
+
+        <SearchPill
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder={searchPill.placeholder}
+          onClear={() => setSearchValue('')}
+        />
       </section>
     </div>
   );

@@ -23,7 +23,7 @@ STEPS
 [x] 4. Heading (.text-display style, keeps line breaks).
 [x] 5. CourseCard (src/components/course): color blue/light/yellow, author, title with line breaks, time, liked. Width about 236px, flat color, no shadow.
 [ ] 6. DatePager like the "< Mon. 12 > Tue. 13" row: props current, next, onPrev, onNext.
-[ ] 7. SearchPill: outlined, rounded, search icon, working input.
+[x] 7. SearchPill: outlined, rounded, search icon, working input.
 [ ] 8. LessonRow (number, title, optional description, optional thumbnail with play icon using a grey placeholder, divider) and Tabs (items, active, onChange).
 [ ] 9. MenuItem: giant .text-menu text, active is white with an arrow icon, inactive is muted.
 [ ] 10. src/data/content.js: all demo content for the 4 screens, same wording as the references.
