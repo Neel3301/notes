@@ -2,13 +2,24 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PhoneShell from './components/layout/PhoneShell';
 import TokensScreen from './screens/TokensScreen';
-import { tokenColors, tokenTypography, tokenShapes } from './data/content';
+import ComponentsScreen from './screens/ComponentsScreen';
+import { tokenColors, tokenTypography, tokenShapes, headerDemoData } from './data/content';
 
 export default function App() {
   return (
     <BrowserRouter>
       <PhoneShell>
         <Routes>
+          <Route
+            path="/components"
+            element={
+              <ComponentsScreen
+                title={headerDemoData.title}
+                subtitle={headerDemoData.subtitle}
+                variants={headerDemoData.variants}
+              />
+            }
+          />
           <Route
             path="/tokens"
             element={

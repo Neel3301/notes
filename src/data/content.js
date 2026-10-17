@@ -75,3 +75,31 @@ export const tokenShapes = {
     label: 'Start course',
   },
 };
+
+export const headerDemoData = {
+  title: 'Component Showcase: AppHeader',
+  subtitle: 'All 3 header variants rendered on black canvas with 390px mobile viewport.',
+  variants: [
+    {
+      id: 'menu',
+      name: 'Variant 1: Menu Header',
+      role: 'Study Planning & Course Overview screens',
+      left: 'menu',
+      logo: '.edsy',
+    },
+    {
+      id: 'close',
+      name: 'Variant 2: Close Header',
+      role: 'Menu overlay screen',
+      left: 'close',
+      logo: '.edsy',
+    },
+    {
+      id: 'back',
+      name: 'Variant 3: Back Header',
+      role: 'Course Detail screen',
+      left: 'back',
+      logo: undefined,
+    },
+  ],
+};
