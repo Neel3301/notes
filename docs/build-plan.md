@@ -28,8 +28,8 @@ STEPS
 [x] 9. MenuItem: giant .text-menu text, active is white with an arrow icon, inactive is muted.
 [x] 10. src/data/content.js: all demo content for the 4 screens, same wording as the references.
 [x] 11. StudyPlanning screen at /study-planning (horizontal scroll-snap cards with the second card peeking, DatePager at the bottom).
-[ ] 12. CourseOverview screen at /course-overview.
-[ ] 13. CourseDetail screen at /course-detail (Tabs must switch when clicked).
+[x] 12. CourseOverview screen at /course-overview.
+[x] 13. CourseDetail screen at /course-detail (Tabs must switch when clicked).
 [ ] 14. Menu overlay screen at /menu with a short Framer Motion fade-and-slide-up.
 [ ] 15. Connect everything with react-router: menu icon opens /menu, close goes back, Courses goes to /course-overview, Planning goes to /study-planning, tapping a card opens /course-detail, back arrow goes back. /study-planning is home. Wrap in PhoneShell. Test the whole flow in the browser.
 [ ] 16. Theme: keep current as default, add a light theme switchable from src/theme.js.

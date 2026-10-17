@@ -5,6 +5,7 @@ import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
 import StudyPlanningScreen from './screens/StudyPlanningScreen';
 import CourseOverviewScreen from './screens/CourseOverviewScreen';
+import CourseDetailScreen from './screens/CourseDetailScreen';
 import {
   tokenColors,
   tokenTypography,
@@ -13,6 +14,7 @@ import {
   uiComponentsDemoData,
   studyPlanningData,
   courseOverviewData,
+  courseDetailData,
 } from './data/content';
 
 export default function App() {
@@ -72,6 +74,19 @@ export default function App() {
                 heading={courseOverviewData.heading}
                 search={courseOverviewData.search}
                 cards={courseOverviewData.cards}
+              />
+            }
+          />
+          <Route
+            path="/course-detail"
+            element={
+              <CourseDetailScreen
+                header={courseDetailData.header}
+                heading={courseDetailData.heading}
+                actionButton={courseDetailData.actionButton}
+                tabs={courseDetailData.tabs}
+                previewLessons={courseDetailData.previewLessons}
+                details={courseDetailData.details}
               />
             }
           />
