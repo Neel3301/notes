@@ -17,7 +17,7 @@ HOW TO WORK THROUGH THIS PLAN
 - Reference images: study-planning.png, menu.png, course-overview.png, course-detail.png.
 
 STEPS
-[ ] 1. AppHeader (src/components/layout/AppHeader.jsx): props left (menu/back/close), logo, onLeftClick. Menu icon is two thin lines. Add a /components showcase page.
+[x] 1. AppHeader (src/components/layout/AppHeader.jsx): props left (menu/back/close), logo, onLeftClick. Menu icon is two thin lines. Add a /components showcase page.
 [ ] 2. Pill and IconButton (src/components/ui): Pill outlined fully rounded with optional icon and iconRight; IconButton circular outlined, plus variant plain for the three-dot icon.
 [ ] 3. Button (cream variant) like "Start course" in course-detail.png.
 [ ] 4. Heading (.text-display style, keeps line breaks).
