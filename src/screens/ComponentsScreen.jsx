@@ -6,10 +6,11 @@ import IconButton from '../components/ui/IconButton';
 import Button from '../components/ui/Button';
 import Heading from '../components/ui/Heading';
 import CourseCard from '../components/course/CourseCard';
+import DatePager from '../components/ui/DatePager';
 
 /**
  * ComponentsScreen component
- * Component showcase page rendering AppHeader, Pill, IconButton, Button, Heading, and CourseCard.
+ * Component showcase page rendering UI and layout components.
  * All data passed via props as per project rules.
  */
 export default function ComponentsScreen({
@@ -21,6 +22,7 @@ export default function ComponentsScreen({
   buttons = [],
   headings = [],
   courseCards = [],
+  datePager = {},
 }) {
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
@@ -163,6 +165,23 @@ export default function ComponentsScreen({
               onLikeToggle={() => console.log(`Liked toggled: ${card.title}`)}
             />
           ))}
+        </div>
+      </section>
+
+      {/* 7. DatePager Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">7. DatePager (&lt; Mon. 12 &gt; Tue. 13)</h2>
+          <p className="text-label text-text-secondary">Bottom date carousel strip from study-planning.jpg</p>
+        </div>
+
+        <div className="flex items-center justify-center p-3 bg-divider/20 rounded-card border border-border-subtle/50">
+          <DatePager
+            current={datePager.current}
+            next={datePager.next}
+            onPrev={() => console.log('Previous date clicked')}
+            onNext={() => console.log('Next date clicked')}
+          />
         </div>
       </section>
     </div>

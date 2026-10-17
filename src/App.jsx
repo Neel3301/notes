@@ -28,6 +28,7 @@ export default function App() {
                 buttons={uiComponentsDemoData.buttons}
                 headings={uiComponentsDemoData.headings}
                 courseCards={uiComponentsDemoData.courseCards}
+                datePager={uiComponentsDemoData.datePager}
               />
             }
           />

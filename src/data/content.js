@@ -147,4 +147,8 @@ export const uiComponentsDemoData = {
       liked: false,
     },
   ],
+  datePager: {
+    current: 'Mon. 12',
+    next: 'Tue. 13',
+  },
 };
