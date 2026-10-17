@@ -187,3 +187,167 @@ export const uiComponentsDemoData = {
     { id: 'm5', label: 'Account', active: false },
   ],
 };
+
+/**
+ * Screen 1: Study Planning content data
+ * Reference: design-reference/study-planning.jpg
+ */
+export const studyPlanningData = {
+  header: {
+    left: 'menu',
+    logo: '.edsy',
+  },
+  heading: 'Study\nPlanning',
+  filterPill: {
+    label: 'This week',
+    hasChevron: true,
+  },
+  calendarButton: {
+    label: 'Calendar view',
+  },
+  cards: [
+    {
+      id: 'sp-blue',
+      color: 'blue',
+      author: 'Olivia Bennett',
+      title: 'The\nScience\nof Nature',
+      time: '10:00 am – 11:30 am',
+    },
+    {
+      id: 'sp-light',
+      color: 'light',
+      author: 'Marcus Levin',
+      title: 'Digital\nMedia\n& Society',
+      time: '2:45 pm – 4:15 pm',
+    },
+    {
+      id: 'sp-yellow',
+      color: 'yellow',
+      author: 'Lena Brooks',
+      title: 'Intro\nto Frontend\nDevelopment',
+      time: '5:00 pm – 6:30 pm',
+    },
+  ],
+  datePager: {
+    current: 'Mon. 12',
+    next: 'Tue. 13',
+  },
+};
+
+/**
+ * Screen 2: Course Overview content data
+ * Reference: design-reference/course-overview.jpg
+ */
+export const courseOverviewData = {
+  header: {
+    left: 'menu',
+    logo: '.edsy',
+  },
+  heading: 'Course\nOverview',
+  search: {
+    placeholder: 'Course title',
+  },
+  cards: [
+    {
+      id: 'co-yellow',
+      color: 'yellow',
+      author: 'Lena Brooks',
+      title: 'Intro\nto Frontend\nDevelopment',
+      liked: false,
+    },
+    {
+      id: 'co-blue',
+      color: 'blue',
+      author: 'Olivia Bennett',
+      title: 'The\nScience\nof Nature',
+      liked: true,
+    },
+    {
+      id: 'co-light',
+      color: 'light',
+      author: 'Marcus Levin',
+      title: 'Digital\nMedia\n& Society',
+      liked: false,
+    },
+  ],
+};
+
+/**
+ * Screen 3: Course Detail content data
+ * Reference: design-reference/course-detail.jpg
+ */
+export const courseDetailData = {
+  header: {
+    left: 'back',
+    logo: undefined,
+  },
+  heading: 'Intro to Frontend\nDevelopment',
+  actionButton: {
+    label: 'Start course',
+    variant: 'cream',
+  },
+  tabs: ['Preview', 'Details'],
+  previewLessons: [
+    {
+      id: 'cd-lesson-1',
+      number: '01',
+      title: 'What is Frontend?',
+      description:
+        'Understand the role of frontend in web development and how it interacts with backend systems.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+      isOpen: true,
+    },
+    {
+      id: 'cd-lesson-2',
+      number: '02',
+      title: 'Box Model & Positioning',
+      description:
+        'Master margin, padding, border, flexbox alignment, and document flow positioning.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+      isOpen: false,
+    },
+    {
+      id: 'cd-lesson-3',
+      number: '03',
+      title: 'Flexbox & Grid Layouts',
+      description:
+        'Learn 1-dimensional flexbox and 2-dimensional CSS grid systems for responsive web designs.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
+      isOpen: false,
+    },
+  ],
+  details: {
+    description:
+      'This comprehensive course covers modern frontend web development from foundational HTML/CSS architecture to reactive component states. Designed for beginners and intermediate engineers seeking visual excellence.',
+    instructor: {
+      name: 'Lena Brooks',
+      role: 'Principal Design Technologist',
+    },
+    stats: [
+      { label: 'Modules', value: '3 Lessons' },
+      { label: 'Duration', value: '3.5 Hours' },
+      { label: 'Level', value: 'Beginner' },
+    ],
+  },
+};
+
+/**
+ * Screen 4: Menu overlay content data
+ * Reference: design-reference/menu.jpg
+ */
+export const menuData = {
+  header: {
+    left: 'close',
+    logo: '.edsy',
+  },
+  items: [
+    { id: 'menu-dash', label: 'Dashboard', route: '/', active: false },
+    { id: 'menu-courses', label: 'Courses', route: '/course-overview', active: true },
+    { id: 'menu-planning', label: 'Planning', route: '/study-planning', active: false },
+    { id: 'menu-settings', label: 'Settings', route: '#', active: false },
+    { id: 'menu-account', label: 'Account', route: '#', active: false },
+  ],
+};

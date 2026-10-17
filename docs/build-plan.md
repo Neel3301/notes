@@ -25,8 +25,8 @@ STEPS
 [x] 6. DatePager like the "< Mon. 12 > Tue. 13" row: props current, next, onPrev, onNext.
 [x] 7. SearchPill: outlined, rounded, search icon, working input.
 [x] 8. LessonRow (number, title, optional description, optional thumbnail with play icon using a grey placeholder, divider) and Tabs (items, active, onChange).
-[ ] 9. MenuItem: giant .text-menu text, active is white with an arrow icon, inactive is muted.
-[ ] 10. src/data/content.js: all demo content for the 4 screens, same wording as the references.
+[x] 9. MenuItem: giant .text-menu text, active is white with an arrow icon, inactive is muted.
+[x] 10. src/data/content.js: all demo content for the 4 screens, same wording as the references.
 [ ] 11. StudyPlanning screen at /study-planning (horizontal scroll-snap cards with the second card peeking, DatePager at the bottom).
 [ ] 12. CourseOverview screen at /course-overview.
 [ ] 13. CourseDetail screen at /course-detail (Tabs must switch when clicked).
