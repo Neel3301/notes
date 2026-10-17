@@ -103,3 +103,14 @@ export const headerDemoData = {
     },
   ],
 };
+
+export const uiComponentsDemoData = {
+  pills: [
+    { id: 'p1', label: 'This week', hasChevron: true },
+    { id: 'p2', label: 'All Courses', hasChevron: false },
+  ],
+  iconButtons: [
+    { id: 'ib1', name: 'IconButton (outlined)', variant: 'outlined', icon: 'Calendar', label: 'Calendar action' },
+    { id: 'ib2', name: 'IconButton (plain)', variant: 'plain', icon: 'MoreVertical', label: 'More options' },
+  ],
+};

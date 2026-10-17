@@ -3,7 +3,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PhoneShell from './components/layout/PhoneShell';
 import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
-import { tokenColors, tokenTypography, tokenShapes, headerDemoData } from './data/content';
+import {
+  tokenColors,
+  tokenTypography,
+  tokenShapes,
+  headerDemoData,
+  uiComponentsDemoData,
+} from './data/content';
 
 export default function App() {
   return (
@@ -16,7 +22,9 @@ export default function App() {
               <ComponentsScreen
                 title={headerDemoData.title}
                 subtitle={headerDemoData.subtitle}
-                variants={headerDemoData.variants}
+                headerVariants={headerDemoData.variants}
+                pills={uiComponentsDemoData.pills}
+                iconButtons={uiComponentsDemoData.iconButtons}
               />
             }
           />

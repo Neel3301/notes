@@ -18,7 +18,7 @@ HOW TO WORK THROUGH THIS PLAN
 
 STEPS
 [x] 1. AppHeader (src/components/layout/AppHeader.jsx): props left (menu/back/close), logo, onLeftClick. Menu icon is two thin lines. Add a /components showcase page.
-[ ] 2. Pill and IconButton (src/components/ui): Pill outlined fully rounded with optional icon and iconRight; IconButton circular outlined, plus variant plain for the three-dot icon.
+[x] 2. Pill and IconButton (src/components/ui): Pill outlined fully rounded with optional icon and iconRight; IconButton circular outlined, plus variant plain for the three-dot icon.
 [ ] 3. Button (cream variant) like "Start course" in course-detail.png.
 [ ] 4. Heading (.text-display style, keeps line breaks).
 [ ] 5. CourseCard (src/components/course): color blue/light/yellow, author, title with line breaks, time, liked. Width about 236px, flat color, no shadow.
