@@ -8,6 +8,8 @@ import Heading from '../components/ui/Heading';
 import CourseCard from '../components/course/CourseCard';
 import DatePager from '../components/ui/DatePager';
 import SearchPill from '../components/ui/SearchPill';
+import Tabs from '../components/ui/Tabs';
+import LessonRow from '../components/course/LessonRow';
 
 /**
  * ComponentsScreen component
@@ -25,8 +27,12 @@ export default function ComponentsScreen({
   courseCards = [],
   datePager = {},
   searchPill = {},
+  tabs = [],
+  lessons = [],
 }) {
   const [searchValue, setSearchValue] = React.useState('');
+  const [activeTab, setActiveTab] = React.useState(tabs[0] || 'Preview');
+  const [openLessonId, setOpenLessonId] = React.useState(lessons[0]?.id || 'l1');
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
       {/* Header */}
@@ -201,6 +207,44 @@ export default function ComponentsScreen({
           placeholder={searchPill.placeholder}
           onClear={() => setSearchValue('')}
         />
+      </section>
+
+      {/* 9. Tabs Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">9. Tabs (Preview / Details)</h2>
+          <p className="text-label text-text-secondary">Text-based switcher with hairline bottom border</p>
+        </div>
+
+        <Tabs
+          items={tabs}
+          active={activeTab}
+          onChange={(tab) => setActiveTab(tab)}
+        />
+      </section>
+
+      {/* 10. LessonRow Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">10. LessonRow (numbered, expandable, video thumbnail)</h2>
+          <p className="text-label text-text-secondary">Interactive accordion rows from course-detail.jpg</p>
+        </div>
+
+        <div className="flex flex-col">
+          {lessons.map((lesson) => (
+            <LessonRow
+              key={lesson.id}
+              number={lesson.number}
+              title={lesson.title}
+              description={lesson.description}
+              thumbnail={lesson.thumbnail}
+              isOpen={openLessonId === lesson.id}
+              onToggle={() =>
+                setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)
+              }
+            />
+          ))}
+        </div>
       </section>
     </div>
   );

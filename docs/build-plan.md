@@ -19,12 +19,12 @@ HOW TO WORK THROUGH THIS PLAN
 STEPS
 [x] 1. AppHeader (src/components/layout/AppHeader.jsx): props left (menu/back/close), logo, onLeftClick. Menu icon is two thin lines. Add a /components showcase page.
 [x] 2. Pill and IconButton (src/components/ui): Pill outlined fully rounded with optional icon and iconRight; IconButton circular outlined, plus variant plain for the three-dot icon.
-[ ] 3. Button (cream variant) like "Start course" in course-detail.png.
+[x] 3. Button (cream variant) like "Start course" in course-detail.png.
 [x] 4. Heading (.text-display style, keeps line breaks).
 [x] 5. CourseCard (src/components/course): color blue/light/yellow, author, title with line breaks, time, liked. Width about 236px, flat color, no shadow.
-[ ] 6. DatePager like the "< Mon. 12 > Tue. 13" row: props current, next, onPrev, onNext.
+[x] 6. DatePager like the "< Mon. 12 > Tue. 13" row: props current, next, onPrev, onNext.
 [x] 7. SearchPill: outlined, rounded, search icon, working input.
-[ ] 8. LessonRow (number, title, optional description, optional thumbnail with play icon using a grey placeholder, divider) and Tabs (items, active, onChange).
+[x] 8. LessonRow (number, title, optional description, optional thumbnail with play icon using a grey placeholder, divider) and Tabs (items, active, onChange).
 [ ] 9. MenuItem: giant .text-menu text, active is white with an arrow icon, inactive is muted.
 [ ] 10. src/data/content.js: all demo content for the 4 screens, same wording as the references.
 [ ] 11. StudyPlanning screen at /study-planning (horizontal scroll-snap cards with the second card peeking, DatePager at the bottom).
@@ -42,3 +42,5 @@ PROGRESS NOTES
 <!-- CHECKPOINT id="ckpt_mvcm3b6y_y0mao2" time="2026-10-17T16:29:22.666Z" note="auto" fixes=0 questions=0 highlights=0 sections="" -->
 
 <!-- CHECKPOINT id="ckpt_mvcmg65j_5qda1w" time="2026-10-17T16:39:22.663Z" note="auto" fixes=0 questions=0 highlights=0 sections="" -->
+
+<!-- CHECKPOINT id="ckpt_mvcmt14a_wkcgit" time="2026-10-17T16:49:22.666Z" note="auto" fixes=0 questions=0 highlights=0 sections="" -->

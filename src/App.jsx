@@ -30,6 +30,8 @@ export default function App() {
                 courseCards={uiComponentsDemoData.courseCards}
                 datePager={uiComponentsDemoData.datePager}
                 searchPill={uiComponentsDemoData.searchPill}
+                tabs={uiComponentsDemoData.tabs}
+                lessons={uiComponentsDemoData.lessons}
               />
             }
           />

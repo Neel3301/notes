@@ -154,4 +154,29 @@ export const uiComponentsDemoData = {
   searchPill: {
     placeholder: 'Course title',
   },
+  tabs: ['Preview', 'Details'],
+  lessons: [
+    {
+      id: 'l1',
+      number: '01',
+      title: 'What is Frontend?',
+      description: 'Understand the role of frontend in web development and how it interacts with backend systems.',
+      thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+      isOpen: true,
+    },
+    {
+      id: 'l2',
+      number: '02',
+      title: 'Box Model & Positioning',
+      description: 'Master margins, borders, padding, and the document layout flow.',
+      isOpen: false,
+    },
+    {
+      id: 'l3',
+      number: '03',
+      title: 'Flexbox & Grid Layouts',
+      description: 'Build modern responsive layouts using 1D flexbox and 2D css grids.',
+      isOpen: false,
+    },
+  ],
 };
