@@ -179,4 +179,11 @@ export const uiComponentsDemoData = {
       isOpen: false,
     },
   ],
+  menuItems: [
+    { id: 'm1', label: 'Dashboard', active: false },
+    { id: 'm2', label: 'Courses', active: true },
+    { id: 'm3', label: 'Planning', active: false },
+    { id: 'm4', label: 'Settings', active: false },
+    { id: 'm5', label: 'Account', active: false },
+  ],
 };

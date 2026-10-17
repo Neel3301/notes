@@ -10,6 +10,7 @@ import DatePager from '../components/ui/DatePager';
 import SearchPill from '../components/ui/SearchPill';
 import Tabs from '../components/ui/Tabs';
 import LessonRow from '../components/course/LessonRow';
+import MenuItem from '../components/ui/MenuItem';
 
 /**
  * ComponentsScreen component
@@ -29,10 +30,14 @@ export default function ComponentsScreen({
   searchPill = {},
   tabs = [],
   lessons = [],
+  menuItems = [],
 }) {
   const [searchValue, setSearchValue] = React.useState('');
   const [activeTab, setActiveTab] = React.useState(tabs[0] || 'Preview');
   const [openLessonId, setOpenLessonId] = React.useState(lessons[0]?.id || 'l1');
+  const [activeMenuId, setActiveMenuId] = React.useState(
+    menuItems.find((m) => m.active)?.id || 'm2'
+  );
   return (
     <div className="w-full bg-screen text-text-primary px-5 py-8 flex flex-col gap-8 min-h-screen">
       {/* Header */}
@@ -242,6 +247,25 @@ export default function ComponentsScreen({
               onToggle={() =>
                 setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)
               }
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* 11. MenuItem Component */}
+      <section className="flex flex-col gap-4">
+        <div className="border-b border-divider pb-2">
+          <h2 className="text-body font-medium text-text-primary">11. MenuItem (.text-menu, active indicator)</h2>
+          <p className="text-label text-text-secondary">Full-screen navigation items from menu.jpg</p>
+        </div>
+
+        <div className="flex flex-col gap-1 py-2">
+          {menuItems.map((item) => (
+            <MenuItem
+              key={item.id}
+              label={item.label}
+              active={activeMenuId === item.id}
+              onClick={() => setActiveMenuId(item.id)}
             />
           ))}
         </div>

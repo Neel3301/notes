@@ -32,6 +32,7 @@ export default function App() {
                 searchPill={uiComponentsDemoData.searchPill}
                 tabs={uiComponentsDemoData.tabs}
                 lessons={uiComponentsDemoData.lessons}
+                menuItems={uiComponentsDemoData.menuItems}
               />
             }
           />
