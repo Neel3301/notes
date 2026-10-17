@@ -3,12 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PhoneShell from './components/layout/PhoneShell';
 import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
+import StudyPlanningScreen from './screens/StudyPlanningScreen';
 import {
   tokenColors,
   tokenTypography,
   tokenShapes,
   headerDemoData,
   uiComponentsDemoData,
+  studyPlanningData,
 } from './data/content';
 
 export default function App() {
@@ -48,8 +50,21 @@ export default function App() {
             }
           />
           <Route
+            path="/study-planning"
+            element={
+              <StudyPlanningScreen
+                header={studyPlanningData.header}
+                heading={studyPlanningData.heading}
+                filterPill={studyPlanningData.filterPill}
+                calendarButton={studyPlanningData.calendarButton}
+                cards={studyPlanningData.cards}
+                datePager={studyPlanningData.datePager}
+              />
+            }
+          />
+          <Route
             path="/"
-            element={<Navigate to="/tokens" replace />}
+            element={<Navigate to="/study-planning" replace />}
           />
         </Routes>
       </PhoneShell>
