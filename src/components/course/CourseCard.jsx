@@ -20,6 +20,7 @@ export default function CourseCard({
   title,
   time,
   liked,
+  fullWidth = false,
   onLikeToggle,
   onClick,
   className = '',
@@ -31,13 +32,14 @@ export default function CourseCard({
   };
 
   const selectedColorClass = colorMap[color] || colorMap.blue;
+  const sizeClasses = fullWidth ? 'w-full h-[320px]' : 'w-[236px] h-[320px] flex-shrink-0';
 
   return (
     <div
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      className={`w-[236px] h-[320px] rounded-card p-5 flex flex-col justify-between flex-shrink-0 select-none transition-transform active:scale-[0.99] cursor-pointer ${selectedColorClass} ${className}`}
+      className={`${sizeClasses} rounded-card p-5 flex flex-col justify-between select-none transition-transform active:scale-[0.99] cursor-pointer ${selectedColorClass} ${className}`}
     >
       {/* Top Row: Author & optional Heart */}
       <div className="flex items-center justify-between">

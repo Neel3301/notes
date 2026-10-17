@@ -4,6 +4,7 @@ import PhoneShell from './components/layout/PhoneShell';
 import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
 import StudyPlanningScreen from './screens/StudyPlanningScreen';
+import CourseOverviewScreen from './screens/CourseOverviewScreen';
 import {
   tokenColors,
   tokenTypography,
@@ -11,6 +12,7 @@ import {
   headerDemoData,
   uiComponentsDemoData,
   studyPlanningData,
+  courseOverviewData,
 } from './data/content';
 
 export default function App() {
@@ -59,6 +61,17 @@ export default function App() {
                 calendarButton={studyPlanningData.calendarButton}
                 cards={studyPlanningData.cards}
                 datePager={studyPlanningData.datePager}
+              />
+            }
+          />
+          <Route
+            path="/course-overview"
+            element={
+              <CourseOverviewScreen
+                header={courseOverviewData.header}
+                heading={courseOverviewData.heading}
+                search={courseOverviewData.search}
+                cards={courseOverviewData.cards}
               />
             }
           />
