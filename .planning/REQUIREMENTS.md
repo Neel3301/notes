@@ -15,8 +15,8 @@
 - [ ] **NOTE-05**: User can record and playback audio memos with progress bar and timestamp indicator.
 
 ### Views & Navigation
-- [ ] **VIEW-01**: Home screen adapts `/study-planning` layout with horizontal snap card carousel displaying colored note cards (`#6F91B6`, `#DCE3EB`, `#CABC3F`).
-- [ ] **VIEW-02**: Bottom `DatePager` allows navigating notes by date and jumping to daily journal entries.
+- [x] **VIEW-01**: Home screen adapts `/study-planning` layout with horizontal snap card carousel displaying colored note cards (`#6F91B6`, `#DCE3EB`, `#CABC3F`).
+- [x] **VIEW-02**: Bottom `DatePager` allows navigating notes by date and jumping to daily journal entries.
 - [ ] **VIEW-03**: All Notes catalog screen adapts `/course-overview` with stacked note cards, timestamps, and favorite heart toggles.
 - [ ] **VIEW-04**: `SearchPill` provides instant live search filtering notes by title, tag, or content.
 - [ ] **VIEW-05**: Outlined filter pills row allows 1-tap filtering by tag or category.
@@ -60,8 +60,8 @@
 | NOTE-03 | Phase 5 | Pending |
 | NOTE-04 | Phase 6 | Pending |
 | NOTE-05 | Phase 6 | Pending |
-| VIEW-01 | Phase 2 | Pending |
-| VIEW-02 | Phase 2 | Pending |
+| VIEW-01 | Phase 2 | Passed |
+| VIEW-02 | Phase 2 | Passed |
 | VIEW-03 | Phase 3 | Pending |
 | VIEW-04 | Phase 3 | Pending |
 | VIEW-05 | Phase 3 | Pending |

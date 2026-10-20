@@ -61,11 +61,11 @@ function AppRoutes() {
             heading={studyPlanningData.heading}
             filterPill={studyPlanningData.filterPill}
             calendarButton={studyPlanningData.calendarButton}
-            cards={studyPlanningData.cards}
-            datePager={studyPlanningData.datePager}
             onMenuClick={() => navigate('/menu')}
             onCardClick={(card) =>
-              navigate('/course-detail', { state: { course: card } })
+              navigate('/course-detail', {
+                state: { course: card, note: card, noteId: card.id },
+              })
             }
           />
         }
