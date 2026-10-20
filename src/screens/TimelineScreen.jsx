@@ -4,18 +4,18 @@ import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
 import Pill from '../components/ui/Pill';
 import IconButton from '../components/ui/IconButton';
-import CourseCard from '../components/course/CourseCard';
+import NoteCard from '../components/note/NoteCard';
 import DatePager from '../components/ui/DatePager';
 import { useNotesStore } from '../data/notesStore';
 
 /**
- * StudyPlanningScreen component
- * Primary dashboard view for scheduled notes and daily timeline.
+ * TimelineScreen component
+ * Primary dashboard view for scheduled daily notes and timeline.
  * Features horizontal snap card carousel with peek offset, filter controls,
  * and bottom DatePager navigation strip.
  * Strictly adheres to design-reference/study-planning.jpg.
  */
-export default function StudyPlanningScreen({
+export default function TimelineScreen({
   header = { left: 'menu', logo: '.edsy' },
   heading = 'Daily\nNotes',
   filterPill = { label: 'This week', hasChevron: true },
@@ -231,7 +231,7 @@ export default function StudyPlanningScreen({
           <div className="mt-9 -mx-5 px-5 flex items-center gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2">
             {filteredCards.map((card) => (
               <div key={card.id} className="snap-start shrink-0">
-                <CourseCard
+                <NoteCard
                   color={card.color}
                   author={card.author}
                   title={card.title}

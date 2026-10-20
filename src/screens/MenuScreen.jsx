@@ -163,9 +163,9 @@ export default function MenuScreen({
           <div className="w-full flex flex-col gap-1 mt-auto pb-6">
             <MenuItem
               label="Timeline"
-              active={location.pathname === '/study-planning' || location.pathname === '/'}
+              active={location.pathname === '/timeline' || location.pathname === '/study-planning' || location.pathname === '/'}
               onClick={() => {
-                navigate('/study-planning');
+                navigate('/timeline');
               }}
             />
 

@@ -10,9 +10,9 @@ import {
 import PhoneShell from './components/layout/PhoneShell';
 import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
-import StudyPlanningScreen from './screens/StudyPlanningScreen';
-import CourseOverviewScreen from './screens/CourseOverviewScreen';
-import CourseDetailScreen from './screens/CourseDetailScreen';
+import TimelineScreen from './screens/TimelineScreen';
+import NotesCatalogScreen from './screens/NotesCatalogScreen';
+import NoteEditorScreen from './screens/NoteEditorScreen';
 import MenuScreen from './screens/MenuScreen';
 import {
   tokenColors,
@@ -20,14 +20,14 @@ import {
   tokenShapes,
   headerDemoData,
   uiComponentsDemoData,
-  studyPlanningData,
-  courseOverviewData,
-  courseDetailData,
+  timelineData,
+  notesCatalogData,
+  noteEditorData,
   menuData,
 } from './data/content';
 
 /**
- * Main application routes with full inter-screen navigation flow.
+ * Main application routes with clean semantic note app URLs.
  */
 function AppRoutes() {
   const navigate = useNavigate();
@@ -36,11 +36,14 @@ function AppRoutes() {
   // Dynamic menu items reflecting active route
   const dynamicMenuItems = menuData.items.map((item) => {
     let isActive = false;
-    if (item.label === 'Courses' && location.pathname.startsWith('/course')) {
+    if (
+      item.label === 'Timeline' &&
+      (location.pathname === '/timeline' || location.pathname === '/study-planning' || location.pathname === '/')
+    ) {
       isActive = true;
     } else if (
-      item.label === 'Planning' &&
-      (location.pathname === '/study-planning' || location.pathname === '/')
+      item.label === 'All Notes' &&
+      (location.pathname === '/notes' || location.pathname === '/course-overview')
     ) {
       isActive = true;
     }
@@ -52,77 +55,70 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* 1. Study Planning (Home) */}
+      {/* 1. Timeline / Daily Notes (Home) */}
       <Route
-        path="/study-planning"
+        path="/timeline"
         element={
-          <StudyPlanningScreen
-            header={studyPlanningData.header}
-            heading={studyPlanningData.heading}
-            filterPill={studyPlanningData.filterPill}
-            calendarButton={studyPlanningData.calendarButton}
+          <TimelineScreen
+            header={timelineData.header}
+            heading={timelineData.heading}
+            filterPill={timelineData.filterPill}
+            calendarButton={timelineData.calendarButton}
             onMenuClick={() => navigate('/menu')}
-            onCardClick={(card) =>
-              navigate('/course-detail', {
-                state: { course: card, note: card, noteId: card.id },
+            onCardClick={(note) =>
+              navigate('/editor', {
+                state: { note, noteId: note.id },
               })
             }
           />
         }
       />
 
-      {/* 2. Course Overview / Notes Catalog */}
-      <Route
-        path="/course-overview"
-        element={
-          <CourseOverviewScreen
-            header={courseOverviewData.header}
-            heading="All\nNotes"
-            onMenuClick={() => navigate('/menu')}
-            onCardClick={(card) =>
-              navigate('/course-detail', {
-                state: { course: card, note: card, noteId: card.id },
-              })
-            }
-          />
-        }
-      />
+      {/* 2. Notes Catalog / All Notes & Search */}
       <Route
         path="/notes"
         element={
-          <CourseOverviewScreen
-            header={courseOverviewData.header}
-            heading="All\nNotes"
+          <NotesCatalogScreen
+            header={notesCatalogData.header}
+            heading={notesCatalogData.heading}
+            search={notesCatalogData.search}
             onMenuClick={() => navigate('/menu')}
-            onCardClick={(card) =>
-              navigate('/course-detail', {
-                state: { course: card, note: card, noteId: card.id },
+            onCardClick={(note) =>
+              navigate('/editor', {
+                state: { note, noteId: note.id },
               })
             }
           />
         }
       />
 
-      {/* 3. Course Detail */}
+      {/* 3. Note Editor & Detail */}
       <Route
-        path="/course-detail"
+        path="/editor"
         element={
-          <CourseDetailScreen
-            header={courseDetailData.header}
-            heading={
-              location.state?.note?.title || location.state?.course?.title || courseDetailData.heading
-            }
-            actionButton={courseDetailData.actionButton}
-            tabs={courseDetailData.tabs}
-            previewLessons={courseDetailData.previewLessons}
-            details={courseDetailData.details}
+          <NoteEditorScreen
+            header={noteEditorData.header}
+            heading={location.state?.note?.title || noteEditorData.heading}
+            actionButton={noteEditorData.actionButton}
+            tabs={noteEditorData.tabs}
             onBackClick={() => navigate(-1)}
-            onStartCourse={() => console.log('Starting course')}
+          />
+        }
+      />
+      <Route
+        path="/note/:id"
+        element={
+          <NoteEditorScreen
+            header={noteEditorData.header}
+            heading={location.state?.note?.title || noteEditorData.heading}
+            actionButton={noteEditorData.actionButton}
+            tabs={noteEditorData.tabs}
+            onBackClick={() => navigate(-1)}
           />
         }
       />
 
-      {/* 4. Menu Overlay */}
+      {/* 4. Slide-up Menu Overlay */}
       <Route
         path="/menu"
         element={
@@ -155,7 +151,6 @@ function AppRoutes() {
             datePager={uiComponentsDemoData.datePager}
             searchPill={uiComponentsDemoData.searchPill}
             tabs={uiComponentsDemoData.tabs}
-            lessons={uiComponentsDemoData.lessons}
             menuItems={uiComponentsDemoData.menuItems}
           />
         }
@@ -172,8 +167,13 @@ function AppRoutes() {
         }
       />
 
-      {/* Default Route redirecting to Study Planning */}
-      <Route path="/" element={<Navigate to="/study-planning" replace />} />
+      {/* Backward-compatible redirects */}
+      <Route path="/study-planning" element={<Navigate to="/timeline" replace />} />
+      <Route path="/course-overview" element={<Navigate to="/notes" replace />} />
+      <Route path="/course-detail" element={<Navigate to="/editor" replace />} />
+
+      {/* Root redirect to Timeline */}
+      <Route path="/" element={<Navigate to="/timeline" replace />} />
     </Routes>
   );
 }

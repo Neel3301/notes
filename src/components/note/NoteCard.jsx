@@ -2,19 +2,20 @@ import React from 'react';
 import { Heart } from 'lucide-react';
 
 /**
- * CourseCard component
- * Signature flat course card used in Study Planning and Course Overview.
+ * NoteCard component
+ * Signature flat note card used in Timeline and Notes Catalog.
  *
  * @param {'blue' | 'light' | 'yellow'} [color='blue'] - Card color token
- * @param {string} author - Course author / instructor name
- * @param {string} title - Course title (preserves multi-line formatting)
- * @param {string} [time] - Optional class time range (e.g. "10:00 am – 11:30 am")
+ * @param {string} author - Note author or notebook name
+ * @param {string} title - Note title (preserves multi-line formatting)
+ * @param {string} [time] - Optional scheduled time or date
  * @param {boolean} [liked] - Heart icon toggle state (undefined = no heart icon)
+ * @param {boolean} [fullWidth=false] - Whether card expands to full container width
  * @param {(e: React.MouseEvent) => void} [onLikeToggle] - Heart toggle handler
  * @param {() => void} [onClick] - Card selection handler
  * @param {string} [className] - Optional custom classes
  */
-export default function CourseCard({
+export default function NoteCard({
   color = 'blue',
   author,
   title,
@@ -54,7 +55,7 @@ export default function CourseCard({
               e.stopPropagation();
               onLikeToggle?.(e);
             }}
-            aria-label={liked ? 'Unlike course' : 'Like course'}
+            aria-label={liked ? 'Unlike note' : 'Like note'}
             className="text-card-text hover:opacity-75 transition-opacity -mr-1 -mt-1 p-1"
           >
             <Heart

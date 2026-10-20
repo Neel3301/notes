@@ -5,11 +5,10 @@ import Pill from '../components/ui/Pill';
 import IconButton from '../components/ui/IconButton';
 import Button from '../components/ui/Button';
 import Heading from '../components/ui/Heading';
-import CourseCard from '../components/course/CourseCard';
+import NoteCard from '../components/note/NoteCard';
 import DatePager from '../components/ui/DatePager';
 import SearchPill from '../components/ui/SearchPill';
 import Tabs from '../components/ui/Tabs';
-import LessonRow from '../components/course/LessonRow';
 import MenuItem from '../components/ui/MenuItem';
 
 /**
@@ -162,13 +161,13 @@ export default function ComponentsScreen({
       {/* 6. CourseCard Component */}
       <section className="flex flex-col gap-4">
         <div className="border-b border-divider pb-2">
-          <h2 className="text-body font-medium text-text-primary">6. CourseCard (blue / light / yellow, ~236px)</h2>
+          <h2 className="text-body font-medium text-text-primary">6. NoteCard (blue / light / yellow, ~236px)</h2>
           <p className="text-label text-text-secondary">Flat color, no shadows, horizontal scroll container</p>
         </div>
 
         <div className="flex items-center gap-4 overflow-x-auto pb-4 no-scrollbar">
           {courseCards.map((card) => (
-            <CourseCard
+            <NoteCard
               key={card.id}
               color={card.color}
               author={card.author}
@@ -226,30 +225,6 @@ export default function ComponentsScreen({
           active={activeTab}
           onChange={(tab) => setActiveTab(tab)}
         />
-      </section>
-
-      {/* 10. LessonRow Component */}
-      <section className="flex flex-col gap-4">
-        <div className="border-b border-divider pb-2">
-          <h2 className="text-body font-medium text-text-primary">10. LessonRow (numbered, expandable, video thumbnail)</h2>
-          <p className="text-label text-text-secondary">Interactive accordion rows from course-detail.jpg</p>
-        </div>
-
-        <div className="flex flex-col">
-          {lessons.map((lesson) => (
-            <LessonRow
-              key={lesson.id}
-              number={lesson.number}
-              title={lesson.title}
-              description={lesson.description}
-              thumbnail={lesson.thumbnail}
-              isOpen={openLessonId === lesson.id}
-              onToggle={() =>
-                setOpenLessonId(openLessonId === lesson.id ? null : lesson.id)
-              }
-            />
-          ))}
-        </div>
       </section>
 
       {/* 11. MenuItem Component */}

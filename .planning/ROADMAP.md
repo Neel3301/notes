@@ -101,6 +101,24 @@ Transform the Edsy prototype into a fully functional, offline-first Advanced Not
 - Inserts generated results directly as new blocks or tags into the active note.
 - *Requirements covered: AI-01*
 
+### Phase 10: Clean Architecture & Semantic Route Alignment
+**Goal**: Replace all legacy dummy course-related filenames, routes, and data structures with clean, intuitive note app semantics.
+- Screens:
+  - `StudyPlanningScreen.jsx` -> `TimelineScreen.jsx`
+  - `CourseOverviewScreen.jsx` -> `NotesCatalogScreen.jsx`
+  - `CourseDetailScreen.jsx` -> `NoteEditorScreen.jsx`
+- Routes:
+  - `/` & `/timeline` -> `TimelineScreen`
+  - `/notes` -> `NotesCatalogScreen`
+  - `/editor` (and `/note/:id`) -> `NoteEditorScreen`
+  - Backwards-compatible redirects for `/study-planning`, `/course-overview`, and `/course-detail`.
+- Components:
+  - Refactor `src/components/course/CourseCard.jsx` -> `src/components/note/NoteCard.jsx`
+  - Delete `src/components/course/` directory.
+- Data & Content:
+  - Refactor `src/data/content.js` to use `timelineData`, `notesCatalogData`, `noteEditorData`.
+- *Requirements covered: ARCH-01*
+
 ---
 
 ## Verification & Guardrails

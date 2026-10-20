@@ -16,7 +16,6 @@ import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
 import Button from '../components/ui/Button';
 import Tabs from '../components/ui/Tabs';
-import LessonRow from '../components/course/LessonRow';
 import MarkdownRenderer from '../components/note/MarkdownRenderer';
 import BlockList from '../components/note/BlockList';
 import CanvasSketchpad from '../components/note/CanvasSketchpad';
@@ -26,7 +25,7 @@ import AiAssistantSheet from '../components/note/AiAssistantSheet';
 import { useNotesStore } from '../data/notesStore';
 
 /**
- * CourseDetailScreen component
+ * NoteEditorScreen component
  * Note Detail & Editor Screen.
  * Strictly reproduces design-reference/course-detail.jpg.
  *
@@ -39,7 +38,7 @@ import { useNotesStore } from '../data/notesStore';
  * - Interactive voice audio memo recorder and scrubber player
  * - Auto-save integration with notesStore
  */
-export default function CourseDetailScreen({
+export default function NoteEditorScreen({
   header = { left: 'back', logo: undefined },
   heading: propHeading,
   actionButton: propActionButton,
@@ -332,7 +331,7 @@ export default function CourseDetailScreen({
                         (n) => n.title.toLowerCase().includes(linkedTitle.toLowerCase())
                       );
                       if (matchedNote) {
-                        navigate('/course-detail', {
+                        navigate('/editor', {
                           state: { note: matchedNote, noteId: matchedNote.id },
                         });
                       }
@@ -396,7 +395,7 @@ export default function CourseDetailScreen({
                   availableNotes={store.notes}
                   isEditing={false}
                   onNavigateToNote={(targetNote) => {
-                    navigate('/course-detail', {
+                    navigate('/editor', {
                       state: { note: targetNote, noteId: targetNote.id },
                     });
                   }}
@@ -453,7 +452,7 @@ export default function CourseDetailScreen({
                   availableNotes={store.notes}
                   isEditing={true}
                   onNavigateToNote={(targetNote) => {
-                    navigate('/course-detail', {
+                    navigate('/editor', {
                       state: { note: targetNote, noteId: targetNote.id },
                     });
                   }}

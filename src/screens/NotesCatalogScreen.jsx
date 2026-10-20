@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { MoreVertical, Plus, Heart, X, Check, Folder } from 'lucide-react';
+import { MoreVertical, Plus, Heart, X, Folder } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
 import SearchPill from '../components/ui/SearchPill';
 import IconButton from '../components/ui/IconButton';
-import CourseCard from '../components/course/CourseCard';
+import NoteCard from '../components/note/NoteCard';
 import { useNotesStore } from '../data/notesStore';
 
 /**
- * CourseOverviewScreen component
+ * NotesCatalogScreen component
  * All Notes Catalog and Live Search Screen.
  * Strictly reproduces design-reference/course-overview.jpg.
  *
@@ -20,7 +20,7 @@ import { useNotesStore } from '../data/notesStore';
  * - Interactive heart favorite toggling
  * - Smart filter support for Notebooks and Tags
  */
-export default function CourseOverviewScreen({
+export default function NotesCatalogScreen({
   header = { left: 'menu', logo: '.edsy' },
   heading = 'All\nNotes',
   search = { placeholder: 'Search notes, tags, ideas...' },
@@ -81,12 +81,13 @@ export default function CourseOverviewScreen({
       }
     }
 
-    // Search query filter (matches title, author, content, tags)
+    // Search query filter (matches title, author, content, tags, blocks)
     if (query.trim()) {
       const q = query.toLowerCase().trim();
       const titleMatch = note.title && note.title.toLowerCase().includes(q);
       const authorMatch = note.author && note.author.toLowerCase().includes(q);
       const contentMatch = note.content && note.content.toLowerCase().includes(q);
+      const tagMatch = note.tags && note.tags.some((t) => t.toLowerCase().includes(q));
       const blockMatch = note.blocks && note.blocks.some((b) => {
         if (b.content && b.content.toLowerCase().includes(q)) return true;
         if (b.title && b.title.toLowerCase().includes(q)) return true;
@@ -255,7 +256,7 @@ export default function CourseOverviewScreen({
           {filteredNotes.length > 0 ? (
             filteredNotes.map((card) => (
               <div key={card.id} className="w-full">
-                <CourseCard
+                <NoteCard
                   color={card.color}
                   author={card.author}
                   title={card.title}

@@ -189,15 +189,15 @@ export const uiComponentsDemoData = {
 };
 
 /**
- * Screen 1: Study Planning content data
+ * Screen 1: Timeline / Daily Notes content data
  * Reference: design-reference/study-planning.jpg
  */
-export const studyPlanningData = {
+export const timelineData = {
   header: {
     left: 'menu',
     logo: '.edsy',
   },
-  heading: 'Study\nPlanning',
+  heading: 'Daily\nNotes',
   filterPill: {
     label: 'This week',
     hasChevron: true,
@@ -234,18 +234,21 @@ export const studyPlanningData = {
   },
 };
 
+/** Backward compatibility alias */
+export const studyPlanningData = timelineData;
+
 /**
- * Screen 2: Course Overview content data
+ * Screen 2: Notes Catalog content data
  * Reference: design-reference/course-overview.jpg
  */
-export const courseOverviewData = {
+export const notesCatalogData = {
   header: {
     left: 'menu',
     logo: '.edsy',
   },
-  heading: 'Course\nOverview',
+  heading: 'All\nNotes',
   search: {
-    placeholder: 'Course title',
+    placeholder: 'Search notes...',
   },
   cards: [
     {
@@ -272,67 +275,32 @@ export const courseOverviewData = {
   ],
 };
 
+/** Backward compatibility alias */
+export const courseOverviewData = notesCatalogData;
+
 /**
- * Screen 3: Course Detail content data
+ * Screen 3: Note Editor content data
  * Reference: design-reference/course-detail.jpg
  */
-export const courseDetailData = {
+export const noteEditorData = {
   header: {
     left: 'back',
     logo: undefined,
   },
   heading: 'Intro to Frontend\nDevelopment',
   actionButton: {
-    label: 'Start course',
+    label: 'Edit note',
     variant: 'cream',
   },
-  tabs: ['Preview', 'Details'],
-  previewLessons: [
-    {
-      id: 'cd-lesson-1',
-      number: '01',
-      title: 'What is Frontend?',
-      description:
-        'Understand the role of frontend in web development and how it interacts with backend systems.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-      isOpen: true,
-    },
-    {
-      id: 'cd-lesson-2',
-      number: '02',
-      title: 'Box Model & Positioning',
-      description:
-        'Master margin, padding, border, flexbox alignment, and document flow positioning.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
-      isOpen: false,
-    },
-    {
-      id: 'cd-lesson-3',
-      number: '03',
-      title: 'Flexbox & Grid Layouts',
-      description:
-        'Learn 1-dimensional flexbox and 2-dimensional CSS grid systems for responsive web designs.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
-      isOpen: false,
-    },
-  ],
+  tabs: ['Preview', 'Write', 'Canvas'],
   details: {
-    description:
-      'This comprehensive course covers modern frontend web development from foundational HTML/CSS architecture to reactive component states. Designed for beginners and intermediate engineers seeking visual excellence.',
-    instructor: {
-      name: 'Lena Brooks',
-      role: 'Principal Design Technologist',
-    },
-    stats: [
-      { label: 'Modules', value: '3 Lessons' },
-      { label: 'Duration', value: '3.5 Hours' },
-      { label: 'Level', value: 'Beginner' },
-    ],
+    notebook: 'Design Systems',
+    tags: ['Frontend', 'CSS'],
   },
 };
+
+/** Backward compatibility alias */
+export const courseDetailData = noteEditorData;
 
 /**
  * Screen 4: Menu overlay content data
@@ -344,9 +312,9 @@ export const menuData = {
     logo: '.edsy',
   },
   items: [
-    { id: 'menu-dash', label: 'Dashboard', route: '/', active: false },
-    { id: 'menu-courses', label: 'Courses', route: '/course-overview', active: true },
-    { id: 'menu-planning', label: 'Planning', route: '/study-planning', active: false },
+    { id: 'menu-timeline', label: 'Timeline', route: '/timeline', active: false },
+    { id: 'menu-notes', label: 'All Notes', route: '/notes', active: true },
+    { id: 'menu-editor', label: 'New Note', route: '/editor', active: false },
     { id: 'menu-settings', label: 'Settings', route: '#', active: false },
     { id: 'menu-account', label: 'Account', route: '#', active: false },
   ],

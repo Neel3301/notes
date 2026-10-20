@@ -30,6 +30,9 @@
 ### AI Assistant
 - [x] **AI-01**: Built-in AI action drawer provides 1-tap assistance (Summarize, Extract Action Items, Auto-generate Tags, Rephrase).
 
+### Architecture & Clean Naming
+- [x] **ARCH-01**: Refactor dummy course screens, routes, and components to clean note-taking semantics (`TimelineScreen`, `NotesCatalogScreen`, `NoteEditorScreen`, `NoteCard`, `/timeline`, `/notes`, `/editor`).
+
 ---
 
 ## v2 Requirements (Deferred)
@@ -70,3 +73,4 @@
 | ORG-03 | Phase 8 | Passed |
 | ORG-04 | Phase 7 | Passed |
 | AI-01 | Phase 9 | Passed |
+| ARCH-01 | Phase 10 | Passed |
