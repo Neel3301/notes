@@ -8,6 +8,8 @@ import Tabs from '../components/ui/Tabs';
 import LessonRow from '../components/course/LessonRow';
 import MarkdownRenderer from '../components/note/MarkdownRenderer';
 import BlockList from '../components/note/BlockList';
+import CanvasSketchpad from '../components/note/CanvasSketchpad';
+import AudioMemoBlock from '../components/note/AudioMemoBlock';
 import { useNotesStore } from '../data/notesStore';
 
 /**
@@ -20,6 +22,8 @@ import { useNotesStore } from '../data/notesStore';
  * - Interactive tab switching: 'Preview' / 'Write' / 'Canvas'
  * - Markdown preview rendering and live writing textarea
  * - Notion-style modular blocks with interactive checklists, callouts, and reordering
+ * - HTML5 freehand Canvas sketchpad with stroke/color controls
+ * - Interactive voice audio memo recorder and scrubber player
  * - Auto-save integration with notesStore
  */
 export default function CourseDetailScreen({
@@ -62,6 +66,8 @@ export default function CourseDetailScreen({
   const [content, setContent] = useState(initialNote.content || '');
   const [notebook, setNotebook] = useState(initialNote.notebook || 'Notes');
   const [blocks, setBlocks] = useState(initialNote.blocks || []);
+  const [sketchData, setSketchData] = useState(initialNote.sketchData || null);
+  const [audioData, setAudioData] = useState(initialNote.audioData || null);
 
   // Sync state if store updates externally
   useEffect(() => {
@@ -70,6 +76,8 @@ export default function CourseDetailScreen({
       setContent(currentStoreNote.content || '');
       setNotebook(currentStoreNote.notebook || 'Notes');
       setBlocks(currentStoreNote.blocks || []);
+      setSketchData(currentStoreNote.sketchData || null);
+      setAudioData(currentStoreNote.audioData || null);
     }
   }, [currentStoreNote?.id]);
 
@@ -82,6 +90,8 @@ export default function CourseDetailScreen({
         content,
         notebook,
         blocks,
+        sketchData,
+        audioData,
         ...updatedFields,
       });
     }
@@ -92,6 +102,29 @@ export default function CourseDetailScreen({
     setBlocks(nextBlocks);
     if (currentStoreNote?.id) {
       store.updateNote(currentStoreNote.id, { blocks: nextBlocks });
+    }
+  };
+
+  // Update sketch data and persist immediately
+  const handleSketchSave = (dataUrl) => {
+    setSketchData(dataUrl);
+    if (currentStoreNote?.id) {
+      store.updateNote(currentStoreNote.id, { sketchData: dataUrl });
+    }
+  };
+
+  // Update audio memo data
+  const handleAudioUpdate = (newAudioData) => {
+    setAudioData(newAudioData);
+    if (currentStoreNote?.id) {
+      store.updateNote(currentStoreNote.id, { audioData: newAudioData });
+    }
+  };
+
+  const handleAudioDelete = () => {
+    setAudioData(null);
+    if (currentStoreNote?.id) {
+      store.updateNote(currentStoreNote.id, { audioData: null });
     }
   };
 
@@ -184,6 +217,44 @@ export default function CourseDetailScreen({
                 </div>
               )}
 
+              {/* Freehand Sketch Preview Card (if sketch exists) */}
+              {sketchData && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-label text-text-secondary uppercase tracking-wider font-medium">
+                    <span>Attached Sketch</span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('Canvas')}
+                      className="text-cream-bg hover:underline text-[11px] lowercase"
+                    >
+                      edit in canvas
+                    </button>
+                  </div>
+                  <div
+                    onClick={() => setActiveTab('Canvas')}
+                    className="w-full rounded-card overflow-hidden border border-border-subtle bg-[#121212] cursor-pointer hover:border-cream-bg/50 transition-colors"
+                  >
+                    <img
+                      src={sketchData}
+                      alt="Note sketch preview"
+                      className="w-full h-44 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Attached Audio Memo Player */}
+              <div className="flex flex-col gap-2">
+                <h3 className="text-label text-text-secondary uppercase tracking-wider font-medium">
+                  Voice Memo Attachment
+                </h3>
+                <AudioMemoBlock
+                  audioData={audioData}
+                  onUpdate={handleAudioUpdate}
+                  onDelete={handleAudioDelete}
+                />
+              </div>
+
               {/* Modular Blocks Engine (Numbered rows matching course-detail.jpg) */}
               <div className="mt-2">
                 <BlockList
@@ -214,6 +285,18 @@ export default function CourseDetailScreen({
                 className="w-full p-4 rounded-card bg-[#111111] border border-border-subtle text-body text-text-primary font-mono text-[14px] leading-relaxed resize-none outline-none focus:border-cream-bg transition-colors"
               />
 
+              {/* Audio Memo in Write mode */}
+              <div className="flex flex-col gap-2 pt-2">
+                <h4 className="text-label text-text-secondary uppercase tracking-wider font-medium">
+                  Voice Memo
+                </h4>
+                <AudioMemoBlock
+                  audioData={audioData}
+                  onUpdate={handleAudioUpdate}
+                  onDelete={handleAudioDelete}
+                />
+              </div>
+
               {/* Editable Modular Blocks in Write mode */}
               <div className="mt-2 pt-4 border-t border-border-subtle/50">
                 <BlockList
@@ -227,16 +310,21 @@ export default function CourseDetailScreen({
 
           {/* TAB 3: CANVAS */}
           {activeTab === 'Canvas' && (
-            <div className="flex flex-col items-center justify-center p-8 rounded-card border border-border-subtle/50 bg-divider/20 text-center animate-fadeIn my-4">
-              <div className="w-12 h-12 rounded-full border border-border-subtle flex items-center justify-center text-text-secondary mb-3">
-                <Palette className="w-6 h-6" />
+            <div className="flex flex-col animate-fadeIn pb-8">
+              <div className="flex items-center justify-between text-label text-text-secondary mb-3 px-1">
+                <div className="flex items-center gap-1.5">
+                  <Palette className="w-3.5 h-3.5 text-cream-bg" />
+                  <span>Freehand Canvas Pad</span>
+                </div>
+                <span className="text-[11px] text-text-secondary/70">
+                  Auto-saved to note
+                </span>
               </div>
-              <h4 className="text-body font-medium text-text-primary">
-                Freehand Canvas Pad
-              </h4>
-              <p className="text-label text-text-secondary mt-1 max-w-[240px]">
-                Interactive visual sketchpad arriving in Phase 6. Supports brush sizes, eraser, and theme palette colors.
-              </p>
+
+              <CanvasSketchpad
+                initialData={sketchData}
+                onSave={handleSketchSave}
+              />
             </div>
           )}
         </div>

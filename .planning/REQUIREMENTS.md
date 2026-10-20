@@ -11,8 +11,8 @@
 - [x] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA (`#E5E7DA`), and segmented tabs ("Write", "Preview", "Canvas").
 - [x] **NOTE-02**: User can write and edit Markdown with live rendered formatting (headings, code blocks, lists, quotes).
 - [x] **NOTE-03**: User can structure notes with modular blocks (text, interactive checklist items, callout boxes).
-- [ ] **NOTE-04**: User can switch to the Canvas tab to draw/sketch freehand doodles with stroke controls and save them into the note.
-- [ ] **NOTE-05**: User can record and playback audio memos with progress bar and timestamp indicator.
+- [x] **NOTE-04**: User can switch to the Canvas tab to draw/sketch freehand doodles with stroke controls and save them into the note.
+- [x] **NOTE-05**: User can record and playback audio memos with progress bar and timestamp indicator.
 
 ### Views & Navigation
 - [x] **VIEW-01**: Home screen adapts `/study-planning` layout with horizontal snap card carousel displaying colored note cards (`#6F91B6`, `#DCE3EB`, `#CABC3F`).
@@ -58,8 +58,8 @@
 | NOTE-01 | Phase 4 | Passed |
 | NOTE-02 | Phase 4 | Passed |
 | NOTE-03 | Phase 5 | Passed |
-| NOTE-04 | Phase 6 | Pending |
-| NOTE-05 | Phase 6 | Pending |
+| NOTE-04 | Phase 6 | Passed |
+| NOTE-05 | Phase 6 | Passed |
 | VIEW-01 | Phase 2 | Passed |
 | VIEW-02 | Phase 2 | Passed |
 | VIEW-03 | Phase 3 | Passed |
