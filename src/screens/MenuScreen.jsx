@@ -11,6 +11,11 @@ import {
   Heart,
   Calendar,
   Layers,
+  Download,
+  Upload,
+  Database,
+  Check,
+  FileJson,
 } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import MenuItem from '../components/ui/MenuItem';
@@ -71,6 +76,41 @@ export default function MenuScreen({
     .sort((a, b) => b.count - a.count);
 
   const favoritesCount = activeNotes.filter((n) => n.liked).length;
+
+  const [restoreStatus, setRestoreStatus] = useState('');
+
+  // Download entire vault as JSON backup
+  const handleDownloadBackup = () => {
+    const json = store.exportAllAsJson();
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `edsy_notes_vault_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Restore notes from uploaded JSON backup
+  const handleFileRestore = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target.result;
+        const imported = store.importFromJson(text);
+        setRestoreStatus(`Restored ${imported.length} notes!`);
+        setTimeout(() => setRestoreStatus(''), 4000);
+      } catch (err) {
+        setRestoreStatus('Failed: invalid JSON backup');
+        setTimeout(() => setRestoreStatus(''), 4000);
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const handleClose = () => {
     if (onClose) {
@@ -162,6 +202,11 @@ export default function MenuScreen({
               label="Trash"
               count={trashedNotes.length > 0 ? trashedNotes.length : null}
               onClick={() => setActiveSubView('trash')}
+            />
+
+            <MenuItem
+              label="Vault Backup"
+              onClick={() => setActiveSubView('vault')}
             />
           </div>
 
@@ -368,6 +413,75 @@ export default function MenuScreen({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* 5. VAULT BACKUP SUBVIEW */}
+      {activeSubView === 'vault' && (
+        <div className="w-full flex-1 flex flex-col animate-fadeIn">
+          <AppHeader
+            left="back"
+            logo="Vault Backup"
+            onLeftClick={() => setActiveSubView('main')}
+          />
+
+          <div className="mt-8 mb-4">
+            <Heading>Vault Backup</Heading>
+          </div>
+
+          <div className="flex flex-col gap-4 mt-2">
+            {/* Download Backup Card */}
+            <div className="p-4 rounded-card bg-[#141414] border border-border-subtle flex flex-col gap-3">
+              <div className="flex items-center gap-2.5">
+                <Download className="w-4 h-4 text-cream-bg" />
+                <h4 className="text-body font-medium text-text-primary">
+                  Export Vault Backup
+                </h4>
+              </div>
+              <p className="text-label text-text-secondary leading-relaxed">
+                Download a full JSON archive of all your notes, modular blocks, tags, canvas sketches, and audio memos.
+              </p>
+              <button
+                type="button"
+                onClick={handleDownloadBackup}
+                className="mt-1 px-4 py-2 rounded-pill bg-cream-bg text-cream-text text-label font-medium flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download Backup (.json)</span>
+              </button>
+            </div>
+
+            {/* Restore Backup Card */}
+            <div className="p-4 rounded-card bg-[#141414] border border-border-subtle flex flex-col gap-3">
+              <div className="flex items-center gap-2.5">
+                <Upload className="w-4 h-4 text-accent-yellow" />
+                <h4 className="text-body font-medium text-text-primary">
+                  Restore From Backup
+                </h4>
+              </div>
+              <p className="text-label text-text-secondary leading-relaxed">
+                Import an existing vault JSON file. Notes will be safely merged or updated in your local offline storage.
+              </p>
+
+              <label className="mt-1 px-4 py-2 rounded-pill border border-border-subtle hover:border-cream-bg/60 text-text-primary text-label font-medium flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                <Upload className="w-3.5 h-3.5" />
+                <span>Choose Backup File (.json)</span>
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={handleFileRestore}
+                  className="hidden"
+                />
+              </label>
+
+              {restoreStatus && (
+                <div className="flex items-center gap-2 text-label text-cream-bg animate-fadeIn">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{restoreStatus}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </motion.div>

@@ -5,7 +5,7 @@
 ### Data & Local Persistence
 - [x] **DATA-01**: User notes, folders, tags, canvas sketches, and audio attachments persist in browser local storage / IndexedDB across page reloads.
 - [x] **DATA-02**: App loads with rich pre-seeded sample notes demonstrating all block types, sketches, tags, and bi-directional links.
-- [ ] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
+- [x] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
 
 ### Note Editor & Multi-Modal Blocks
 - [x] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA (`#E5E7DA`), and segmented tabs ("Write", "Preview", "Canvas").
@@ -24,7 +24,7 @@
 ### Organization & Backlinks
 - [x] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography for Notebooks, Tags, Pinned, Archive, and Trash.
 - [x] **ORG-02**: User can organize notes into notebooks/folders and assign custom tags.
-- [ ] **ORG-03**: User can write `[[Note Title]]` backlinks that auto-link to corresponding notes and display connected references.
+- [x] **ORG-03**: User can write `[[Note Title]]` backlinks that auto-link to corresponding notes and display connected references.
 - [x] **ORG-04**: User can pin important notes to top and send unwanted notes to Trash with restore/permanent delete.
 
 ### AI Assistant
@@ -54,7 +54,7 @@
 |-------------|-------|--------|
 | DATA-01 | Phase 1 | Passed |
 | DATA-02 | Phase 1 | Passed |
-| DATA-03 | Phase 8 | Pending |
+| DATA-03 | Phase 8 | Passed |
 | NOTE-01 | Phase 4 | Passed |
 | NOTE-02 | Phase 4 | Passed |
 | NOTE-03 | Phase 5 | Passed |
@@ -67,6 +67,6 @@
 | VIEW-05 | Phase 3 | Passed |
 | ORG-01 | Phase 7 | Passed |
 | ORG-02 | Phase 7 | Passed |
-| ORG-03 | Phase 8 | Pending |
+| ORG-03 | Phase 8 | Passed |
 | ORG-04 | Phase 7 | Passed |
 | AI-01 | Phase 9 | Pending |

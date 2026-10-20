@@ -324,6 +324,69 @@ export const notesStore = {
   },
 
   /**
+   * Get all backlinks referencing a given note
+   * @param {string} noteId
+   * @returns {Array<{ note: object, snippet: string }>}
+   */
+  getBacklinks(noteId) {
+    const targetNote = currentNotes.find((n) => n.id === noteId);
+    if (!targetNote) return [];
+
+    const targetTitleNormalized = targetNote.title
+      .replace(/\s+/g, ' ')
+      .toLowerCase()
+      .trim();
+
+    const backlinks = [];
+
+    currentNotes.forEach((sourceNote) => {
+      if (sourceNote.id === noteId || sourceNote.trashed) return;
+
+      const fullText = [
+        sourceNote.content || '',
+        ...(sourceNote.blocks || []).map(
+          (b) => `${b.title || ''} ${b.content || ''}`
+        ),
+      ].join('\n');
+
+      const regex = /\[\[(.*?)\]\]/g;
+      let match;
+      while ((match = regex.exec(fullText)) !== null) {
+        const linkedTextNormalized = match[1]
+          .replace(/\s+/g, ' ')
+          .toLowerCase()
+          .trim();
+        if (
+          linkedTextNormalized === targetTitleNormalized ||
+          targetTitleNormalized.includes(linkedTextNormalized) ||
+          linkedTextNormalized.includes(targetTitleNormalized)
+        ) {
+          const start = Math.max(0, match.index - 35);
+          const end = Math.min(
+            fullText.length,
+            match.index + match[0].length + 35
+          );
+          const snippet =
+            (start > 0 ? '...' : '') +
+            fullText
+              .substring(start, end)
+              .replace(/\n+/g, ' ')
+              .trim() +
+            (end < fullText.length ? '...' : '');
+
+          backlinks.push({
+            note: sourceNote,
+            snippet,
+          });
+          break;
+        }
+      }
+    });
+
+    return backlinks;
+  },
+
+  /**
    * Export note as a Markdown string
    * @param {string} id
    * @returns {string}

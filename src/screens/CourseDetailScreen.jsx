@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Edit3, Check, Palette, FileText, ChevronDown } from 'lucide-react';
+import {
+  Edit3,
+  Check,
+  Palette,
+  FileText,
+  ChevronDown,
+  Download,
+  FileDown,
+  FileCode,
+  Link2,
+} from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
 import Button from '../components/ui/Button';
@@ -10,6 +20,7 @@ import MarkdownRenderer from '../components/note/MarkdownRenderer';
 import BlockList from '../components/note/BlockList';
 import CanvasSketchpad from '../components/note/CanvasSketchpad';
 import AudioMemoBlock from '../components/note/AudioMemoBlock';
+import BacklinksDrawer from '../components/note/BacklinksDrawer';
 import { useNotesStore } from '../data/notesStore';
 
 /**
@@ -68,6 +79,10 @@ export default function CourseDetailScreen({
   const [blocks, setBlocks] = useState(initialNote.blocks || []);
   const [sketchData, setSketchData] = useState(initialNote.sketchData || null);
   const [audioData, setAudioData] = useState(initialNote.audioData || null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+
+  // Compute bi-directional backlinks to this note
+  const backlinks = currentStoreNote?.id ? store.getBacklinks(currentStoreNote.id) : [];
 
   // Sync state if store updates externally
   useEffect(() => {
@@ -128,6 +143,37 @@ export default function CourseDetailScreen({
     }
   };
 
+  // Browser download helper
+  const downloadFile = (filename, fileContent, type = 'text/plain') => {
+    const blob = new Blob([fileContent], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Export note as Markdown
+  const handleExportMarkdown = () => {
+    if (!currentStoreNote?.id) return;
+    const md = store.exportAsMarkdown(currentStoreNote.id);
+    const cleanName = (title || 'note').toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.md';
+    downloadFile(cleanName, md, 'text/markdown;charset=utf-8');
+    setShowExportMenu(false);
+  };
+
+  // Export note as JSON
+  const handleExportJson = () => {
+    if (!currentStoreNote) return;
+    const json = JSON.stringify(currentStoreNote, null, 2);
+    const cleanName = (title || 'note').toLowerCase().replace(/[^a-z0-9]+/g, '_') + '.json';
+    downloadFile(cleanName, json, 'application/json;charset=utf-8');
+    setShowExportMenu(false);
+  };
+
   // Toggle between Edit mode and Preview mode
   const handleToggleMode = () => {
     if (activeTab === 'Write') {
@@ -168,8 +214,8 @@ export default function CourseDetailScreen({
           )}
         </div>
 
-        {/* Signature Cream Action CTA Button */}
-        <div className="mt-7 flex items-center">
+        {/* Signature Cream Action CTA Button & Export Menu */}
+        <div className="mt-7 flex items-center justify-between">
           <Button
             variant="cream"
             onClick={handleToggleMode}
@@ -177,6 +223,38 @@ export default function CourseDetailScreen({
           >
             {activeTab === 'Write' ? 'Done' : 'Edit note'}
           </Button>
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowExportMenu((prev) => !prev)}
+              className="p-2.5 rounded-full border border-border-subtle hover:border-cream-bg/60 text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center"
+              title="Export note"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+
+            {showExportMenu && (
+              <div className="absolute top-11 right-0 z-40 bg-[#161616] border border-border-subtle rounded-card py-1.5 shadow-2xl min-w-[160px] flex flex-col animate-fadeIn">
+                <button
+                  type="button"
+                  onClick={handleExportMarkdown}
+                  className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
+                >
+                  <FileDown className="w-3.5 h-3.5 text-cream-bg" />
+                  <span>Export as .md</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExportJson}
+                  className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
+                >
+                  <FileCode className="w-3.5 h-3.5 text-accent-yellow" />
+                  <span>Export as .json</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Segmented Tab Switcher */}
@@ -263,6 +341,21 @@ export default function CourseDetailScreen({
                   onChange={handleBlocksChange}
                 />
               </div>
+
+              {/* Linked References & Bi-directional Backlinks */}
+              <div className="mt-4 pt-4 border-t border-border-subtle/50">
+                <BacklinksDrawer
+                  currentNoteId={currentStoreNote?.id}
+                  backlinks={backlinks}
+                  availableNotes={store.notes}
+                  isEditing={false}
+                  onNavigateToNote={(targetNote) => {
+                    navigate('/course-detail', {
+                      state: { note: targetNote, noteId: targetNote.id },
+                    });
+                  }}
+                />
+              </div>
             </div>
           )}
 
@@ -303,6 +396,26 @@ export default function CourseDetailScreen({
                   blocks={blocks}
                   isEditing={true}
                   onChange={handleBlocksChange}
+                />
+              </div>
+
+              {/* Link Insertion Helper in Write mode */}
+              <div className="mt-2 pt-4 border-t border-border-subtle/50">
+                <BacklinksDrawer
+                  currentNoteId={currentStoreNote?.id}
+                  backlinks={backlinks}
+                  availableNotes={store.notes}
+                  isEditing={true}
+                  onNavigateToNote={(targetNote) => {
+                    navigate('/course-detail', {
+                      state: { note: targetNote, noteId: targetNote.id },
+                    });
+                  }}
+                  onInsertLink={(linkSyntax) => {
+                    const nextContent = content ? `${content}\n${linkSyntax}` : linkSyntax;
+                    setContent(nextContent);
+                    handleSave({ content: nextContent });
+                  }}
                 />
               </div>
             </div>
