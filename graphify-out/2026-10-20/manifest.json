@@ -102,9 +102,9 @@
     "semantic_hash": "5961ccfb01c60c0534b7f0d6ea1b8a53"
   },
   "src/screens/CourseDetailScreen.jsx": {
-    "mtime": 1792496944.2930877,
-    "seen": 1792497240.0239823,
-    "ast_hash": "1f69ae428d828a96ce44da3cb136329d",
+    "mtime": 1792497465.779487,
+    "seen": 1792497540.0711045,
+    "ast_hash": "7cfc816801f6c86dda9c02de5262b1a0",
     "semantic_hash": ""
   },
   "src/screens/CourseOverviewScreen.jsx": {
@@ -3498,9 +3498,9 @@
     "semantic_hash": ""
   },
   "src/data/notesStore.js": {
-    "mtime": 1792496299.7767467,
-    "seen": 1792496732.1344702,
-    "ast_hash": "c78a7c43773ebedb1beda533eb4c624a",
+    "mtime": 1792497450.6460452,
+    "seen": 1792497540.0710223,
+    "ast_hash": "164eca2d8793826f2c942737d0e32840",
     "semantic_hash": ""
   },
   "src/data/seedNotes.js": {
