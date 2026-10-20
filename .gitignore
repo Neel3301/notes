@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Graphify local caches and machine-specific configs
+graphify-out/cache/
+graphify-out/.*
