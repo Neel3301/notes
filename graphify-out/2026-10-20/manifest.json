@@ -6,22 +6,10 @@
     "semantic_hash": "388849f2d776865087718b1b809fb629"
   },
   "src/App.jsx": {
-    "mtime": 1792494676.4195511,
-    "seen": 1792495074.1874757,
-    "ast_hash": "213cf3975472cc98712ee86bff0424d1",
+    "mtime": 1792498476.2271738,
+    "seen": 1792498666.561874,
+    "ast_hash": "f9529c58f0b30bd8dc3b62c9a9f78b2c",
     "semantic_hash": ""
-  },
-  "src/components/course/CourseCard.jsx": {
-    "mtime": 1792256894.3539994,
-    "seen": 1792487920.3447707,
-    "ast_hash": "a78b969a16b0247677335fa72595690a",
-    "semantic_hash": "a78b969a16b0247677335fa72595690a"
-  },
-  "src/components/course/LessonRow.jsx": {
-    "mtime": 1792255747.2872715,
-    "seen": 1792487920.3447719,
-    "ast_hash": "cf2d7764ae3503b0ca78c4d7e502ad2b",
-    "semantic_hash": "cf2d7764ae3503b0ca78c4d7e502ad2b"
   },
   "src/components/layout/AppHeader.jsx": {
     "mtime": 1792253853.8353336,
@@ -84,10 +72,10 @@
     "semantic_hash": "978e3a50d7b5a13a2db0ce987fcd9ce8"
   },
   "src/data/content.js": {
-    "mtime": 1792256505.037697,
-    "seen": 1792487920.344785,
-    "ast_hash": "4eb7326058990fcaf168f92dc32a7a4e",
-    "semantic_hash": "4eb7326058990fcaf168f92dc32a7a4e"
+    "mtime": 1792498264.9628136,
+    "seen": 1792498666.5619283,
+    "ast_hash": "7c2122d761f5d5a90c7d7aeda43ef2d1",
+    "semantic_hash": ""
   },
   "src/main.jsx": {
     "mtime": 1792257475.8774765,
@@ -96,33 +84,15 @@
     "semantic_hash": "ab7957c5ae2a9c166c8ba6736d497b1f"
   },
   "src/screens/ComponentsScreen.jsx": {
-    "mtime": 1792256297.345469,
-    "seen": 1792487920.3447871,
-    "ast_hash": "5961ccfb01c60c0534b7f0d6ea1b8a53",
-    "semantic_hash": "5961ccfb01c60c0534b7f0d6ea1b8a53"
-  },
-  "src/screens/CourseDetailScreen.jsx": {
-    "mtime": 1792497465.779487,
-    "seen": 1792497540.0711045,
-    "ast_hash": "7cfc816801f6c86dda9c02de5262b1a0",
-    "semantic_hash": ""
-  },
-  "src/screens/CourseOverviewScreen.jsx": {
-    "mtime": 1792496126.2261984,
-    "seen": 1792496260.0803883,
-    "ast_hash": "35ae09ab8b998af2d830f6b9311fa35c",
+    "mtime": 1792498228.1106596,
+    "seen": 1792498666.5619648,
+    "ast_hash": "b20704c67feab5065f17c901454b50f1",
     "semantic_hash": ""
   },
   "src/screens/MenuScreen.jsx": {
-    "mtime": 1792496524.052948,
-    "seen": 1792496732.1346192,
-    "ast_hash": "e76284670ceade1cbbb3a1c644617576",
-    "semantic_hash": ""
-  },
-  "src/screens/StudyPlanningScreen.jsx": {
-    "mtime": 1792494122.1228263,
-    "seen": 1792494415.1417534,
-    "ast_hash": "0e76fcf2036825a651733b6a16d16233",
+    "mtime": 1792498455.1365812,
+    "seen": 1792498666.5619664,
+    "ast_hash": "ebec72f610fad30c02ff7102ce384f8e",
     "semantic_hash": ""
   },
   "src/screens/TokensScreen.jsx": {
@@ -3414,21 +3384,21 @@
     "semantic_hash": ""
   },
   ".planning/REQUIREMENTS.md": {
-    "mtime": 1792497136.8479228,
-    "seen": 1792497240.027256,
-    "ast_hash": "51a1e807e0af293d82c105c05926e89f",
+    "mtime": 1792498606.8890417,
+    "seen": 1792498666.5630844,
+    "ast_hash": "3a045e2b31958bf3303e08ab3b4ca1dd",
     "semantic_hash": ""
   },
   ".planning/ROADMAP.md": {
-    "mtime": 1792492907.5395865,
-    "seen": 1792492952.7904925,
-    "ast_hash": "d302a56b6ecf7cb391ca673f3e5708eb",
+    "mtime": 1792498033.0883453,
+    "seen": 1792498666.5630875,
+    "ast_hash": "12635a267cd68424602671daf3736aeb",
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1792497158.1892343,
-    "seen": 1792497240.027269,
-    "ast_hash": "06c0c471103737c08f7cbcfe5236d304",
+    "mtime": 1792498622.1150494,
+    "seen": 1792498666.563091,
+    "ast_hash": "54a3909b733be5e5d52b0fe0acbb473e",
     "semantic_hash": ""
   },
   ".planning/codebase/ARCHITECTURE.md": {
@@ -3819,6 +3789,60 @@
     "mtime": 1792497114.333522,
     "seen": 1792497240.0275624,
     "ast_hash": "c39b34d660a28782a95f676e34c58d49",
+    "semantic_hash": ""
+  },
+  "src/components/note/NoteCard.jsx": {
+    "mtime": 1792498131.271466,
+    "seen": 1792498666.5619085,
+    "ast_hash": "ed1c8067909fdb85768de890f8ba7c17",
+    "semantic_hash": ""
+  },
+  "src/data/verify-architecture.js": {
+    "mtime": 1792498533.2124004,
+    "seen": 1792498666.5619364,
+    "ast_hash": "4c1383b6b20371fe22f33273c285323a",
+    "semantic_hash": ""
+  },
+  "src/screens/NoteEditorScreen.jsx": {
+    "mtime": 1792498415.378478,
+    "seen": 1792498666.5619676,
+    "ast_hash": "52134f6bb92157aa6af17761629abb46",
+    "semantic_hash": ""
+  },
+  "src/screens/NotesCatalogScreen.jsx": {
+    "mtime": 1792498349.7128773,
+    "seen": 1792498666.5619705,
+    "ast_hash": "7db3447eae4bcd16d8bdf1aaf3c0b188",
+    "semantic_hash": ""
+  },
+  "src/screens/TimelineScreen.jsx": {
+    "mtime": 1792498304.581986,
+    "seen": 1792498666.5619724,
+    "ast_hash": "da349cdc3e556ede3d4b5fa841da910e",
+    "semantic_hash": ""
+  },
+  ".planning/phases/10-clean-architecture-semantic-routes/10-01-PLAN.md": {
+    "mtime": 1792498111.6867182,
+    "seen": 1792498666.5632057,
+    "ast_hash": "5aa8b81a9e4bf5eb2dd2c4027e18f894",
+    "semantic_hash": ""
+  },
+  ".planning/phases/10-clean-architecture-semantic-routes/10-01-SUMMARY.md": {
+    "mtime": 1792498570.755984,
+    "seen": 1792498666.5632093,
+    "ast_hash": "682452ab8e662260dec0ced2fb19c606",
+    "semantic_hash": ""
+  },
+  ".planning/phases/10-clean-architecture-semantic-routes/10-CONTEXT.md": {
+    "mtime": 1792498099.0234416,
+    "seen": 1792498666.5632114,
+    "ast_hash": "ac7165f1ebd5edeb4ffe06f357a78616",
+    "semantic_hash": ""
+  },
+  ".planning/phases/10-clean-architecture-semantic-routes/10-VERIFICATION.md": {
+    "mtime": 1792498579.6370225,
+    "seen": 1792498666.5632145,
+    "ast_hash": "f25ce0a07361cda29e56c0152aab4165",
     "semantic_hash": ""
   }
 }

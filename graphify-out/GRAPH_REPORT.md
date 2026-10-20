@@ -1,26 +1,26 @@
 # Graph Report - design-1  (2026-10-20)
 
 ## Corpus Check
-- 635 files · ~514,970 words
+- 704 files · ~565,603 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 7 file(s) not represented in the graph (top: (none) 6, .css 1)
+- Unclassified: 14 file(s) not represented in the graph (top: (none) 11, .css 2, .apk 1)
 
 ## Summary
-- 4053 nodes · 5727 edges · 541 communities (247 shown, 294 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 585 edges (avg confidence: 0.88)
+- 4439 nodes · 6271 edges · 583 communities (283 shown, 300 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 460 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `afa86d39`
+- Built from commit: `f7fcabb5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Project Dependencies & Tooling
 - Architecture & Mobile Shell Layout
-- Theme System & Color Tokens
+- Coding Conventions
 - profile-pipeline.cjs
-- roadmap.cjs
+- TimelineScreen.js
 - react
 - state.cjs
 - shell-command-projection.cjs
@@ -108,7 +108,7 @@
 - 4. Handle Action
 - plan-milestone-gaps.md
 - profile-user.md
-- docs.cjs
+- web/package.json
 - gsd-integration-checker.md
 - gsd-research-synthesizer.md
 - state-document.generated.cjs
@@ -121,7 +121,7 @@
 - plan-review-convergence.md
 - sketch.md
 - sketch-wrap-up.md
-- PhoneShell
+- v1 Requirements
 - Step 3: Handle Agent Return
 - gsd-pattern-mapper.md
 - gsd-ui-checker.md
@@ -418,14 +418,14 @@
 - verify-reapply-patches.cjs
 - Tasks
 - gsd-code-fixer.md
-- frontmatter.cjs
+- output
 - Phase 4: Note Editor Core & Markdown Engine - Validation Strategy
 - schema-detect.cjs
 - Tasks
 - Testing Patterns
 - Summary: Phase 7 — Slide-up Navigation Menu & Smart Views (Reusing menu.jpg)
 - Phase 7 Verification Report: Slide-up Navigation Menu & Smart Views
-- useNotesStore
+- Phase 1: Local Data Store & Note Schema Summary
 - ref_node_assert
 - Phase 5 Verification Report: Modular Block Engine
 - Summary: Phase 6 — Canvas Freehand Sketch Pad & Audio Memo Player
@@ -442,6 +442,43 @@
 - Phase 2: Timeline & Daily Notes Screen - Validation Strategy
 - Summary: Phase 8 — Bi-directional Linking (`[[Note Title]]`) & Export
 - Phase 8 Verification Report: Bi-directional Linking & Export
+- ref_lucide_react
+- ref_react
+- web/src/App.jsx
+- verify-mobile.js
+- expo
+- verify-parity.js
+- web/src/data/notesStore.js
+- Tasks
+- Tasks
+- Locked Decisions from Discussion
+- Deliverables
+- Tasks
+- Deliverables & Technical Changes
+- Architecture
+- Phase 2: Timeline & Daily Notes Screen Summary
+- Phase 2: timeline-daily-notes-screen-reusing-study-planning-jpg — Verification
+- Phase 3: All Notes Catalog & Live Search Summary
+- Phase 3: All Notes Catalog & Live Search - Context
+- Phase 3: all-notes-catalog-live-search-reusing-course-overview-jpg — Verification
+- Phase 4: note-editor-core-markdown-engine-reusing-course-detail-jpg — Verification
+- web/src/data/verify-backlinks-export.js
+- web/src/data/verify-blocks.js
+- web/src/data/verify-canvas-audio.js
+- web/src/data/verify-catalog.js
+- web/src/data/verify-editor.js
+- web/src/data/verify-menu-smartviews.js
+- web/src/data/verify-timeline.js
+- web/src/theme.js
+- AGENTS.md
+- Phase 2: Timeline & Daily Notes Screen - Research
+- Phase 4: Note Editor Core & Markdown Engine - Research
+- Phase 11 Verification: React Native Mobile App & Android APK
+- web/src/data/verify-store.js
+- Phase 1: Local Data Store & Note Schema - Validation Strategy
+- Phase 12 Verification: Web & Android APK UI Parity
+- Summary: Phase 5 — Modular Block Engine (Notion-style Blocks)
+- Phase 12 Context: Unified Web & Mobile UI Parity via Embedded React Native WebView
 
 ## God Nodes (most connected - your core abstractions)
 1. `output()` - 144 edges
@@ -456,16 +493,16 @@
 10. `platformEnsureDir()` - 30 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Verification & Guardrails` --references--> `PhoneShell()`  [INFERRED]
-  .planning/ROADMAP.md → src/components/layout/PhoneShell.jsx
-- `Task 1: Component Migration & Course Directory Cleanup` --references--> `NoteCard()`  [INFERRED]
-  .planning/phases/10-clean-architecture-semantic-routes/10-01-PLAN.md → src/components/note/NoteCard.jsx
-- `Validation Overview` --references--> `DatePager()`  [INFERRED]
-  .planning/phases/02-timeline-daily-notes-screen-reusing-study-planning-jpg/02-VALIDATION.md → src/components/ui/DatePager.jsx
-- `Reference Screen: `design-reference/course-detail.jpg`` --references--> `Heading()`  [INFERRED]
-  .planning/phases/04-note-editor-core-markdown-engine-reusing-course-detail-jpg/04-RESEARCH.md → src/components/ui/Heading.jsx
-- `Observable Truths` --references--> `Heading()`  [INFERRED]
-  .planning/phases/04-note-editor-core-markdown-engine-reusing-course-detail-jpg/04-VERIFICATION.md → src/components/ui/Heading.jsx
+- `Course Detail Screen Mockup` --conceptually_related_to--> `Tabs()`  [INFERRED]
+  design-reference/course-detail.jpg → src/components/ui/Tabs.jsx
+- `390px Viewport Mobile Frame Constraint` --conceptually_related_to--> `PhoneShell()`  [INFERRED]
+  docs/design-spec.md → src/components/layout/PhoneShell.jsx
+- `Spacing & Layout Metrics` --references--> `PhoneShell()`  [INFERRED]
+  docs/design-spec.md → src/components/layout/PhoneShell.jsx
+- `Study Planning Screen Mockup` --conceptually_related_to--> `DatePager()`  [INFERRED]
+  design-reference/study-planning.jpg → src/components/ui/DatePager.jsx
+- `Typography Metrics & Font Selection` --references--> `Heading()`  [INFERRED]
+  docs/design-spec.md → src/components/ui/Heading.jsx
 
 ## Import Cycles
 - None detected.
@@ -474,51 +511,51 @@
 - **Visual Design Reference Suite** — design_reference_study_planning_mockup, design_reference_course_overview_mockup, design_reference_course_detail_mockup, design_reference_menu_mockup [EXTRACTED 1.00]
 - **Design Token Specification & Definition** — docs_design_spec_colors, docs_design_spec_typography, docs_design_spec_spacing, src_data_content_tokencolors [INFERRED 0.95]
 
-## Communities (541 total, 294 thin omitted)
+## Communities (583 total, 300 thin omitted)
 
 ### Community 0 - "Project Dependencies & Tooling"
-Cohesion: 0.08
-Nodes (24): dependencies, framer-motion, lucide-react, react, react-dom, react-router-dom, devDependencies, tailwindcss (+16 more)
+Cohesion: 0.07
+Nodes (28): dependencies, framer-motion, lucide-react, react, react-dom, react-router-dom, devDependencies, tailwindcss (+20 more)
 
 ### Community 1 - "Architecture & Mobile Shell Layout"
-Cohesion: 0.11
-Nodes (20): Phased Implementation Plan, Content Customization Architecture, Edsy Mobile Design Template Overview, Routes and Navigation Specification, react-dom, App(), AppRoutes(), courseDetailData (+12 more)
+Cohesion: 0.08
+Nodes (29): Design System Rules and Tokens, Minimalist High-Contrast Dark Aesthetic, 390px Viewport Mobile Frame Constraint, Phased Implementation Plan, Color Palette Specification, Spacing & Layout Metrics, Content Customization Architecture, Edsy Mobile Design Template Overview (+21 more)
 
-### Community 2 - "Theme System & Color Tokens"
-Cohesion: 0.15
-Nodes (14): Design System Rules and Tokens, Minimalist High-Contrast Dark Aesthetic, Color Palette Specification, Code Style, Coding Conventions, Error Handling Patterns, Import Organization, Naming Patterns (+6 more)
+### Community 2 - "Coding Conventions"
+Cohesion: 0.33
+Nodes (5): Code Style, Coding Conventions, Error Handling Patterns, Import Organization, Naming Patterns
 
 ### Community 3 - "profile-pipeline.cjs"
 Cohesion: 0.21
 Nodes (19): reapStaleTempFiles(), cmdExtractMessages(), cmdProfileSample(), cmdScanSessions(), formatBytes(), formatProjectTable(), formatSessionTable(), fs (+11 more)
 
-### Community 4 - "roadmap.cjs"
-Cohesion: 0.17
-Nodes (21): escapeRegex(), extractCurrentMilestone(), phaseMarkdownRegexSource(), phaseMarkdownRegexSourceExact(), replaceInCurrentMilestone(), stripShippedMilestones(), getRoadmapModeForPhase(), cmdRoadmapAnalyze() (+13 more)
+### Community 4 - "TimelineScreen.js"
+Cohesion: 0.06
+Nodes (52): App(), styles, dependencies, expo, expo-file-system, expo-sharing, expo-status-bar, react (+44 more)
 
 ### Community 5 - "react"
-Cohesion: 0.10
-Nodes (23): Overview, Plan: Phase 5 — Modular Block Engine (Notion-style Blocks), Requirements Addressed, Task 1: Create Modular Block Components, Task 2: Create Block List & Add Block Toolbar, Task 3: Integrate with Note Detail Screen & Auto-Save, Task 4: Automated Verification, Tasks (+15 more)
+Cohesion: 0.20
+Nodes (12): AiAssistantSheet(), AudioMemoBlock(), BacklinksDrawer(), BlockItem(), BlockList(), CanvasSketchpad(), COLORS, STROKE_WIDTHS (+4 more)
 
 ### Community 6 - "state.cjs"
 Cohesion: 0.07
-Nodes (60): getMilestonePhaseFilter(), isDirInMilestone(), extractFrontmatter(), reconstructFrontmatter(), cmdMilestoneComplete(), cmdPhasesClear(), { escapeRegex, getMilestonePhaseFilter, extractOneLinerFromBody, output, error }, { extractFrontmatter } (+52 more)
+Nodes (58): cmdHistoryDigest(), cmdSummaryExtract(), extractOneLinerFromBody(), extractFrontmatter(), reconstructFrontmatter(), cmdMilestoneComplete(), cmdPhasesClear(), { escapeRegex, getMilestonePhaseFilter, extractOneLinerFromBody, output, error } (+50 more)
 
 ### Community 7 - "shell-command-projection.cjs"
 Cohesion: 0.05
 Nodes (57): CHECK_REASON, checkLatestVersion(), { execNpm }, main(), applyBudget(), buildAdjacencyMap(), checkGraphifyInstalled(), checkGraphifyVersion() (+49 more)
 
 ### Community 9 - "init.cjs"
-Cohesion: 0.13
-Nodes (50): cmdTodoMatchPhase(), findPhaseInternal(), getMilestoneInfo(), getRoadmapPhaseInternal(), gitWorktreeInfoInternal(), loadConfig(), pathExistsInternal(), resolveModelForTier() (+42 more)
+Cohesion: 0.09
+Nodes (60): cmdStats(), determinePhaseStatus(), checkAgentsInstalled(), getMilestoneInfo(), getMilestonePhaseFilter(), isDirInMilestone(), getRoadmapPhaseInternal(), gitWorktreeInfoInternal() (+52 more)
 
 ### Community 12 - "gsd2-import.cjs"
 Cohesion: 0.17
 Nodes (23): buildContextMd(), buildPlanMd(), buildPlanningArtifacts(), buildPreview(), buildRoadmapMd(), buildStateMd(), buildSummaryMd(), cmdFromGsd2() (+15 more)
 
 ### Community 13 - "phase.cjs"
-Cohesion: 0.07
-Nodes (53): cmdCheckCommit(), cmdCommitToSubrepo(), cmdCurrentTimestamp(), cmdGenerateSlug(), cmdHistoryDigest(), cmdListTodos(), cmdProgressRender(), cmdResolveModel() (+45 more)
+Cohesion: 0.08
+Nodes (52): comparePhaseNum(), escapeRegex(), extractCurrentMilestone(), findPhaseInternal(), getArchivedPhaseDirs(), normalizePhaseName(), phaseMarkdownRegexSource(), phaseMarkdownRegexSourceExact() (+44 more)
 
 ### Community 14 - "gsd-debugger.md"
 Cohesion: 0.03
@@ -530,7 +567,7 @@ Nodes (53): allClusteredSkills(), ADR-0011, CLUSTERS, ADR-0011, CLEANUP_SIGNALS,
 
 ### Community 16 - "audit.cjs"
 Cohesion: 0.05
-Nodes (57): CANONICAL_HEADERS, classifyHeader(), CONSEQUENCE_NEGATIVE_HINTS, CONSEQUENCE_POSITIVE_HINTS, fs, main(), normalizeAdrHeader(), parseAdrMarkdown() (+49 more)
+Nodes (58): CANONICAL_HEADERS, classifyHeader(), CONSEQUENCE_NEGATIVE_HINTS, CONSEQUENCE_POSITIVE_HINTS, fs, main(), normalizeAdrHeader(), parseAdrMarkdown() (+50 more)
 
 ### Community 17 - "installer-migrations.cjs"
 Cohesion: 0.09
@@ -541,12 +578,12 @@ Cohesion: 0.04
 Nodes (47): Anti-Patterns and Extended Examples, Authentication Gates, Building the Dependency Graph, Checkpoint Reached / Revision Complete, Checkpoint Types, Chunked Mode Returns, Context Budget for TDD, Context Budget Rules (+39 more)
 
 ### Community 19 - "error"
-Cohesion: 0.05
-Nodes (71): cmdScaffold(), cmdTodoComplete(), buildNewProjectConfig(), cmdConfigEnsureSection(), cmdConfigGet(), cmdConfigNewProject(), cmdConfigPath(), cmdConfigSet() (+63 more)
+Cohesion: 0.07
+Nodes (35): buildNewProjectConfig(), cmdConfigEnsureSection(), cmdConfigGet(), cmdConfigSet(), cmdConfigSetModelProfile(), CONFIG_KEY_SUGGESTIONS, ensureConfigFile(), fs (+27 more)
 
 ### Community 20 - "core.cjs"
 Cohesion: 0.06
-Nodes (30): _deepMergeConfig(), detectSubRepos(), ensureGsdTempDir(), { execGit, platformWriteSync, platformReadSync, platformEnsureDir }, extractCanonicalPlanId(), extractPhaseToken(), filterPlanFiles(), filterSummaryFiles() (+22 more)
+Nodes (32): cmdResolveModel(), _deepMergeConfig(), detectSubRepos(), { execGit, platformWriteSync, platformReadSync, platformEnsureDir }, extractCanonicalPlanId(), extractPhaseToken(), filterPlanFiles(), filterSummaryFiles() (+24 more)
 
 ### Community 21 - "gsd-phase-researcher.md"
 Cohesion: 0.05
@@ -606,7 +643,7 @@ Nodes (26): 0. Initialize Milestone Context, 1. Determine Milestone Scope, 2. Re
 
 ### Community 35 - "intel.cjs"
 Cohesion: 0.15
-Nodes (22): crypto, disabledResponse(), ensureIntelDir(), fs, hashFile(), INTEL_FILES, intelDiff(), intelExtractExports() (+14 more)
+Nodes (23): crypto, disabledResponse(), ensureIntelDir(), fs, hashFile(), INTEL_FILES, intelDiff(), intelExtractExports() (+15 more)
 
 ### Community 36 - "learnings.cjs"
 Cohesion: 0.14
@@ -645,8 +682,8 @@ Cohesion: 0.11
 Nodes (18): Color, Copywriting, Output: UI-SPEC.md, Registry (only if shadcn initialized), shadcn Initialization Gate, Spacing, Step 1: Load Context, Step 2: Scout Existing UI (+10 more)
 
 ### Community 45 - "planning-workspace.cjs"
-Cohesion: 0.17
-Nodes (17): createSessionScopedPointerAdapter(), createSharedPointerAdapter(), crypto, fs, getControllingTtyToken(), getSessionScopedWorkstreamFile(), getWorkstreamSessionKey(), _heldPlanningLocks (+9 more)
+Cohesion: 0.16
+Nodes (18): createSessionScopedPointerAdapter(), createSharedPointerAdapter(), crypto, fs, getControllingTtyToken(), getSessionScopedWorkstreamFile(), getWorkstreamSessionKey(), _heldPlanningLocks (+10 more)
 
 ### Community 46 - "git-integration.md"
 Cohesion: 0.20
@@ -733,8 +770,8 @@ Cohesion: 0.13
 Nodes (14): Design Rationale, Dynamic Routing with Failure-Tier Escalation (#3024), Model Profiles, Per-Agent Overrides, Per-Phase-Type Model Map (#3023), Phase-type → agent mapping, Profile Definitions, Profile Philosophy (+6 more)
 
 ### Community 67 - "workstream.cjs"
-Cohesion: 0.11
-Nodes (30): createPlanningWorkspace(), getActiveWorkstream(), setActiveWorkstream(), cmdWorkstreamGet(), cmdWorkstreamList(), cmdWorkstreamProgress(), cmdWorkstreamSet(), fs (+22 more)
+Cohesion: 0.10
+Nodes (31): createPlanningWorkspace(), getActiveWorkstream(), setActiveWorkstream(), cmdWorkstreamComplete(), cmdWorkstreamGet(), cmdWorkstreamList(), cmdWorkstreamProgress(), cmdWorkstreamSet() (+23 more)
 
 ### Community 68 - "Phase Prompt Template"
 Cohesion: 0.14
@@ -832,9 +869,9 @@ Nodes (11): 10. Offer Next Steps, 1. Load Audit Results, 2. Prioritize Gaps, 3. 
 Cohesion: 0.17
 Nodes (11): 10. Summary & Refresh Diff, 1. Initialize, 2. Consent Gate (ACTV-06), 3. Session Scan, 4a. Session Analysis Path, 4b. Questionnaire Path, 5. Split Resolution, 6. Profile Write (+3 more)
 
-### Community 92 - "docs.cjs"
-Cohesion: 0.17
-Nodes (15): checkAgentsInstalled(), getAgentsDir(), cmdDocsInit(), detectDocTooling(), detectMonorepoWorkspaces(), detectProjectType(), fs, hasGsdMarker() (+7 more)
+### Community 92 - "web/package.json"
+Cohesion: 0.07
+Nodes (28): dependencies, framer-motion, lucide-react, react, react-dom, react-router-dom, devDependencies, tailwindcss (+20 more)
 
 ### Community 93 - "gsd-integration-checker.md"
 Cohesion: 0.18
@@ -884,9 +921,9 @@ Nodes (10): Analyze for Consistency Sketches, Analyze for Frontier Sketches, For
 Cohesion: 0.18
 Nodes (10): Auto-Group by Design Area, Copy Source Files, Curate Sketches One-at-a-Time, Determine Output Skill Name, Gather Sketch Inventory, ▶ Next Up, Synthesize Reference Files, Update Project GEMINI.md (+2 more)
 
-### Community 105 - "PhoneShell"
-Cohesion: 0.11
-Nodes (17): 390px Viewport Mobile Frame Constraint, Spacing & Layout Metrics, Architecture, Data Flow, Entry Points, Key Abstractions, Pattern Overview, AI Assistant (+9 more)
+### Community 105 - "v1 Requirements"
+Cohesion: 0.14
+Nodes (13): AI Assistant, Architecture & Clean Naming, Data & Local Persistence, Note Editor & Multi-Modal Blocks, Organization & Backlinks, Out of Scope, React Native & Mobile APK, Requirements: Edsy Advanced Notes Mobile App (+5 more)
 
 ### Community 106 - "Step 3: Handle Agent Return"
 Cohesion: 0.20
@@ -914,7 +951,7 @@ Nodes (6): Key Link Verification, Observable Truths, Phase 1: local-data-store-n
 
 ### Community 112 - "notesStore.js"
 Cohesion: 0.04
-Nodes (32): Robust REVIEW.md Parsing, commit(), currentNotes, isLocalStorageAvailable(), listeners, loadFromStorage(), notesStore, initialSeedNotes (+24 more)
+Nodes (33): commit(), currentNotes, isLocalStorageAvailable(), listeners, loadFromStorage(), notesStore, initialSeedNotes, clear() (+25 more)
 
 ### Community 113 - "iOS App Scaffold Reference"
 Cohesion: 0.20
@@ -958,11 +995,11 @@ Nodes (9): Anti-Patterns, MVP-Mode Node Rendering, Step 0 -- Banner, Step 1 -- C
 
 ### Community 123 - "verify.cjs"
 Cohesion: 0.09
-Nodes (30): CANONICAL_EXACT, CANONICAL_PATTERNS, isCanonicalPlanningFile(), cmdCommit(), CONFIG_DEFAULTS, isGitIgnored(), parseMustHavesBlock(), execGit() (+22 more)
+Nodes (25): CANONICAL_EXACT, CANONICAL_PATTERNS, isCanonicalPlanningFile(), CONFIG_DEFAULTS, parseMustHavesBlock(), cmdValidateAgents(), cmdValidateConsistency(), cmdValidateHealth() (+17 more)
 
 ### Community 124 - "Edsy Advanced Notes Mobile App"
-Cohesion: 0.09
-Nodes (17): Accomplishments, Decisions & Deviations, Files Created/Modified, Next Phase Readiness, Performance, Phase 3: All Notes Catalog & Live Search Summary, 1. Visual & Layout Analysis, 2. Markdown Engine Design (+9 more)
+Cohesion: 0.18
+Nodes (10): Active, Constraints, Context, Core Value, Edsy Advanced Notes Mobile App, Key Decisions, Out of Scope, Requirements (+2 more)
 
 ### Community 125 - "active-workstream-store.cjs"
 Cohesion: 0.20
@@ -1073,8 +1110,8 @@ Cohesion: 0.25
 Nodes (7): 0. Initialize, 1. Detect Input State, 2. Gather Context Paths, 3. Spawn gsd-ui-auditor, 4. Handle Return, 5. Commit (if configured), Automated UI Verification (when Playwright-MCP is available)
 
 ### Community 152 - "Phase 3: All Notes Catalog & Live Search - Research"
-Cohesion: 0.40
-Nodes (4): 1. Visual & Layout Specifications, 2. Search & Filter Algorithm, 3. Validation Architecture, Phase 3: All Notes Catalog & Live Search - Research
+Cohesion: 0.33
+Nodes (5): 1. Visual & Layout Specifications, 2. Search & Filter Algorithm, 3. Validation Architecture, Phase 3: All Notes Catalog & Live Search - Research, Reference Screen: `design-reference/course-overview.jpg`
 
 ### Community 153 - "Smart Discuss — Autonomous Mode"
 Cohesion: 0.29
@@ -1217,8 +1254,8 @@ Cohesion: 0.33
 Nodes (5): APIs & External Services, Authentication & Identity, Build & Deployment Services, Data Storage, External Integrations
 
 ### Community 188 - "Phases"
-Cohesion: 0.14
-Nodes (13): Overview, Phase 10: Clean Architecture & Semantic Route Alignment, Phase 1: Local Data Store & Note Schema, Phase 2: Timeline & Daily Notes Screen (reusing `study-planning.jpg`), Phase 3: All Notes Catalog & Live Search (reusing `course-overview.jpg`), Phase 4: Note Editor Core & Markdown Engine (reusing `course-detail.jpg`), Phase 5: Modular Block Engine (Notion-style Blocks), Phase 6: Canvas Freehand Sketch Pad & Audio Memo Player (+5 more)
+Cohesion: 0.11
+Nodes (17): Design Reference Mapping Guarantee, Overview, Phase 10: Clean Architecture & Semantic Route Alignment, Phase 11: React Native Mobile App & Android APK Build, Phase 12: Unified Web & Mobile UI Parity via Embedded React Native WebView, Phase 1: Local Data Store & Note Schema, Phase 2: Timeline & Daily Notes Screen (reusing `study-planning.jpg`), Phase 3: All Notes Catalog & Live Search (reusing `course-overview.jpg`) (+9 more)
 
 ### Community 189 - "State: Edsy Advanced Notes Mobile App"
 Cohesion: 0.33
@@ -1229,8 +1266,8 @@ Cohesion: 0.40
 Nodes (4): full_maturity, minimal_decisive, standard, Tool Priority
 
 ### Community 191 - "Implementation Decisions"
-Cohesion: 0.29
-Nodes (6): 2. State & Store Integration, 3. Route Configuration (`App.jsx`), Canonical References, Implementation Decisions, Phase 2: Timeline & Daily Notes Screen - Context, Phase Boundary
+Cohesion: 0.25
+Nodes (7): 1. Visual Design Fidelity, 2. State & Store Integration, 3. Route Configuration (`App.jsx`), Canonical References, Implementation Decisions, Phase 2: Timeline & Daily Notes Screen - Context, Phase Boundary
 
 ### Community 192 - "Dev Context Profile"
 Cohesion: 0.40
@@ -1309,15 +1346,15 @@ Cohesion: 0.50
 Nodes (3): ESCALATE, OPEN_THREATS, SECURED
 
 ### Community 211 - "Implementation Decisions"
-Cohesion: 0.29
-Nodes (6): 2. Markdown Parsing & Rendering, 3. Store Integration & Auto-Save, Canonical References, Implementation Decisions, Phase 4: Note Editor Core & Markdown Engine - Context, Phase Boundary
+Cohesion: 0.25
+Nodes (7): 1. Visual Design Fidelity, 2. Markdown Parsing & Rendering, 3. Store Integration & Auto-Save, Canonical References, Implementation Decisions, Phase 4: Note Editor Core & Markdown Engine - Context, Phase Boundary
 
 ### Community 212 - "react"
-Cohesion: 0.14
-Nodes (37): Edsy Mobile Mockups Composite, Course Detail Screen Mockup, Course Overview Screen Mockup, Menu Overlay Mockup, Study Planning Screen Mockup, Layers, Critical Test Scenarios to Cover, 1. Visual Design Fidelity (+29 more)
+Cohesion: 0.18
+Nodes (21): Edsy Mobile Mockups Composite, Course Detail Screen Mockup, Course Overview Screen Mockup, Menu Overlay Mockup, Study Planning Screen Mockup, Routes and Navigation Specification, AppRoutes(), AppHeader() (+13 more)
 
 ### Community 213 - "fallow-runner.cjs"
-Cohesion: 0.31
+Cohesion: 0.36
 Nodes (8): candidateNames(), findInNodeModules(), findInPath(), fs, isExecutableFile(), path, requireFallowBinary(), resolveFallowBinary()
 
 ### Community 214 - "Developer Preferences"
@@ -1357,8 +1394,8 @@ Cohesion: 0.22
 Nodes (8): 1. Technical Analysis: Client-Side Offline Persistence, 2. Note Schema Specification, 3. Seed Data Specification, 4. API Surface for `notesStore`, 5. Validation Architecture, Phase 1: Local Data Store & Note Schema - Research, State Management & React 19 Reactivity, Storage Strategy
 
 ### Community 513 - "ref_os"
-Cohesion: 0.31
-Nodes (9): buildAgentSkillsBlock(), expandTilde(), getGlobalConfigDir(), getGlobalSkillDir(), getGlobalSkillDisplayPath(), getGlobalSkillsBase(), os, path (+1 more)
+Cohesion: 0.35
+Nodes (9): buildAgentSkillsBlock(), buildSkillManifest(), expandTilde(), getGlobalConfigDir(), getGlobalSkillDir(), getGlobalSkillDisplayPath(), getGlobalSkillsBase(), os (+1 more)
 
 ### Community 514 - "verify-reapply-patches.cjs"
 Cohesion: 0.31
@@ -1369,12 +1406,12 @@ Cohesion: 0.22
 Nodes (8): Overview, Plan: Phase 8 — Bi-directional Linking (`[[Note Title]]`) & Export, Requirements Addressed, Task 1: Add Backlinks Indexer to `notesStore`, Task 2: Build Backlinks Drawer / Component, Task 3: Build Export & Backup System, Task 4: Automated Verification, Tasks
 
 ### Community 516 - "gsd-code-fixer.md"
-Cohesion: 0.40
-Nodes (4): 3-Tier Verification, Intelligent Fix Application, Partial Failure Semantics, Safe Per-Finding Rollback
+Cohesion: 0.33
+Nodes (5): 3-Tier Verification, Intelligent Fix Application, Partial Failure Semantics, Robust REVIEW.md Parsing, Safe Per-Finding Rollback
 
-### Community 517 - "frontmatter.cjs"
-Cohesion: 0.22
-Nodes (8): cmdFrontmatterGet(), cmdFrontmatterValidate(), FRONTMATTER_SCHEMAS, fs, { output, error }, path, { platformReadSync: safeReadFile, platformWriteSync }, splitInlineArray()
+### Community 517 - "output"
+Cohesion: 0.07
+Nodes (72): cmdCheckCommit(), cmdCommit(), cmdCommitToSubrepo(), cmdCurrentTimestamp(), cmdGenerateSlug(), cmdListTodos(), cmdProgressRender(), cmdScaffold() (+64 more)
 
 ### Community 518 - "Phase 4: Note Editor Core & Markdown Engine - Validation Strategy"
 Cohesion: 0.50
@@ -1389,8 +1426,8 @@ Cohesion: 0.22
 Nodes (8): Overview, Plan: Phase 6 — Canvas Freehand Sketch Pad & Audio Memo Player, Requirements Addressed, Task 1: Create Canvas Sketchpad Component, Task 2: Create Audio Memo Player & Recorder Component, Task 3: Integrate with Note Detail & Note Store, Task 4: Automated Verification, Tasks
 
 ### Community 521 - "Testing Patterns"
-Cohesion: 0.40
-Nodes (4): Recommended Test Stack, Test File Organization (Proposed), Test Framework, Testing Patterns
+Cohesion: 0.33
+Nodes (5): Critical Test Scenarios to Cover, Recommended Test Stack, Test File Organization (Proposed), Test Framework, Testing Patterns
 
 ### Community 522 - "Summary: Phase 7 — Slide-up Navigation Menu & Smart Views (Reusing menu.jpg)"
 Cohesion: 0.50
@@ -1400,9 +1437,9 @@ Nodes (3): Accomplishments, Overview, Summary: Phase 7 — Slide-up Navigation M
 Cohesion: 0.50
 Nodes (3): Overall Status, Phase 7 Verification Report: Slide-up Navigation Menu & Smart Views, Test Results
 
-### Community 524 - "useNotesStore"
-Cohesion: 0.04
-Nodes (44): Accomplishments, Decisions & Deviations, Files Created/Modified, Next Phase Readiness, Performance, Phase 1: Local Data Store & Note Schema Summary, Phase 1: Local Data Store & Note Schema - Validation Strategy, Success Thresholds (+36 more)
+### Community 524 - "Phase 1: Local Data Store & Note Schema Summary"
+Cohesion: 0.29
+Nodes (6): Accomplishments, Decisions & Deviations, Files Created/Modified, Next Phase Readiness, Performance, Phase 1: Local Data Store & Note Schema Summary
 
 ### Community 525 - "ref_node_assert"
 Cohesion: 0.24
@@ -1425,12 +1462,12 @@ Cohesion: 0.22
 Nodes (8): Overview, Plan: Phase 10 — Clean Architecture & Semantic Route Alignment, Task 1: Component Migration & Course Directory Cleanup, Task 2: Data & Content Vocabulary Alignment, Task 3: Screen Renaming, Task 4: App Route Wiring & Backwards-Compatible Redirects, Task 5: Automated Verification, Tasks
 
 ### Community 530 - "Locked Decisions from Discussion"
-Cohesion: 0.25
-Nodes (7): 1. Screen File Naming, 3. Component Architecture, 4. Content & Data Cleaning, 5. Verification & Tests, Background & Need, Locked Decisions from Discussion, Phase 10 Context: Clean Architecture & Semantic Route Alignment
+Cohesion: 0.22
+Nodes (8): 1. Screen File Naming, 2. URL Routes & Aliases, 3. Component Architecture, 4. Content & Data Cleaning, 5. Verification & Tests, Background & Need, Locked Decisions from Discussion, Phase 10 Context: Clean Architecture & Semantic Route Alignment
 
 ### Community 531 - "verify-architecture.js"
-Cohesion: 0.29
-Nodes (4): __dirname, __filename, runArchitectureVerification(), srcDir
+Cohesion: 0.18
+Nodes (8): __dirname, __filename, runArchitectureVerification(), srcDir, __dirname, __filename, runArchitectureVerification(), srcDir
 
 ### Community 532 - "Phase 3: All Notes Catalog & Live Search - Validation Strategy"
 Cohesion: 0.50
@@ -1464,25 +1501,169 @@ Nodes (3): Accomplishments, Overview, Summary: Phase 8 — Bi-directional Linkin
 Cohesion: 0.50
 Nodes (3): Overall Status, Phase 8 Verification Report: Bi-directional Linking & Export, Test Results
 
+### Community 541 - "ref_lucide_react"
+Cohesion: 0.28
+Nodes (14): AppRoutes(), AppHeader(), NoteCard(), DatePager(), Heading(), IconButton(), MenuItem(), Pill() (+6 more)
+
+### Community 542 - "ref_react"
+Cohesion: 0.17
+Nodes (15): AiAssistantSheet(), AudioMemoBlock(), BacklinksDrawer(), BlockItem(), BlockList(), CanvasSketchpad(), COLORS, STROKE_WIDTHS (+7 more)
+
+### Community 543 - "web/src/App.jsx"
+Cohesion: 0.14
+Nodes (15): App(), PhoneShell(), courseDetailData, courseOverviewData, headerDemoData, menuData, noteEditorData, notesCatalogData (+7 more)
+
+### Community 544 - "verify-mobile.js"
+Cohesion: 0.09
+Nodes (20): apkDir, apkFile, catalogScreen, __dirname, editorScreen, __filename, gradleReleaseApk, menuScreen (+12 more)
+
+### Community 545 - "expo"
+Cohesion: 0.11
+Nodes (18): backgroundColor, backgroundImage, foregroundImage, monochromeImage, adaptiveIcon, package, expo, android (+10 more)
+
+### Community 546 - "verify-parity.js"
+Cohesion: 0.12
+Nodes (13): androidAssetsDir, androidAssetsIndex, androidAssetsWebDir, apkFile, appJsxPath, __dirname, distIndexPath, __filename (+5 more)
+
+### Community 547 - "web/src/data/notesStore.js"
+Cohesion: 0.29
+Nodes (8): commit(), currentNotes, isLocalStorageAvailable(), listeners, loadFromStorage(), notesStore, initialSeedNotes, runVerification()
+
+### Community 548 - "Tasks"
+Cohesion: 0.22
+Nodes (8): Overview, Plan: Phase 5 — Modular Block Engine (Notion-style Blocks), Requirements Addressed, Task 1: Create Modular Block Components, Task 2: Create Block List & Add Block Toolbar, Task 3: Integrate with Note Detail Screen & Auto-Save, Task 4: Automated Verification, Tasks
+
+### Community 549 - "Tasks"
+Cohesion: 0.22
+Nodes (8): Overview, Plan: Phase 11 — React Native Mobile App & Android APK Build, Task 1: Restructure Workspace into `/web` and `/mobile` (MBL-01), Task 2: Scaffold React Native App in `/mobile` (MBL-02), Task 3: Build React Native Mobile Screens & Components (MBL-02), Task 4: Native Android Prebuild & Gradle APK Compilation (MBL-03), Task 5: Verification & Documentation, Tasks
+
+### Community 550 - "Locked Decisions from Discussion"
+Cohesion: 0.22
+Nodes (8): 1. Dedicated Git Branch, 2. Workspace Monorepo Structure, 3. Technology Stack & Framework, 4. Design Invariants, 5. Deliverable, Background & Objective, Locked Decisions from Discussion, Phase 11 Context: React Native Mobile App & Android APK Build
+
+### Community 551 - "Deliverables"
+Cohesion: 0.25
+Nodes (7): 1. Web Version Preservation (`MBL-01`), 2. React Native Mobile Application (`MBL-02`), 3. Standalone Android APK (`MBL-03`), Deliverables, Executive Summary, Phase 11 Summary: React Native Mobile App & Android APK Build, Verification
+
+### Community 552 - "Tasks"
+Cohesion: 0.25
+Nodes (7): Overview, Plan: Phase 12 — 100% UI Parity Between Web and Android APK, Task 1: Prepare Web App for Offline & Embedded Execution (PRT-01), Task 2: Embed Web Bundle into Native Android Project (PRT-02), Task 3: Build Unified Android Release APK (PRT-03), Task 4: Automated Parity Verification, Tasks
+
+### Community 553 - "Deliverables & Technical Changes"
+Cohesion: 0.25
+Nodes (7): 1. Dual Browser & Offline Embedded Web Architecture (`PRT-01`), 2. Native React Native Host & Embedded Assets (`PRT-02`), 3. Recompiled Android Release APK (`PRT-03`), Automated Verification Matrix, Deliverables & Technical Changes, Executive Summary, Phase 12 Summary: Unified Web & Mobile UI Parity via Embedded React Native WebView
+
+### Community 554 - "Architecture"
+Cohesion: 0.29
+Nodes (6): Architecture, Data Flow, Entry Points, Key Abstractions, Layers, Pattern Overview
+
+### Community 555 - "Phase 2: Timeline & Daily Notes Screen Summary"
+Cohesion: 0.29
+Nodes (6): Accomplishments, Decisions & Deviations, Files Created/Modified, Next Phase Readiness, Performance, Phase 2: Timeline & Daily Notes Screen Summary
+
+### Community 556 - "Phase 2: timeline-daily-notes-screen-reusing-study-planning-jpg — Verification"
+Cohesion: 0.29
+Nodes (6): Key Link Verification, Observable Truths, Phase 2: timeline-daily-notes-screen-reusing-study-planning-jpg — Verification, Required Artifacts, Requirements Coverage, Result
+
+### Community 557 - "Phase 3: All Notes Catalog & Live Search Summary"
+Cohesion: 0.29
+Nodes (6): Accomplishments, Decisions & Deviations, Files Created/Modified, Next Phase Readiness, Performance, Phase 3: All Notes Catalog & Live Search Summary
+
+### Community 558 - "Phase 3: All Notes Catalog & Live Search - Context"
+Cohesion: 0.29
+Nodes (6): 1. Visual Design Fidelity, 2. Live Store Integration, Canonical References, Implementation Decisions, Phase 3: All Notes Catalog & Live Search - Context, Phase Boundary
+
+### Community 559 - "Phase 3: all-notes-catalog-live-search-reusing-course-overview-jpg — Verification"
+Cohesion: 0.29
+Nodes (6): Key Link Verification, Observable Truths, Phase 3: all-notes-catalog-live-search-reusing-course-overview-jpg — Verification, Required Artifacts, Requirements Coverage, Result
+
+### Community 560 - "Phase 4: note-editor-core-markdown-engine-reusing-course-detail-jpg — Verification"
+Cohesion: 0.29
+Nodes (6): Key Link Verification, Observable Truths, Phase 4: note-editor-core-markdown-engine-reusing-course-detail-jpg — Verification, Required Artifacts, Requirements Coverage, Result
+
+### Community 561 - "web/src/data/verify-backlinks-export.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runBacklinksExportVerification()
+
+### Community 562 - "web/src/data/verify-blocks.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runBlockVerification()
+
+### Community 563 - "web/src/data/verify-canvas-audio.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runCanvasAudioVerification()
+
+### Community 564 - "web/src/data/verify-catalog.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runCatalogVerification()
+
+### Community 565 - "web/src/data/verify-editor.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runEditorVerification()
+
+### Community 566 - "web/src/data/verify-menu-smartviews.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runMenuSmartViewsVerification()
+
+### Community 567 - "web/src/data/verify-timeline.js"
+Cohesion: 0.29
+Nodes (3): clear(), mockStorage, runTimelineVerification()
+
+### Community 568 - "web/src/theme.js"
+Cohesion: 0.38
+Nodes (5): activeTheme, applyTheme(), setTheme(), THEMES, toggleTheme()
+
+### Community 569 - "AGENTS.md"
+Cohesion: 0.33
+Nodes (5): Building with EAS, Commands, Expo has changed — do not trust your training data, Navigation & Routing, Rules
+
+### Community 570 - "Phase 2: Timeline & Daily Notes Screen - Research"
+Cohesion: 0.33
+Nodes (5): 1. Screen Architecture & Visual Analysis, 2. Store & Interaction Integration, 3. Validation Architecture, Phase 2: Timeline & Daily Notes Screen - Research, Reference Screen: `design-reference/study-planning.jpg`
+
+### Community 571 - "Phase 4: Note Editor Core & Markdown Engine - Research"
+Cohesion: 0.33
+Nodes (5): 1. Visual & Layout Analysis, 2. Markdown Engine Design, 3. Validation Architecture, Phase 4: Note Editor Core & Markdown Engine - Research, Reference Screen: `design-reference/course-detail.jpg`
+
+### Community 572 - "Phase 11 Verification: React Native Mobile App & Android APK"
+Cohesion: 0.33
+Nodes (5): Automated Verification Matrix, Conclusion, Phase 11 Verification: React Native Mobile App & Android APK, Test Execution Details, Verification Overview
+
+### Community 574 - "Phase 1: Local Data Store & Note Schema - Validation Strategy"
+Cohesion: 0.40
+Nodes (4): Phase 1: Local Data Store & Note Schema - Validation Strategy, Success Thresholds, Test Execution Command, Validation Overview
+
+### Community 575 - "Phase 12 Verification: Web & Android APK UI Parity"
+Cohesion: 0.40
+Nodes (4): Command Execution Evidence, Overview, Phase 12 Verification: Web & Android APK UI Parity, Verification Results
+
+### Community 577 - "Summary: Phase 5 — Modular Block Engine (Notion-style Blocks)"
+Cohesion: 0.50
+Nodes (3): Accomplishments, Overview, Summary: Phase 5 — Modular Block Engine (Notion-style Blocks)
+
+### Community 578 - "Phase 12 Context: Unified Web & Mobile UI Parity via Embedded React Native WebView"
+Cohesion: 0.50
+Nodes (3): Phase 12 Context: Unified Web & Mobile UI Parity via Embedded React Native WebView, Problem Statement, Target Architecture
+
 ## Knowledge Gaps
-- **17 isolated node(s):** `ADR-0011`, `ADR-0011`, `ADR-0011`, `tailwindcss`, `Minimalist High-Contrast Dark Aesthetic` (+12 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2769 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **294 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **36 isolated node(s):** `ADR-0011`, `ADR-0011`, `ADR-0011`, `expo-status-bar`, `react` (+31 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3047 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **300 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `platformWriteSync()` connect `error` to `intel.cjs`, `learnings.cjs`, `frontmatter.cjs`, `state.cjs`, `shell-command-projection.cjs`, `roadmap.cjs`, `init.cjs`, `workstream.cjs`, `gsd2-import.cjs`, `phase.cjs`, `planning-workspace.cjs`, `install-profiles.cjs`, `installer-migrations.cjs`, `core.cjs`, `drift.cjs`, `verify.cjs`, `profile-output.cjs`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `platformWriteSync()` connect `output` to `intel.cjs`, `learnings.cjs`, `workstream.cjs`, `state.cjs`, `shell-command-projection.cjs`, `init.cjs`, `gsd2-import.cjs`, `phase.cjs`, `planning-workspace.cjs`, `install-profiles.cjs`, `installer-migrations.cjs`, `error`, `core.cjs`, `drift.cjs`, `verify.cjs`, `profile-output.cjs`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `error()` (e.g. with `runCommand()` and `core.cjs`) actually correct?**
   _`error()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `ADR-0011`, `ADR-0011`, `ADR-0011` to the rest of the system?**
-  _17 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _36 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Project Dependencies & Tooling` be split into smaller, more focused modules?**
-  _Cohesion score 0.08307692307692308 - nodes in this community are weakly interconnected._
-- **Why does `skipped()` connect `skipped` to `drift.cjs`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+  _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
+- **Why does `output()` connect `output` to `profile-pipeline.cjs`, `learnings.cjs`, `workstream.cjs`, `state.cjs`, `init.cjs`, `gsd2-import.cjs`, `phase.cjs`, `audit.cjs`, `error`, `core.cjs`, `gap-checker.cjs`, `verify.cjs`, `profile-output.cjs`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `loadConfig()` (e.g. with `core.cjs` and `How It Works`) actually correct?**
   _`loadConfig()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Architecture & Mobile Shell Layout` be split into smaller, more focused modules?**
-  _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07807807807807808 - nodes in this community are weakly interconnected._
