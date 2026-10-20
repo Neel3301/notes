@@ -14,7 +14,7 @@
 
 | Phase | Description | Status | Requirements |
 |-------|-------------|--------|--------------|
-| **Phase 1** | Local Data Store & Note Schema | ⏳ Pending | DATA-01, DATA-02 |
+| **Phase 1** | Local Data Store & Note Schema | 📋 Planned | DATA-01, DATA-02 |
 | **Phase 2** | Timeline & Daily Notes Screen (`study-planning.jpg`) | ⏳ Pending | VIEW-01, VIEW-02 |
 | **Phase 3** | All Notes Catalog & Live Search (`course-overview.jpg`) | ⏳ Pending | VIEW-03, VIEW-04, VIEW-05 |
 | **Phase 4** | Note Editor Core & Markdown Engine (`course-detail.jpg`) | ⏳ Pending | NOTE-01, NOTE-02 |
@@ -30,7 +30,7 @@
 
 - **Active Milestone**: v1.0.0
 - **Active Phase**: Phase 1 (Local Data Store & Note Schema)
-- **Status**: Ready for planning and execution (`/gsd-plan-phase 1` or `/gsd-execute-phase 1`).
+- **Status**: Plan verified and ready for execution (`/gsd-execute-phase 1`).
 
 ---
 
