@@ -84,7 +84,15 @@ export default function AuthModal({ isOpen, onClose }) {
       setLastSyncTime(new Date().toISOString());
     } catch (err) {
       console.error(err);
-      setErrorMsg(err.message || 'Authentication failed');
+      let msg = err.message || 'Authentication failed';
+      if (
+        err.message?.toLowerCase().includes('rate limit') ||
+        err.error_code === 'over_email_send_rate_limit' ||
+        err.status === 429
+      ) {
+        msg = 'Supabase email rate limit exceeded (free tier limit is 3-4 emails/hr). Fix instantly: In your Supabase Dashboard -> Authentication -> Providers -> Email, turn OFF "Confirm email".';
+      }
+      setErrorMsg(msg);
     } finally {
       setLoading(false);
     }
