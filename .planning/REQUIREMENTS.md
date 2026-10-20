@@ -3,10 +3,10 @@
 ## Milestone v2.0.0 Requirements
 
 ### Desktop Dashboard Layout & Web Revamp
-- [ ] **DSH-01**: Desktop/laptop view renders a full-width responsive dashboard with collapsible Left Sidebar (`AppHeader`, Navigation, Notebooks, Tags, Settings/Account).
-- [ ] **DSH-02**: Multi-pane workspace allows browsing notes list/timeline and active note editor side-by-side on desktop without modal jumping.
-- [ ] **DSH-03**: Mobile viewports (<768px) and Android APK preserve the exact mobile design reference layout (`PhoneShell` styling, bottom `DatePager`, slide-up menu).
-- [ ] **DSH-04**: Desktop dashboard strictly preserves Edsy dark aesthetic tokens (`#000000`, `#E5E7DA`, Inter Tight, `#6F91B6`, `#DCE3EB`, `#CABC3F`).
+- [x] **DSH-01**: Desktop/laptop view renders a full-width responsive dashboard with collapsible Left Sidebar (`AppHeader`, Navigation, Notebooks, Tags, Settings/Account).
+- [x] **DSH-02**: Multi-pane workspace allows browsing notes list/timeline and active note editor side-by-side on desktop without modal jumping.
+- [x] **DSH-03**: Mobile viewports (<768px) and Android APK preserve the exact mobile design reference layout (`PhoneShell` styling, bottom `DatePager`, slide-up menu).
+- [x] **DSH-04**: Desktop dashboard strictly preserves Edsy dark aesthetic tokens (`#000000`, `#E5E7DA`, Inter Tight, `#6F91B6`, `#DCE3EB`, `#CABC3F`).
 
 ### Supabase Integration & E2EE Cloud Sync
 - [ ] **SYNC-01**: Local-first note-taking is 100% functional without an account or network connection.
@@ -76,10 +76,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSH-01 | Phase 13 | Pending |
-| DSH-02 | Phase 13 | Pending |
-| DSH-03 | Phase 13 | Pending |
-| DSH-04 | Phase 13 | Pending |
+| DSH-01 | Phase 13 | Passed |
+| DSH-02 | Phase 13 | Passed |
+| DSH-03 | Phase 13 | Passed |
+| DSH-04 | Phase 13 | Passed |
 | SYNC-01 | Phase 14 | Pending |
 | SYNC-02 | Phase 14 | Pending |
 | SYNC-03 | Phase 14 | Pending |
