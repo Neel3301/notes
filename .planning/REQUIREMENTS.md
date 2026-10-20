@@ -8,8 +8,8 @@
 - [ ] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
 
 ### Note Editor & Multi-Modal Blocks
-- [ ] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA (`#E5E7DA`), and segmented tabs ("Write", "Preview", "Canvas").
-- [ ] **NOTE-02**: User can write and edit Markdown with live rendered formatting (headings, code blocks, lists, quotes).
+- [x] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA (`#E5E7DA`), and segmented tabs ("Write", "Preview", "Canvas").
+- [x] **NOTE-02**: User can write and edit Markdown with live rendered formatting (headings, code blocks, lists, quotes).
 - [ ] **NOTE-03**: User can structure notes with modular blocks (text, interactive checklist items, callout boxes).
 - [ ] **NOTE-04**: User can switch to the Canvas tab to draw/sketch freehand doodles with stroke controls and save them into the note.
 - [ ] **NOTE-05**: User can record and playback audio memos with progress bar and timestamp indicator.
@@ -55,8 +55,8 @@
 | DATA-01 | Phase 1 | Passed |
 | DATA-02 | Phase 1 | Passed |
 | DATA-03 | Phase 8 | Pending |
-| NOTE-01 | Phase 4 | Pending |
-| NOTE-02 | Phase 4 | Pending |
+| NOTE-01 | Phase 4 | Passed |
+| NOTE-02 | Phase 4 | Passed |
 | NOTE-03 | Phase 5 | Pending |
 | NOTE-04 | Phase 6 | Pending |
 | NOTE-05 | Phase 6 | Pending |
