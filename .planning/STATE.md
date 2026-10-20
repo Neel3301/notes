@@ -18,8 +18,8 @@
 | **Phase 2** | Timeline & Daily Notes Screen (`study-planning.jpg`) | ✅ Complete | VIEW-01, VIEW-02 |
 | **Phase 3** | All Notes Catalog & Live Search (`course-overview.jpg`) | ✅ Complete | VIEW-03, VIEW-04, VIEW-05 |
 | **Phase 4** | Note Editor Core & Markdown Engine (`course-detail.jpg`) | ✅ Complete | NOTE-01, NOTE-02 |
-| **Phase 5** | Modular Block Engine (Notion-style Blocks) | 🔄 Active | NOTE-03 |
-| **Phase 6** | Canvas Freehand Sketch Pad & Audio Memo Player | ⏳ Pending | NOTE-04, NOTE-05 |
+| **Phase 5** | Modular Block Engine (Notion-style Blocks) | ✅ Complete | NOTE-03 |
+| **Phase 6** | Canvas Freehand Sketch Pad & Audio Memo Player | 🔄 Active | NOTE-04, NOTE-05 |
 | **Phase 7** | Slide-up Navigation Menu & Smart Views (`menu.jpg`) | ⏳ Pending | ORG-01, ORG-02, ORG-04 |
 | **Phase 8** | Bi-directional Linking (`[[Note Title]]`) & Export | ⏳ Pending | DATA-03, ORG-03 |
 | **Phase 9** | AI Assistant Action Sheet | ⏳ Pending | AI-01 |
@@ -29,8 +29,8 @@
 ## Current Position
 
 - **Active Milestone**: v1.0.0
-- **Active Phase**: Phase 5 (Modular Block Engine)
-- **Status**: Phase 4 verified and complete; proceeding with Phase 5 execution in AutoPilot mode.
+- **Active Phase**: Phase 6 (Canvas Freehand Sketch Pad & Audio Memo Player)
+- **Status**: Phase 5 verified and complete; proceeding with Phase 6 execution in AutoPilot mode.
 
 ---
 

@@ -118,6 +118,23 @@ export const notesStore = {
   },
 
   /**
+   * Alias for getNoteById
+   */
+  getNote(id) {
+    return this.getNoteById(id);
+  },
+
+  /**
+   * Partially update a note by ID
+   * @param {string} id
+   * @param {object} partialFields
+   * @returns {object}
+   */
+  updateNote(id, partialFields = {}) {
+    return this.saveNote({ id, ...partialFields });
+  },
+
+  /**
    * Create or update a note
    * @param {object} noteData
    * @returns {object} saved note

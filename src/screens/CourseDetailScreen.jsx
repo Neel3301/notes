@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Tabs from '../components/ui/Tabs';
 import LessonRow from '../components/course/LessonRow';
 import MarkdownRenderer from '../components/note/MarkdownRenderer';
+import BlockList from '../components/note/BlockList';
 import { useNotesStore } from '../data/notesStore';
 
 /**
@@ -18,7 +19,7 @@ import { useNotesStore } from '../data/notesStore';
  * - Signature cream primary action button (#E5E7DA)
  * - Interactive tab switching: 'Preview' / 'Write' / 'Canvas'
  * - Markdown preview rendering and live writing textarea
- * - Expandable block sections styled after lesson rows
+ * - Notion-style modular blocks with interactive checklists, callouts, and reordering
  * - Auto-save integration with notesStore
  */
 export default function CourseDetailScreen({
@@ -60,7 +61,7 @@ export default function CourseDetailScreen({
   const [title, setTitle] = useState(initialNote.title);
   const [content, setContent] = useState(initialNote.content || '');
   const [notebook, setNotebook] = useState(initialNote.notebook || 'Notes');
-  const [openLessonId, setOpenLessonId] = useState('block-1-1');
+  const [blocks, setBlocks] = useState(initialNote.blocks || []);
 
   // Sync state if store updates externally
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function CourseDetailScreen({
       setTitle(currentStoreNote.title);
       setContent(currentStoreNote.content || '');
       setNotebook(currentStoreNote.notebook || 'Notes');
+      setBlocks(currentStoreNote.blocks || []);
     }
   }, [currentStoreNote?.id]);
 
@@ -79,8 +81,17 @@ export default function CourseDetailScreen({
         title,
         content,
         notebook,
+        blocks,
         ...updatedFields,
       });
+    }
+  };
+
+  // Update blocks and persist immediately
+  const handleBlocksChange = (nextBlocks) => {
+    setBlocks(nextBlocks);
+    if (currentStoreNote?.id) {
+      store.updateNote(currentStoreNote.id, { blocks: nextBlocks });
     }
   };
 
@@ -93,15 +104,6 @@ export default function CourseDetailScreen({
       setActiveTab('Write');
     }
   };
-
-  const toggleBlock = (id) => {
-    setOpenLessonId((prev) => (prev === id ? null : id));
-  };
-
-  // Blocks to display under preview (adapting lesson rows)
-  const displayBlocks = currentStoreNote?.blocks && currentStoreNote.blocks.length > 0
-    ? currentStoreNote.blocks
-    : previewLessons;
 
   return (
     <div
@@ -164,52 +166,40 @@ export default function CourseDetailScreen({
           {activeTab === 'Preview' && (
             <div className="flex flex-col gap-6 animate-fadeIn pb-8">
               {/* Markdown Document Content */}
-              <div className="rounded-card p-4 bg-divider/20 border border-border-subtle/30">
-                <MarkdownRenderer
-                  content={content}
-                  onLinkClick={(linkedTitle) => {
-                    const matchedNote = store.notes.find(
-                      (n) => n.title.toLowerCase().includes(linkedTitle.toLowerCase())
-                    );
-                    if (matchedNote) {
-                      navigate('/course-detail', {
-                        state: { note: matchedNote, noteId: matchedNote.id },
-                      });
-                    }
-                  }}
-                />
-              </div>
-
-              {/* Expandable Blocks List (Styled after Course Detail Lesson Rows) */}
-              {displayBlocks && displayBlocks.length > 0 && (
-                <div className="flex flex-col mt-2">
-                  <h3 className="text-label text-text-secondary uppercase tracking-wider mb-2 font-medium">
-                    Attached Blocks & Tasks
-                  </h3>
-                  {displayBlocks.map((block, idx) => (
-                    <LessonRow
-                      key={block.id || idx}
-                      number={block.number || String(idx + 1).padStart(2, '0')}
-                      title={block.title || block.type}
-                      description={
-                        block.description ||
-                        (block.items ? `${block.items.filter((i) => i.completed).length}/${block.items.length} tasks completed` : block.content)
+              {content && (
+                <div className="rounded-card p-4 bg-divider/20 border border-border-subtle/30">
+                  <MarkdownRenderer
+                    content={content}
+                    onLinkClick={(linkedTitle) => {
+                      const matchedNote = store.notes.find(
+                        (n) => n.title.toLowerCase().includes(linkedTitle.toLowerCase())
+                      );
+                      if (matchedNote) {
+                        navigate('/course-detail', {
+                          state: { note: matchedNote, noteId: matchedNote.id },
+                        });
                       }
-                      isOpen={openLessonId === block.id}
-                      onToggle={() => toggleBlock(block.id)}
-                      showDivider={idx < displayBlocks.length - 1}
-                    />
-                  ))}
+                    }}
+                  />
                 </div>
               )}
+
+              {/* Modular Blocks Engine (Numbered rows matching course-detail.jpg) */}
+              <div className="mt-2">
+                <BlockList
+                  blocks={blocks}
+                  isEditing={false}
+                  onChange={handleBlocksChange}
+                />
+              </div>
             </div>
           )}
 
           {/* TAB 2: WRITE / EDIT */}
           {activeTab === 'Write' && (
-            <div className="flex flex-col gap-4 animate-fadeIn pb-8">
+            <div className="flex flex-col gap-5 animate-fadeIn pb-8">
               <div className="flex items-center justify-between text-label text-text-secondary px-1">
-                <span>Markdown Editor</span>
+                <span>Markdown Document</span>
                 <span>{content.split(/\s+/).filter(Boolean).length} words</span>
               </div>
 
@@ -220,9 +210,18 @@ export default function CourseDetailScreen({
                   handleSave({ content: e.target.value });
                 }}
                 placeholder="Write your note in markdown (supports # headings, - lists, `code`, [[Backlinks]])..."
-                rows={16}
+                rows={12}
                 className="w-full p-4 rounded-card bg-[#111111] border border-border-subtle text-body text-text-primary font-mono text-[14px] leading-relaxed resize-none outline-none focus:border-cream-bg transition-colors"
               />
+
+              {/* Editable Modular Blocks in Write mode */}
+              <div className="mt-2 pt-4 border-t border-border-subtle/50">
+                <BlockList
+                  blocks={blocks}
+                  isEditing={true}
+                  onChange={handleBlocksChange}
+                />
+              </div>
             </div>
           )}
 
