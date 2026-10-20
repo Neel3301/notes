@@ -16,12 +16,12 @@ import {
   getActiveMasterKey,
   deriveKeyFromPassphrase,
   setActiveMasterKey,
-} from './cryptoService';
+} from './cryptoService.js';
 import {
   getCurrentUser,
   uploadEncryptedNotes,
   fetchEncryptedNotes,
-} from './supabaseClient';
+} from './supabaseClient.js';
 
 const SYNC_ENABLED_KEY = 'edsy_cloud_sync_enabled';
 const SYNC_PASSPHRASE_SALT_KEY = 'edsy_sync_passphrase_salt';

@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import AuthModal from './components/auth/AuthModal';
+import ShareNoteModal from './components/note/ShareNoteModal';
 import { onAuthStateChange, getCurrentUser } from './services/supabaseClient';
 import { onSyncStatusChange, getSyncStatus } from './services/syncService';
 import useIsDesktop from './hooks/useIsDesktop';
@@ -38,16 +39,14 @@ import {
  * Uses DesktopNotesWorkspace (dual-pane) on screens >= 768px,
  * and canonical NotesCatalogScreen on mobile (< 768px).
  */
-function ResponsiveNotesView(props) {
+function ResponsiveNotesView({ onShareNote, ...props }) {
   const isDesktop = useIsDesktop(768);
   const navigate = useNavigate();
 
   if (isDesktop) {
     return (
       <DesktopNotesWorkspace
-        onShareNote={(note) => {
-          navigate('/shared');
-        }}
+        onShareNote={onShareNote}
         {...props}
       />
     );
@@ -124,7 +123,7 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
       {/* 2. Notes Catalog / All Notes (Dual-pane on Desktop, single-pane on Mobile) */}
       <Route
         path="/notes"
-        element={<ResponsiveNotesView />}
+        element={<ResponsiveNotesView onShareNote={onShareNote} />}
       />
 
       {/* 3. Note Editor & Detail */}
@@ -139,6 +138,7 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
                 actionButton={noteEditorData.actionButton}
                 tabs={noteEditorData.tabs}
                 onBackClick={() => navigate(-1)}
+                onShareNote={onShareNote}
               />
             </div>
           </div>
@@ -155,6 +155,7 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
                 actionButton={noteEditorData.actionButton}
                 tabs={noteEditorData.tabs}
                 onBackClick={() => navigate(-1)}
+                onShareNote={onShareNote}
               />
             </div>
           </div>
@@ -242,6 +243,7 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState(() => getSyncStatus());
   const [user, setUser] = useState(() => getCurrentUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [sharingNote, setSharingNote] = useState(null);
 
   useEffect(() => {
     // Subscribe to Supabase auth changes
@@ -265,7 +267,7 @@ export default function App() {
   };
 
   const handleShareNote = (note) => {
-    console.log('Open Share modal for note:', note);
+    setSharingNote(note);
   };
 
   return (
@@ -283,6 +285,11 @@ export default function App() {
         <AuthModal
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
+        />
+        <ShareNoteModal
+          isOpen={Boolean(sharingNote)}
+          note={sharingNote}
+          onClose={() => setSharingNote(null)}
         />
       </AppLayout>
     </HashRouter>

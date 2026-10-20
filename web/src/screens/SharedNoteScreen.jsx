@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Lock, Unlock, ArrowLeft, Download, Check, ShieldCheck, Globe } from 'lucide-react';
+import { Lock, Unlock, ArrowLeft, Download, Check, ShieldCheck, Globe, RefreshCw } from 'lucide-react';
 import Heading from '../components/ui/Heading';
 import Button from '../components/ui/Button';
 import MarkdownRenderer from '../components/note/MarkdownRenderer';
 import BlockList from '../components/note/BlockList';
 import AudioMemoBlock from '../components/note/AudioMemoBlock';
 import { useNotesStore } from '../data/notesStore';
+import { fetchAndDecryptSharedNote } from '../services/sharingService';
 
 /**
  * SharedNoteScreen component
@@ -19,78 +20,135 @@ export default function SharedNoteScreen() {
   const store = useNotesStore();
 
   const [loading, setLoading] = useState(true);
+  const [unlocking, setUnlocking] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [imported, setImported] = useState(false);
   const [noteData, setNoteData] = useState(null);
+  const [errorNotFound, setErrorNotFound] = useState(false);
 
   // Load shared note by slug
   useEffect(() => {
-    // 1. Check local cache or mock database
+    let isMounted = true;
     setLoading(true);
-    setTimeout(() => {
-      // Sample mock response or local match
-      if (slug === 'q4-strategy-private') {
-        setIsLocked(true);
-        setNoteData({
-          id: 'shared-private-1',
-          title: 'Q4 Product Roadmap & Vision',
-          author: 'Alex',
-          date: 'Yesterday',
-          color: 'blue',
-          notebook: 'Strategy',
-          isPrivate: true,
-          correctPassword: 'edsy',
-          content: '## Confidential Q4 Milestones\n\n- E2EE Zero-Knowledge Sync\n- Public and Private Link Sharing\n- Responsive Desktop Dashboard\n- Android APK Parity Release',
-          blocks: [
-            {
-              id: 'b1',
-              number: '01',
-              title: 'Core Philosophy',
-              content: 'Privacy first. User data must never touch unencrypted cloud servers.',
-              items: [],
-            },
-          ],
-        });
-      } else {
-        // Public note
-        setIsLocked(false);
-        setNoteData({
-          id: 'shared-public-1',
-          title: 'Design System & Token Architecture',
-          author: 'Design Team',
-          date: 'Today',
-          color: 'yellow',
-          notebook: 'Design Systems',
-          isPrivate: false,
-          content: '## Edsy Token Guidelines\n\nAll screens use `#000000` canvas background with curated accent card colors:\n- Blue: `#6F91B6`\n- Light: `#DCE3EB`\n- Yellow: `#CABC3F`\n- Primary CTA: `#E5E7DA`\n\nUse typography styles `.text-display` (46px) and `.text-title` (30px).',
-          blocks: [
-            {
-              id: 'b1',
-              number: '01',
-              title: 'Verified Color Tokens',
-              content: 'Pure black canvas, high contrast, minimalist typography.',
-              items: [
-                { id: 'i1', text: 'Black Canvas (#000000)', completed: true },
-                { id: 'i2', text: 'Cream CTA (#E5E7DA)', completed: true },
-              ],
-            },
-          ],
-        });
+    setErrorNotFound(false);
+
+    async function loadNote() {
+      try {
+        const res = await fetchAndDecryptSharedNote(slug, null);
+        if (!isMounted) return;
+
+        if (res.isLocked) {
+          setIsLocked(true);
+          setNoteData({
+            title: res.titleHint || 'Password Protected Note',
+            isPrivate: true,
+            slug: res.slug,
+          });
+        } else if (res.note) {
+          setIsLocked(false);
+          setNoteData(res.note);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+
+        // Fallback for pre-seeded demo slugs
+        if (slug === 'q4-strategy-private') {
+          setIsLocked(true);
+          setNoteData({
+            title: 'Q4 Product Roadmap & Vision',
+            isPrivate: true,
+            correctPassword: 'edsy',
+            author: 'Alex',
+            date: 'Yesterday',
+            content: '## Confidential Q4 Milestones\n\n- E2EE Zero-Knowledge Sync\n- Public and Private Link Sharing\n- Responsive Desktop Dashboard\n- Android APK Parity Release',
+            blocks: [
+              {
+                id: 'b1',
+                number: '01',
+                title: 'Core Philosophy',
+                content: 'Privacy first. User data must never touch unencrypted cloud servers.',
+                items: [],
+              },
+            ],
+          });
+        } else if (slug === 'design-tokens-v2') {
+          setIsLocked(false);
+          setNoteData({
+            id: 'shared-public-1',
+            title: 'Design System & Token Architecture',
+            author: 'Design Team',
+            date: 'Today',
+            color: 'yellow',
+            notebook: 'Design Systems',
+            isPrivate: false,
+            content: '## Edsy Token Guidelines\n\nAll screens use `#000000` canvas background with curated accent card colors:\n- Blue: `#6F91B6`\n- Light: `#DCE3EB`\n- Yellow: `#CABC3F`\n- Primary CTA: `#E5E7DA`\n\nUse typography styles `.text-display` (46px) and `.text-title` (30px).',
+            blocks: [
+              {
+                id: 'b1',
+                number: '01',
+                title: 'Verified Color Tokens',
+                content: 'Pure black canvas, high contrast, minimalist typography.',
+                items: [
+                  { id: 'i1', text: 'Black Canvas (#000000)', completed: true },
+                  { id: 'i2', text: 'Cream CTA (#E5E7DA)', completed: true },
+                ],
+              },
+            ],
+          });
+        } else {
+          setErrorNotFound(true);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
       }
-      setLoading(false);
-    }, 200);
+    }
+
+    loadNote();
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
-  const handleUnlock = (e) => {
+  const handleUnlock = async (e) => {
     e.preventDefault();
-    if (noteData?.correctPassword && passwordInput !== noteData.correctPassword) {
-      setPasswordError('Incorrect password. Please try again.');
+    if (!passwordInput.trim()) {
+      setPasswordError('Please enter the password.');
       return;
     }
+
+    setUnlocking(true);
     setPasswordError('');
-    setIsLocked(false);
+
+    try {
+      // 1. Try real service decryption
+      const res = await fetchAndDecryptSharedNote(slug, passwordInput);
+      if (res.isLocked && res.error === 'INCORRECT_PASSWORD') {
+        setPasswordError('Incorrect password. Please try again.');
+        return;
+      }
+
+      if (res.note) {
+        setNoteData(res.note);
+        setIsLocked(false);
+        return;
+      }
+    } catch {
+      // 2. Check mock/demo password fallback
+      if (noteData?.correctPassword) {
+        if (passwordInput === noteData.correctPassword) {
+          setIsLocked(false);
+          return;
+        } else {
+          setPasswordError('Incorrect password. Please try again.');
+          return;
+        }
+      }
+      setPasswordError('Decryption failed. Please check the password.');
+    } finally {
+      setUnlocking(false);
+    }
   };
 
   const handleImport = () => {
@@ -125,6 +183,24 @@ export default function SharedNoteScreen() {
     );
   }
 
+  if (errorNotFound) {
+    return (
+      <div className="min-h-screen w-full bg-screen text-text-primary px-5 py-12 flex flex-col items-center justify-center text-center max-w-md mx-auto">
+        <h2 className="text-title text-text-primary font-light">Note Not Found</h2>
+        <p className="text-body text-text-secondary mt-2">
+          The shared note "{slug}" does not exist or may have been revoked.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate('/shared')}
+          className="mt-6 px-5 py-2.5 rounded-button bg-cream-bg text-cream-text text-body font-medium"
+        >
+          View Shared Notes
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full bg-screen text-text-primary px-5 py-8 md:px-12 md:py-12 flex flex-col justify-between max-w-4xl mx-auto">
       <div>
@@ -132,7 +208,7 @@ export default function SharedNoteScreen() {
         <div className="flex items-center justify-between pb-6 border-b border-border-subtle/30">
           <button
             type="button"
-            onClick={() => navigate('/notes')}
+            onClick={() => navigate('/shared')}
             className="flex items-center gap-2 text-text-secondary hover:text-text-primary text-body transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -141,7 +217,7 @@ export default function SharedNoteScreen() {
 
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono uppercase tracking-wider text-text-dimmed px-2 py-0.5 rounded border border-border-subtle/40">
-              {noteData?.isPrivate ? 'Private Encrypted' : 'Public Note'}
+              {isLocked || noteData?.isPrivate ? 'Private Encrypted' : 'Public Note'}
             </span>
             <span className="text-sm font-light text-cream-bg">.edsy</span>
           </div>
@@ -178,10 +254,17 @@ export default function SharedNoteScreen() {
               )}
               <button
                 type="submit"
+                disabled={unlocking}
                 className="w-full py-3 rounded-button bg-cream-bg text-cream-text text-body font-medium flex items-center justify-center gap-2 hover:opacity-95 active:scale-95 transition-all mt-1"
               >
-                <Unlock className="w-4 h-4" />
-                <span>Decrypt Note</span>
+                {unlocking ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Unlock className="w-4 h-4" />
+                    <span>Decrypt Note</span>
+                  </>
+                )}
               </button>
             </form>
           </div>

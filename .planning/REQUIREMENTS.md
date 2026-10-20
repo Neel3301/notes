@@ -16,9 +16,9 @@
 - [x] **SYNC-05**: Offline sync queue handles offline edits and merges changes smoothly upon reconnection via timestamp-based conflict resolution.
 
 ### Secure Note-Sharing Functionality
-- [ ] **SHR-01**: Public note sharing generates a shareable web link accessible in any browser without requiring an account or app installation.
-- [ ] **SHR-02**: Private note sharing encrypts note content with a password-derived key; recipients must enter the correct password to view the decrypted note.
-- [ ] **SHR-03**: Users can customize the share link name/slug with instant availability validation against existing shared slugs.
+- [x] **SHR-01**: Public note sharing generates a shareable web link accessible in any browser without requiring an account or app installation.
+- [x] **SHR-02**: Private note sharing encrypts note content with a password-derived key; recipients must enter the correct password to view the decrypted note.
+- [x] **SHR-03**: Users can customize the share link name/slug with instant availability validation against existing shared slugs.
 - [ ] **SHR-04**: Mobile app provides a "Shared Notes" interface allowing mobile users to open, view, and save/import shared notes into their local library.
 
 ### Cross-Platform Parity & Release APK
@@ -85,8 +85,8 @@
 | SYNC-03 | Phase 14 | Passed |
 | SYNC-04 | Phase 14 | Passed |
 | SYNC-05 | Phase 14 | Passed |
-| SHR-01 | Phase 15 | Pending |
-| SHR-02 | Phase 15 | Pending |
-| SHR-03 | Phase 15 | Pending |
+| SHR-01 | Phase 15 | Passed |
+| SHR-02 | Phase 15 | Passed |
+| SHR-03 | Phase 15 | Passed |
 | SHR-04 | Phase 16 | Pending |
 | PRT-04 | Phase 16 | Pending |

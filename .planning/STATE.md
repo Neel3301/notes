@@ -7,10 +7,10 @@ last_updated: "2026-10-20T19:00:00.000Z"
 last_activity: 2026-10-20
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
-  percent: 50
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 75
 ---
 
 # State: Edsy Advanced Notes (Milestone v2.0.0)
@@ -43,8 +43,8 @@ progress:
 | **Phase 12** | Unified Web & Mobile UI Parity via Embedded React Native WebView | ✅ Complete | PRT-01, PRT-02, PRT-03 |
 | **Phase 13** | Responsive Desktop Dashboard Layout & Web Revamp | ✅ Complete | DSH-01, DSH-02, DSH-03, DSH-04 |
 | **Phase 14** | Supabase Client, Optional Authentication & E2EE Cloud Sync | ✅ Complete | SYNC-01, SYNC-02, SYNC-03, SYNC-04, SYNC-05 |
-| **Phase 15** | Public & Private Secure Note Sharing | ⏳ Active | SHR-01, SHR-02, SHR-03 |
-| **Phase 16** | Mobile Shared Notes Access & Release APK Parity Rebuild | ⏳ Pending | SHR-04, PRT-04 |
+| **Phase 15** | Public & Private Secure Note Sharing | ✅ Complete | SHR-01, SHR-02, SHR-03 |
+| **Phase 16** | Mobile Shared Notes Access & Release APK Parity Rebuild | ⏳ Active | SHR-04, PRT-04 |
 
 ---
 
@@ -52,9 +52,9 @@ progress:
 
 - **Active Milestone**: v2.0.0
 - **Active Branch**: `react-native-mobile`
-- **Active Phase**: Phase 15 (Public & Private Secure Note Sharing)
-- **Status**: Starting Phase 15.
-- **Last activity**: 2026-10-20 — Phase 14 completed (40/40 assertions passed); advancing to Phase 15.
+- **Active Phase**: Phase 16 (Mobile Shared Notes Access & Release APK Parity Rebuild)
+- **Status**: Starting Phase 16.
+- **Last activity**: 2026-10-20 — Phase 15 completed (36/36 assertions passed); advancing to Phase 16.
 
 ---
 

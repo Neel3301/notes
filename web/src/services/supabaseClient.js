@@ -35,6 +35,28 @@ const MOCK_AUTH_STORAGE_KEY = 'edsy_mock_supabase_auth';
 const MOCK_NOTES_STORAGE_KEY = 'edsy_mock_supabase_notes';
 const MOCK_SHARED_STORAGE_KEY = 'edsy_mock_supabase_shared';
 
+const memoryStore = new Map();
+const safeStorage = {
+  getItem: (key) => {
+    if (typeof localStorage !== 'undefined') {
+      try { return localStorage.getItem(key); } catch { return memoryStore.get(key) || null; }
+    }
+    return memoryStore.get(key) || null;
+  },
+  setItem: (key, val) => {
+    if (typeof localStorage !== 'undefined') {
+      try { localStorage.setItem(key, val); } catch { /* ignore */ }
+    }
+    memoryStore.set(key, String(val));
+  },
+  removeItem: (key) => {
+    if (typeof localStorage !== 'undefined') {
+      try { localStorage.removeItem(key); } catch { /* ignore */ }
+    }
+    memoryStore.delete(key);
+  },
+};
+
 class MockSupabaseService {
   constructor() {
     this.authListeners = new Set();
@@ -42,7 +64,7 @@ class MockSupabaseService {
 
   getCurrentUser() {
     try {
-      const data = localStorage.getItem(MOCK_AUTH_STORAGE_KEY);
+      const data = safeStorage.getItem(MOCK_AUTH_STORAGE_KEY);
       return data ? JSON.parse(data) : null;
     } catch {
       return null;
@@ -56,7 +78,7 @@ class MockSupabaseService {
       email,
       created_at: new Date().toISOString(),
     };
-    localStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
+    safeStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
     this.notifyAuthListeners('SIGNED_IN', user);
     return { user, error: null };
   }
@@ -67,13 +89,13 @@ class MockSupabaseService {
     const user = existing && existing.email === email
       ? existing
       : { id: `usr_${Date.now()}`, email, created_at: new Date().toISOString() };
-    localStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
+    safeStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
     this.notifyAuthListeners('SIGNED_IN', user);
     return { user, error: null };
   }
 
   async signOut() {
-    localStorage.removeItem(MOCK_AUTH_STORAGE_KEY);
+    safeStorage.removeItem(MOCK_AUTH_STORAGE_KEY);
     this.notifyAuthListeners('SIGNED_OUT', null);
     return { error: null };
   }
@@ -108,7 +130,7 @@ class MockSupabaseService {
 
     let allNotes = [];
     try {
-      const raw = localStorage.getItem(MOCK_NOTES_STORAGE_KEY);
+      const raw = safeStorage.getItem(MOCK_NOTES_STORAGE_KEY);
       allNotes = raw ? JSON.parse(raw) : [];
     } catch {
       allNotes = [];
@@ -124,13 +146,13 @@ class MockSupabaseService {
     });
 
     const updated = Array.from(noteMap.values());
-    localStorage.setItem(MOCK_NOTES_STORAGE_KEY, JSON.stringify(updated));
+    safeStorage.setItem(MOCK_NOTES_STORAGE_KEY, JSON.stringify(updated));
     return { data: updated, error: null };
   }
 
   async fetchEncryptedNotes(userId) {
     try {
-      const raw = localStorage.getItem(MOCK_NOTES_STORAGE_KEY);
+      const raw = safeStorage.getItem(MOCK_NOTES_STORAGE_KEY);
       const allNotes = raw ? JSON.parse(raw) : [];
       const userNotes = userId ? allNotes.filter((n) => n.user_id === userId) : allNotes;
       return { data: userNotes, error: null };
@@ -143,7 +165,7 @@ class MockSupabaseService {
   async upsertSharedNote(sharedRecord) {
     let allShared = [];
     try {
-      const raw = localStorage.getItem(MOCK_SHARED_STORAGE_KEY);
+      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
       allShared = raw ? JSON.parse(raw) : [];
     } catch {
       allShared = [];
@@ -160,13 +182,13 @@ class MockSupabaseService {
       allShared.push(sharedRecord);
     }
 
-    localStorage.setItem(MOCK_SHARED_STORAGE_KEY, JSON.stringify(allShared));
+    safeStorage.setItem(MOCK_SHARED_STORAGE_KEY, JSON.stringify(allShared));
     return { data: sharedRecord, error: null };
   }
 
   async getSharedNote(slug) {
     try {
-      const raw = localStorage.getItem(MOCK_SHARED_STORAGE_KEY);
+      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
       const allShared = raw ? JSON.parse(raw) : [];
       const match = allShared.find((s) => s.slug === slug);
       if (!match) return { data: null, error: new Error('Shared note not found') };
@@ -178,7 +200,7 @@ class MockSupabaseService {
 
   async isSlugAvailable(slug, currentNoteId) {
     try {
-      const raw = localStorage.getItem(MOCK_SHARED_STORAGE_KEY);
+      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
       const allShared = raw ? JSON.parse(raw) : [];
       const match = allShared.find((s) => s.slug.toLowerCase() === slug.toLowerCase());
       if (!match) return true;
