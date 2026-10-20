@@ -28,6 +28,7 @@
 }
 
 :root {
+  color-scheme: dark;
   --theme-page: #000000;
   --theme-screen: #000000;
   --theme-text-primary: #FFFFFF;
@@ -40,6 +41,7 @@
 }
 
 :root[data-theme="light"], .theme-light {
+  color-scheme: light;
   --theme-page: #EAEFF5;
   --theme-screen: #FFFFFF;
   --theme-text-primary: #121212;
@@ -51,13 +53,88 @@
   --theme-cream-text: #FFFFFF;
 }
 
-body {
+html, body {
+  color-scheme: dark;
   font-family: var(--font-sans);
   background-color: var(--color-page);
+  color: var(--color-text-primary);
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Custom Minimalist Dark Scrollbars
+   ========================================================================== */
+
+/* Modern Standard (Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+/* WebKit (Chrome, Edge, Brave, Safari, Android WebView) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(229, 231, 218, 0.4); /* subtle cream hover */
+}
+
+/* Remove default browser scrollbar arrows */
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Utility to completely hide scrollbars while preserving scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
+/* Ultra-subtle slim scrollbar */
+.slim-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.slim-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.slim-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+
+.slim-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 /* Typography utilities */
