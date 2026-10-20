@@ -1,63 +1,74 @@
-# Requirements: Edsy Advanced Notes Mobile App
+# Requirements: Edsy Advanced Notes (Milestone v2.0.0)
 
-## v1 Requirements
+## Milestone v2.0.0 Requirements
 
-### Data & Local Persistence
-- [x] **DATA-01**: User notes, folders, tags, canvas sketches, and audio attachments persist in browser local storage / IndexedDB across page reloads.
-- [x] **DATA-02**: App loads with rich pre-seeded sample notes demonstrating all block types, sketches, tags, and bi-directional links.
-- [x] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
+### Desktop Dashboard Layout & Web Revamp
+- [ ] **DSH-01**: Desktop/laptop view renders a full-width responsive dashboard with collapsible Left Sidebar (`AppHeader`, Navigation, Notebooks, Tags, Settings/Account).
+- [ ] **DSH-02**: Multi-pane workspace allows browsing notes list/timeline and active note editor side-by-side on desktop without modal jumping.
+- [ ] **DSH-03**: Mobile viewports (<768px) and Android APK preserve the exact mobile design reference layout (`PhoneShell` styling, bottom `DatePager`, slide-up menu).
+- [ ] **DSH-04**: Desktop dashboard strictly preserves Edsy dark aesthetic tokens (`#000000`, `#E5E7DA`, Inter Tight, `#6F91B6`, `#DCE3EB`, `#CABC3F`).
 
-### Note Editor & Multi-Modal Blocks
-- [x] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA (`#E5E7DA`), and segmented tabs ("Write", "Preview", "Canvas").
-- [x] **NOTE-02**: User can write and edit Markdown with live rendered formatting (headings, code blocks, lists, quotes).
-- [x] **NOTE-03**: User can structure notes with modular blocks (text, interactive checklist items, callout boxes).
-- [x] **NOTE-04**: User can switch to the Canvas tab to draw/sketch freehand doodles with stroke controls and save them into the note.
-- [x] **NOTE-05**: User can record and playback audio memos with progress bar and timestamp indicator.
+### Supabase Integration & E2EE Cloud Sync
+- [ ] **SYNC-01**: Local-first note-taking is 100% functional without an account or network connection.
+- [ ] **SYNC-02**: Optional Supabase authentication (email/password sign-up, sign-in, session persistence) to enable cloud features.
+- [ ] **SYNC-03**: End-to-end encryption (E2EE) using Web Crypto (AES-256-GCM + PBKDF2) ensures note titles, bodies, blocks, sketches, and audio are encrypted client-side before upload.
+- [ ] **SYNC-04**: User-controlled cloud sync toggle allows users to opt-in or opt-out, trigger manual "Sync Now", and observe sync status.
+- [ ] **SYNC-05**: Offline sync queue handles offline edits and merges changes smoothly upon reconnection via timestamp-based conflict resolution.
 
-### Views & Navigation
-- [x] **VIEW-01**: Home screen adapts `/study-planning` layout with horizontal snap card carousel displaying colored note cards (`#6F91B6`, `#DCE3EB`, `#CABC3F`).
-- [x] **VIEW-02**: Bottom `DatePager` allows navigating notes by date and jumping to daily journal entries.
-- [x] **VIEW-03**: All Notes catalog screen adapts `/course-overview` with stacked note cards, timestamps, and favorite heart toggles.
-- [x] **VIEW-04**: `SearchPill` provides instant live search filtering notes by title, tag, or content.
-- [x] **VIEW-05**: Outlined filter pills row allows 1-tap filtering by tag or category.
+### Secure Note-Sharing Functionality
+- [ ] **SHR-01**: Public note sharing generates a shareable web link accessible in any browser without requiring an account or app installation.
+- [ ] **SHR-02**: Private note sharing encrypts note content with a password-derived key; recipients must enter the correct password to view the decrypted note.
+- [ ] **SHR-03**: Users can customize the share link name/slug with instant availability validation against existing shared slugs.
+- [ ] **SHR-04**: Mobile app provides a "Shared Notes" interface allowing mobile users to open, view, and save/import shared notes into their local library.
 
-### Organization & Backlinks
-- [x] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography for Notebooks, Tags, Pinned, Archive, and Trash.
-- [x] **ORG-02**: User can organize notes into notebooks/folders and assign custom tags.
-- [x] **ORG-03**: User can write `[[Note Title]]` backlinks that auto-link to corresponding notes and display connected references.
-- [x] **ORG-04**: User can pin important notes to top and send unwanted notes to Trash with restore/permanent delete.
-
-### AI Assistant
-- [x] **AI-01**: Built-in AI action drawer provides 1-tap assistance (Summarize, Extract Action Items, Auto-generate Tags, Rephrase).
-
-### Architecture & Clean Naming
-- [x] **ARCH-01**: Refactor dummy course screens, routes, and components to clean note-taking semantics (`TimelineScreen`, `NotesCatalogScreen`, `NoteEditorScreen`, `NoteCard`, `/timeline`, `/notes`, `/editor`).
-
-### React Native & Mobile APK
-- [x] **MBL-01**: Restructure workspace into `web/` and `mobile/` subdirectories on dedicated branch `react-native-mobile`.
-- [x] **MBL-02**: Build React Native mobile app using Expo matching Edsy design system tokens, components, and screens.
-- [x] **MBL-03**: Compile native Android `.apk` file using local Android SDK and Gradle, outputting to `apk/` directory for direct installation.
-
-### UI Parity & Embedded React Native Mobile App
-- [x] **PRT-01**: Configure Web application in `web/` with relative asset resolution (`base: './'`) and `HashRouter` for 100% offline file execution.
-- [x] **PRT-02**: Embed production web bundle into `mobile/android/app/src/main/assets/web/` hosted via hardware-accelerated `react-native-webview` in `mobile/App.js`.
-- [x] **PRT-03**: Compile release APK with 100% feature and visual parity (Canvas, Audio, AI Assistant, Framer Motion, exact typography and theme colors).
+### Cross-Platform Parity & Release APK
+- [ ] **PRT-04**: Production web bundle with desktop dashboard and Supabase sync is embedded into the React Native Android project and compiled to a new release APK (`apk/edsy-notes.apk`).
 
 ---
 
-## v2 Requirements (Deferred)
+## Validated Requirements (Milestone v1.0.0)
 
-- **V2-01**: Cloud sync across multiple devices via encrypted peer-to-peer or Supabase backend.
-- **V2-02**: Optical Character Recognition (OCR) to extract text from image attachments.
-- **V2-03**: Interactive force-directed knowledge graph view of all inter-note backlinks.
+- [x] **DATA-01**: User notes, folders, tags, canvas sketches, and audio attachments persist in browser local storage / IndexedDB.
+- [x] **DATA-02**: App loads with rich pre-seeded sample notes demonstrating all block types, sketches, tags, and bi-directional links.
+- [x] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
+- [x] **NOTE-01**: Note detail screen adapts `/course-detail` layout with dynamic title, cream action CTA, and segmented tabs.
+- [x] **NOTE-02**: User can write and edit Markdown with live rendered formatting.
+- [x] **NOTE-03**: User can structure notes with modular blocks (text, interactive checklist items, callout boxes).
+- [x] **NOTE-04**: Canvas tab provides freehand doodle/sketching with stroke controls and persists with note.
+- [x] **NOTE-05**: Audio memo recorder and player with waveform and progress timer.
+- [x] **VIEW-01**: Timeline screen adapts `/study-planning` with horizontal snap card carousel.
+- [x] **VIEW-02**: Bottom `DatePager` allows navigating notes by date.
+- [x] **VIEW-03**: Notes catalog screen adapts `/course-overview` with search and favorite toggles.
+- [x] **VIEW-04**: `SearchPill` provides live full-text search.
+- [x] **VIEW-05**: Tag filter pills row for 1-tap categorization.
+- [x] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography.
+- [x] **ORG-02**: Notes organized into notebooks/folders and custom tags.
+- [x] **ORG-03**: Bi-directional linking `[[Note Title]]` with backlinks references.
+- [x] **ORG-04**: Pinning and Trash lifecycle (restore / permanent delete).
+- [x] **AI-01**: Built-in AI assistant action drawer.
+- [x] **ARCH-01**: Clean semantic note-taking routes, components, and content data structures.
+- [x] **MBL-01**: Project restructuring into `web/` and `mobile/` subdirectories.
+- [x] **MBL-02**: React Native mobile app implementation with Edsy design system.
+- [x] **MBL-03**: Native Android APK compilation via local Android SDK and Gradle.
+- [x] **PRT-01**: Relative asset resolution (`base: './'`) and `HashRouter` for offline execution.
+- [x] **PRT-02**: Production web bundle embedded in React Native WebView in `mobile/App.js`.
+- [x] **PRT-03**: Compiled release APK with 100% UI and functional parity.
+
+---
+
+## Future Requirements (Deferred)
+
+- **V3-01**: Live multi-user collaborative editing via CRDT / WebRTC data channels.
+- **V3-02**: Optical Character Recognition (OCR) to extract text from image attachments.
+- **V3-03**: Interactive 3D force-directed knowledge graph view of all inter-note backlinks.
 
 ---
 
 ## Out of Scope
 
-- Multi-user real-time collaborative editing — Single-user mobile focus.
-- Native Android Kotlin codebase — Web simulation in 390px `PhoneShell` is the primary target.
-- Proprietary locked formats — Everything is plain-text and portable.
+- Unencrypted cloud storage of sensitive note data (strictly forbidden; all cloud sync must be E2EE).
+- Mandatory account creation (app must always function locally without an account).
+- Vendor lock-in (export to Markdown/JSON must remain functional).
 
 ---
 
@@ -65,25 +76,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Passed |
-| DATA-02 | Phase 1 | Passed |
-| DATA-03 | Phase 8 | Passed |
-| NOTE-01 | Phase 4 | Passed |
-| NOTE-02 | Phase 4 | Passed |
-| NOTE-03 | Phase 5 | Passed |
-| NOTE-04 | Phase 6 | Passed |
-| NOTE-05 | Phase 6 | Passed |
-| VIEW-01 | Phase 2 | Passed |
-| VIEW-02 | Phase 2 | Passed |
-| VIEW-03 | Phase 3 | Passed |
-| VIEW-04 | Phase 3 | Passed |
-| VIEW-05 | Phase 3 | Passed |
-| ORG-01 | Phase 7 | Passed |
-| ORG-02 | Phase 7 | Passed |
-| ORG-03 | Phase 8 | Passed |
-| ORG-04 | Phase 7 | Passed |
-| AI-01 | Phase 9 | Passed |
-| ARCH-01 | Phase 10 | Passed |
-| MBL-01 | Phase 11 | Pending |
-| MBL-02 | Phase 11 | Pending |
-| MBL-03 | Phase 11 | Pending |
+| DSH-01 | Phase 13 | Pending |
+| DSH-02 | Phase 13 | Pending |
+| DSH-03 | Phase 13 | Pending |
+| DSH-04 | Phase 13 | Pending |
+| SYNC-01 | Phase 14 | Pending |
+| SYNC-02 | Phase 14 | Pending |
+| SYNC-03 | Phase 14 | Pending |
+| SYNC-04 | Phase 14 | Pending |
+| SYNC-05 | Phase 14 | Pending |
+| SHR-01 | Phase 15 | Pending |
+| SHR-02 | Phase 15 | Pending |
+| SHR-03 | Phase 15 | Pending |
+| SHR-04 | Phase 16 | Pending |
+| PRT-04 | Phase 16 | Pending |
