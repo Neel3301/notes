@@ -38,6 +38,11 @@
 - [x] **MBL-02**: Build React Native mobile app using Expo matching Edsy design system tokens, components, and screens.
 - [x] **MBL-03**: Compile native Android `.apk` file using local Android SDK and Gradle, outputting to `apk/` directory for direct installation.
 
+### UI Parity & Embedded React Native Mobile App
+- [x] **PRT-01**: Configure Web application in `web/` with relative asset resolution (`base: './'`) and `HashRouter` for 100% offline file execution.
+- [x] **PRT-02**: Embed production web bundle into `mobile/android/app/src/main/assets/web/` hosted via hardware-accelerated `react-native-webview` in `mobile/App.js`.
+- [x] **PRT-03**: Compile release APK with 100% feature and visual parity (Canvas, Audio, AI Assistant, Framer Motion, exact typography and theme colors).
+
 ---
 
 ## v2 Requirements (Deferred)

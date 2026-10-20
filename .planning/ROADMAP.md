@@ -132,6 +132,14 @@ Transform the Edsy prototype into a fully functional, offline-first Advanced Not
 - Output installable `.apk` file into `apk/` directory.
 - *Requirements covered: MBL-01, MBL-02, MBL-03*
 
+### Phase 12: Unified Web & Mobile UI Parity via Embedded React Native WebView
+**Goal**: Guarantee 100% visual and functional identity between the Web app and Android APK, embedding the canonical Vite + React application inside the React Native APK.
+- Configure `web/vite.config.js` with `base: './'` and `web/src/App.jsx` with `HashRouter` for offline execution.
+- Build production web assets and embed into `mobile/android/app/src/main/assets/web/`.
+- Wire `mobile/App.js` with hardware-accelerated `react-native-webview` loading local offline assets.
+- Recompile Android release APK via Gradle to `apk/edsy-notes.apk`.
+- *Requirements covered: PRT-01, PRT-02, PRT-03*
+
 ---
 
 ## Verification & Guardrails
