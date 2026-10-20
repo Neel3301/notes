@@ -192,6 +192,7 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
                 navigate(item.route);
               }
             }}
+            onOpenAuth={onOpenAuth}
           />
         }
       />

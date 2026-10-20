@@ -19,10 +19,10 @@
 - [x] **SHR-01**: Public note sharing generates a shareable web link accessible in any browser without requiring an account or app installation.
 - [x] **SHR-02**: Private note sharing encrypts note content with a password-derived key; recipients must enter the correct password to view the decrypted note.
 - [x] **SHR-03**: Users can customize the share link name/slug with instant availability validation against existing shared slugs.
-- [ ] **SHR-04**: Mobile app provides a "Shared Notes" interface allowing mobile users to open, view, and save/import shared notes into their local library.
+- [x] **SHR-04**: Mobile app provides a "Shared Notes" interface allowing mobile users to open, view, and save/import shared notes into their local library.
 
 ### Cross-Platform Parity & Release APK
-- [ ] **PRT-04**: Production web bundle with desktop dashboard and Supabase sync is embedded into the React Native Android project and compiled to a new release APK (`apk/edsy-notes.apk`).
+- [x] **PRT-04**: Production web bundle with desktop dashboard and Supabase sync is embedded into the React Native Android project and compiled to a new release APK (`apk/edsy-notes.apk`).
 
 ---
 
@@ -88,5 +88,5 @@
 | SHR-01 | Phase 15 | Passed |
 | SHR-02 | Phase 15 | Passed |
 | SHR-03 | Phase 15 | Passed |
-| SHR-04 | Phase 16 | Pending |
-| PRT-04 | Phase 16 | Pending |
+| SHR-04 | Phase 16 | Passed |
+| PRT-04 | Phase 16 | Passed |

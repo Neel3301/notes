@@ -25,20 +25,16 @@ Transform the Edsy prototype into a complete cross-platform note-taking platform
 
 ## Active Phases (Milestone v2.0.0)
 
-### Phase 13: Responsive Desktop Dashboard Layout & Web Revamp
+### Phase 13: Responsive Desktop Dashboard Layout & Web Revamp (Completed)
 **Goal**: Transform the web app from a fixed 390px mobile frame into an expansive, responsive desktop dashboard while strictly preserving the mobile view on narrow screens (<768px) and Android APK.
 - Refactor `PhoneShell.jsx` into a responsive `AppLayout.jsx` container.
 - Implement collapsible desktop Left Sidebar: Edsy branding, "New Note" CTA, Navigation items ("Timeline", "All Notes", "Notebooks", "Tags", "Shared", "Settings/Cloud"), sync indicator pill.
 - Multi-pane workspace: Notes catalog list on left + active note editor / preview on right on screens >=1024px; wide timeline carousel view with `DatePager`.
 - Responsive breakpoint handling: Mobile viewports (<768px) render the exact mobile `PhoneShell` / bottom `DatePager` / slide-up menu experience.
 - Desktop-optimized Editor: expansive editor view with side-by-side or quick toggle preview, full-width canvas tab, backlinks drawer.
-- *Requirements covered: DSH-01, DSH-02, DSH-03, DSH-04*
-- *Success Criteria:*
-  1. Desktop viewports (>=1024px) display a full-width dashboard with Left Sidebar and multi-pane note list/editor.
-  2. Mobile viewports (<768px) and Android WebView preserve the 100% pixel-perfect mobile reference layout.
-  3. Edsy color palette (`#000000`, `#E5E7DA`, `#6F91B6`, `#DCE3EB`, `#CABC3F`) and typography are maintained consistently.
+- *Requirements covered: DSH-01, DSH-02, DSH-03, DSH-04 (All Passed)*
 
-### Phase 14: Supabase Client, Optional Authentication & E2EE Cloud Sync
+### Phase 14: Supabase Client, Optional Authentication & E2EE Cloud Sync (Completed)
 **Goal**: Integrate Supabase for authentication, cloud storage, and client-side end-to-end encrypted note synchronization with full local-first offline support.
 - Supabase client integration (`web/src/services/supabaseClient.js`).
 - Web Crypto E2EE service (`web/src/services/cryptoService.js`): AES-256-GCM + PBKDF2 passphrase key derivation. Zero plaintext leaves the client.
@@ -49,14 +45,9 @@ Transform the Edsy prototype into a complete cross-platform note-taking platform
   - Status indicators: "Synced", "Syncing...", "Offline", "Sync Disabled".
   - Manual "Sync Now" button.
   - Offline-first: Full local note-taking works 100% without logging in.
-- *Requirements covered: SYNC-01, SYNC-02, SYNC-03, SYNC-04, SYNC-05*
-- *Success Criteria:*
-  1. User can create, edit, and organize notes offline without creating an account.
-  2. User can optionally sign up and sign in via Supabase Auth.
-  3. User can enable/disable cloud sync; when enabled, notes are encrypted client-side with AES-256-GCM before upload.
-  4. Sync status reflects real-time network and upload states.
+- *Requirements covered: SYNC-01, SYNC-02, SYNC-03, SYNC-04, SYNC-05 (All Passed)*
 
-### Phase 15: Public & Private Secure Note Sharing
+### Phase 15: Public & Private Secure Note Sharing (Completed)
 **Goal**: Introduce public and password-protected note sharing with custom slugs and a standalone responsive web viewer.
 - `ShareNoteModal.jsx`:
   - Public sharing toggle: Generates public link (random slug or custom slug availability check).
@@ -68,24 +59,16 @@ Transform the Edsy prototype into a complete cross-platform note-taking platform
   - Accessible in any web browser without logging in.
   - Password prompt modal if note is private.
   - Renders markdown, blocks, canvas doodles, and audio notes with Edsy aesthetic.
-- *Requirements covered: SHR-01, SHR-02, SHR-03*
-- *Success Criteria:*
-  1. User can share a note publicly with a random or custom slug and open it in a browser without an account.
-  2. User can share a note privately with a password; recipient cannot view or decrypt note without the correct password.
-  3. Custom slugs can be checked for availability and claimed.
+- *Requirements covered: SHR-01, SHR-02, SHR-03 (All Passed)*
 
-### Phase 16: Mobile Shared Notes Access & Release APK Parity Rebuild
+### Phase 16: Mobile Shared Notes Access & Release APK Parity Rebuild (Completed)
 **Goal**: Enable mobile access to shared notes and rebuild the standalone Android APK with 100% visual and functional parity.
 - Mobile "Shared Notes" section & Link Opener dialog to paste a share URL or slug and view/import into local notes.
 - Build production web distribution (`npm run build` in `web/`).
 - Copy bundle to `mobile/android/app/src/main/assets/web/`.
 - Recompile release APK via Gradle to `apk/edsy-notes.apk`.
 - Verify complete cross-platform parity (test suite with automated assertions).
-- *Requirements covered: SHR-04, PRT-04*
-- *Success Criteria:*
-  1. Mobile app allows opening, viewing, and importing shared notes into local library.
-  2. Release APK compiles successfully at `apk/edsy-notes.apk`.
-  3. 100% visual and functional parity across Web and Mobile is verified.
+- *Requirements covered: SHR-04, PRT-04 (All Passed)*
 
 ---
 

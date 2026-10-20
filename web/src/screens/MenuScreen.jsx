@@ -39,6 +39,7 @@ export default function MenuScreen({
   header = { left: 'close', logo: '.edsy' },
   onClose,
   onNavigate,
+  onOpenAuth,
   className = '',
 }) {
   const navigate = useNavigate();
@@ -195,6 +196,23 @@ export default function MenuScreen({
               count={favoritesCount}
               onClick={() => {
                 navigate('/notes', { state: { initialFilter: 'favorites' } });
+              }}
+            />
+
+            <MenuItem
+              label="Shared Notes"
+              active={location.pathname === '/shared'}
+              onClick={() => {
+                navigate('/shared');
+              }}
+            />
+
+            <MenuItem
+              label="Cloud Sync & Account"
+              onClick={() => {
+                if (onOpenAuth) {
+                  onOpenAuth();
+                }
               }}
             />
 
