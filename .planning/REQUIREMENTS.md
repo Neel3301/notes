@@ -3,8 +3,8 @@
 ## v1 Requirements
 
 ### Data & Local Persistence
-- [ ] **DATA-01**: User notes, folders, tags, canvas sketches, and audio attachments persist in browser local storage / IndexedDB across page reloads.
-- [ ] **DATA-02**: App loads with rich pre-seeded sample notes demonstrating all block types, sketches, tags, and bi-directional links.
+- [x] **DATA-01**: User notes, folders, tags, canvas sketches, and audio attachments persist in browser local storage / IndexedDB across page reloads.
+- [x] **DATA-02**: App loads with rich pre-seeded sample notes demonstrating all block types, sketches, tags, and bi-directional links.
 - [ ] **DATA-03**: User can export individual notes as Markdown files or download a full JSON backup.
 
 ### Note Editor & Multi-Modal Blocks
@@ -52,8 +52,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Passed |
+| DATA-02 | Phase 1 | Passed |
 | DATA-03 | Phase 8 | Pending |
 | NOTE-01 | Phase 4 | Pending |
 | NOTE-02 | Phase 4 | Pending |
