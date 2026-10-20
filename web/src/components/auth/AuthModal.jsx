@@ -6,6 +6,7 @@ import {
   signOut,
   getCurrentUser,
   onAuthStateChange,
+  isCloudConfigured,
 } from '../../services/supabaseClient';
 import {
   isSyncEnabled,
@@ -261,6 +262,22 @@ export default function AuthModal({ isOpen, onClose }) {
           ) : (
             /* SIGN IN / SIGN UP FORM */
             <form onSubmit={handleAuthSubmit} className="flex flex-col gap-4">
+              {/* Supabase Connection Status Banner */}
+              <div className="px-3 py-2 rounded-card bg-[#141414] border border-border-subtle/40 flex items-center justify-between text-[11px]">
+                <span className="text-text-secondary">Backend:</span>
+                {isCloudConfigured() ? (
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-mono">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Supabase Cloud Connected
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-text-dimmed font-mono" title="Configure web/.env to connect live Supabase">
+                    <span className="w-2 h-2 rounded-full bg-accent-yellow/80" />
+                    Local Offline Mode (web/.env)
+                  </span>
+                )}
+              </div>
+
               {/* Tab Switcher */}
               <div className="flex p-1 rounded-card bg-[#151515] border border-border-subtle/40">
                 <button

@@ -30,6 +30,14 @@ export const realSupabase = isRealConfigured
     })
   : null;
 
+if (typeof window !== 'undefined') {
+  if (isRealConfigured) {
+    console.info(`[Supabase] Live Supabase cloud client active: ${SUPABASE_URL}`);
+  } else {
+    console.info('[Supabase] Offline emulation mode active. To connect your live project, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to web/.env (see web/.env.example).');
+  }
+}
+
 // Local Mock Cloud Storage for offline testing & fallback
 const MOCK_AUTH_STORAGE_KEY = 'edsy_mock_supabase_auth';
 const MOCK_NOTES_STORAGE_KEY = 'edsy_mock_supabase_notes';
