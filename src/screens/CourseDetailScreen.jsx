@@ -85,7 +85,9 @@ export default function CourseDetailScreen({
   const [showAiSheet, setShowAiSheet] = useState(false);
 
   // Compute bi-directional backlinks to this note
-  const backlinks = currentStoreNote?.id ? store.getBacklinks(currentStoreNote.id) : [];
+  const backlinks = (currentStoreNote?.id && typeof store?.getBacklinks === 'function')
+    ? store.getBacklinks(currentStoreNote.id)
+    : [];
 
   // AI Assistant action handlers
   const handleAiInsertBlock = (blockData) => {
