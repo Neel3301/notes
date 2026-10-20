@@ -102,9 +102,9 @@
     "semantic_hash": "5961ccfb01c60c0534b7f0d6ea1b8a53"
   },
   "src/screens/CourseDetailScreen.jsx": {
-    "mtime": 1792496437.7944763,
-    "seen": 1792496732.134601,
-    "ast_hash": "acaccde2273e88a9a548c836b0bc2f5c",
+    "mtime": 1792496944.2930877,
+    "seen": 1792497240.0239823,
+    "ast_hash": "1f69ae428d828a96ce44da3cb136329d",
     "semantic_hash": ""
   },
   "src/screens/CourseOverviewScreen.jsx": {
@@ -3414,9 +3414,9 @@
     "semantic_hash": ""
   },
   ".planning/REQUIREMENTS.md": {
-    "mtime": 1792496639.8228593,
-    "seen": 1792496732.1382906,
-    "ast_hash": "72f3e435f42e2843f6041e11d0254422",
+    "mtime": 1792497136.8479228,
+    "seen": 1792497240.027256,
+    "ast_hash": "51a1e807e0af293d82c105c05926e89f",
     "semantic_hash": ""
   },
   ".planning/ROADMAP.md": {
@@ -3426,9 +3426,9 @@
     "semantic_hash": ""
   },
   ".planning/STATE.md": {
-    "mtime": 1792496658.021147,
-    "seen": 1792496732.1383169,
-    "ast_hash": "7d5607188c88c6c91282b8569a9e28cc",
+    "mtime": 1792497158.1892343,
+    "seen": 1792497240.027269,
+    "ast_hash": "06c0c471103737c08f7cbcfe5236d304",
     "semantic_hash": ""
   },
   ".planning/codebase/ARCHITECTURE.md": {
@@ -3783,6 +3783,42 @@
     "mtime": 1792496617.0172217,
     "seen": 1792496732.1386757,
     "ast_hash": "812a71e84b782f068ff38c750ab0c0f7",
+    "semantic_hash": ""
+  },
+  "src/components/note/AiAssistantSheet.jsx": {
+    "mtime": 1792496836.0467837,
+    "seen": 1792497240.0238116,
+    "ast_hash": "a4cb2653261739a6d85c72314238face",
+    "semantic_hash": ""
+  },
+  "src/data/verify-ai-assistant.js": {
+    "mtime": 1792497054.6146128,
+    "seen": 1792497240.0239172,
+    "ast_hash": "5296691ef524bd2d40a12ad10c072503",
+    "semantic_hash": ""
+  },
+  "src/services/aiAssistantService.js": {
+    "mtime": 1792496791.556223,
+    "seen": 1792497240.0240035,
+    "ast_hash": "82453c83d33e28eed5195acb7cf18a47",
+    "semantic_hash": ""
+  },
+  ".planning/phases/09-ai-assistant-action-sheet/09-01-PLAN.md": {
+    "mtime": 1792496760.2410538,
+    "seen": 1792497240.0275488,
+    "ast_hash": "3d6bb3e3209e206eada42d3968054854",
+    "semantic_hash": ""
+  },
+  ".planning/phases/09-ai-assistant-action-sheet/09-01-SUMMARY.md": {
+    "mtime": 1792497105.2236373,
+    "seen": 1792497240.0275576,
+    "ast_hash": "dc2f0bc847aa111e02d7ed950b3f12d2",
+    "semantic_hash": ""
+  },
+  ".planning/phases/09-ai-assistant-action-sheet/09-VERIFICATION.md": {
+    "mtime": 1792497114.333522,
+    "seen": 1792497240.0275624,
+    "ast_hash": "c39b34d660a28782a95f676e34c58d49",
     "semantic_hash": ""
   }
 }
