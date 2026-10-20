@@ -22,10 +22,10 @@
 - [x] **VIEW-05**: Outlined filter pills row allows 1-tap filtering by tag or category.
 
 ### Organization & Backlinks
-- [ ] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography for Notebooks, Tags, Pinned, Archive, and Trash.
-- [ ] **ORG-02**: User can organize notes into notebooks/folders and assign custom tags.
+- [x] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography for Notebooks, Tags, Pinned, Archive, and Trash.
+- [x] **ORG-02**: User can organize notes into notebooks/folders and assign custom tags.
 - [ ] **ORG-03**: User can write `[[Note Title]]` backlinks that auto-link to corresponding notes and display connected references.
-- [ ] **ORG-04**: User can pin important notes to top and send unwanted notes to Trash with restore/permanent delete.
+- [x] **ORG-04**: User can pin important notes to top and send unwanted notes to Trash with restore/permanent delete.
 
 ### AI Assistant
 - [ ] **AI-01**: Built-in AI action drawer provides 1-tap assistance (Summarize, Extract Action Items, Auto-generate Tags, Rephrase).
@@ -65,8 +65,8 @@
 | VIEW-03 | Phase 3 | Passed |
 | VIEW-04 | Phase 3 | Passed |
 | VIEW-05 | Phase 3 | Passed |
-| ORG-01 | Phase 7 | Pending |
-| ORG-02 | Phase 7 | Pending |
+| ORG-01 | Phase 7 | Passed |
+| ORG-02 | Phase 7 | Passed |
 | ORG-03 | Phase 8 | Pending |
-| ORG-04 | Phase 7 | Pending |
+| ORG-04 | Phase 7 | Passed |
 | AI-01 | Phase 9 | Pending |

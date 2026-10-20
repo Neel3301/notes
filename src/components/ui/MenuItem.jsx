@@ -15,6 +15,7 @@ import { ArrowUpRight } from 'lucide-react';
 export default function MenuItem({
   label,
   active = false,
+  count,
   onClick,
   className = '',
 }) {
@@ -24,15 +25,22 @@ export default function MenuItem({
       onClick={onClick}
       className={`w-full flex items-center justify-between text-left py-1 select-none transition-colors group cursor-pointer ${className}`}
     >
-      <span
-        className={`text-menu transition-colors ${
-          active
-            ? 'text-text-primary'
-            : 'text-text-secondary hover:text-text-primary'
-        }`}
-      >
-        {label}
-      </span>
+      <div className="flex items-baseline gap-2.5">
+        <span
+          className={`text-menu transition-colors ${
+            active
+              ? 'text-text-primary'
+              : 'text-text-secondary group-hover:text-text-primary'
+          }`}
+        >
+          {label}
+        </span>
+        {count !== undefined && count !== null && (
+          <span className="text-label text-text-secondary/60 font-mono">
+            {count}
+          </span>
+        )}
+      </div>
 
       {active && (
         <span className="text-text-primary flex items-center justify-center pr-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">

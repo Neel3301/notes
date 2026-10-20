@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { MoreVertical, Plus, Heart, X, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { MoreVertical, Plus, Heart, X, Check, Folder } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
 import SearchPill from '../components/ui/SearchPill';
@@ -17,6 +18,7 @@ import { useNotesStore } from '../data/notesStore';
  * - Horizontal tag filter pill strip
  * - Full-width vertical stacked cards with alternating colors (blue, light, yellow)
  * - Interactive heart favorite toggling
+ * - Smart filter support for Notebooks and Tags
  */
 export default function CourseOverviewScreen({
   header = { left: 'menu', logo: '.edsy' },
@@ -29,10 +31,31 @@ export default function CourseOverviewScreen({
   onMoreClick,
   className = '',
 }) {
+  const location = useLocation();
   const store = useNotesStore();
+
   const [query, setQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState('All');
+  const [selectedTag, setSelectedTag] = useState(
+    location.state?.initialFilter === 'favorites'
+      ? 'Favorites'
+      : location.state?.tagFilter || 'All'
+  );
+  const [selectedNotebook, setSelectedNotebook] = useState(
+    location.state?.notebookFilter || null
+  );
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+  // Sync state if navigation state changes
+  useEffect(() => {
+    if (location.state?.initialFilter === 'favorites') {
+      setSelectedTag('Favorites');
+    } else if (location.state?.tagFilter) {
+      setSelectedTag(location.state.tagFilter);
+    }
+    if (location.state?.notebookFilter) {
+      setSelectedNotebook(location.state.notebookFilter);
+    }
+  }, [location.state]);
 
   // Available tag filter categories
   const filterTags = ['All', 'Favorites', 'Design', 'Frontend', 'Art', 'Tokens'];
@@ -40,9 +63,14 @@ export default function CourseOverviewScreen({
   // Determine source of notes
   const sourceNotes = propCards && propCards.length > 0 ? propCards : store.notes;
 
-  // Filter notes by search query and active tag
+  // Filter notes by search query, notebook, and active tag
   const filteredNotes = sourceNotes.filter((note) => {
     if (note.trashed) return false;
+
+    // Notebook filter
+    if (selectedNotebook && note.notebook !== selectedNotebook) {
+      return false;
+    }
 
     // Tag filter
     if (selectedTag === 'Favorites') {
@@ -203,6 +231,24 @@ export default function CourseOverviewScreen({
             );
           })}
         </div>
+
+        {/* Active Notebook Indicator Badge */}
+        {selectedNotebook && (
+          <div className="mt-2.5 flex items-center justify-between px-3 py-1.5 rounded-pill bg-[#1A1A1A] border border-cream-bg/40 text-label text-text-primary animate-fadeIn">
+            <div className="flex items-center gap-1.5 truncate">
+              <Folder className="w-3.5 h-3.5 text-cream-bg shrink-0" />
+              <span className="truncate">Notebook: <strong className="font-medium text-cream-bg">{selectedNotebook}</strong></span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedNotebook(null)}
+              className="p-0.5 text-text-secondary hover:text-text-primary ml-2 shrink-0"
+              title="Clear notebook filter"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Vertical Note Cards Catalog */}
         <div className="mt-7 flex flex-col gap-5 pb-6">

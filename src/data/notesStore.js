@@ -109,6 +109,13 @@ export const notesStore = {
   },
 
   /**
+   * Getter for notes array
+   */
+  get notes() {
+    return currentNotes;
+  },
+
+  /**
    * Get a single note by ID
    * @param {string} id
    * @returns {object | undefined}
