@@ -16,7 +16,7 @@
 |-------|-------------|--------|--------------|
 | **Phase 1** | Local Data Store & Note Schema | ✅ Complete | DATA-01, DATA-02 |
 | **Phase 2** | Timeline & Daily Notes Screen (`study-planning.jpg`) | ✅ Complete | VIEW-01, VIEW-02 |
-| **Phase 3** | All Notes Catalog & Live Search (`course-overview.jpg`) | ⏳ Pending | VIEW-03, VIEW-04, VIEW-05 |
+| **Phase 3** | All Notes Catalog & Live Search (`course-overview.jpg`) | ✅ Complete | VIEW-03, VIEW-04, VIEW-05 |
 | **Phase 4** | Note Editor Core & Markdown Engine (`course-detail.jpg`) | ⏳ Pending | NOTE-01, NOTE-02 |
 | **Phase 5** | Modular Block Engine (Notion-style Blocks) | ⏳ Pending | NOTE-03 |
 | **Phase 6** | Canvas Freehand Sketch Pad & Audio Memo Player | ⏳ Pending | NOTE-04, NOTE-05 |
@@ -29,8 +29,8 @@
 ## Current Position
 
 - **Active Milestone**: v1.0.0
-- **Active Phase**: Phase 3 (All Notes Catalog & Live Search)
-- **Status**: Phase 2 verified; ready for Phase 3 planning (`/gsd-plan-phase 3`).
+- **Active Phase**: Phase 4 (Note Editor Core & Markdown Engine)
+- **Status**: Phase 3 verified; ready for Phase 4 planning (`/gsd-plan-phase 4`).
 
 ---
 

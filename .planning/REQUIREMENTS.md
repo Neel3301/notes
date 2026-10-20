@@ -17,9 +17,9 @@
 ### Views & Navigation
 - [x] **VIEW-01**: Home screen adapts `/study-planning` layout with horizontal snap card carousel displaying colored note cards (`#6F91B6`, `#DCE3EB`, `#CABC3F`).
 - [x] **VIEW-02**: Bottom `DatePager` allows navigating notes by date and jumping to daily journal entries.
-- [ ] **VIEW-03**: All Notes catalog screen adapts `/course-overview` with stacked note cards, timestamps, and favorite heart toggles.
-- [ ] **VIEW-04**: `SearchPill` provides instant live search filtering notes by title, tag, or content.
-- [ ] **VIEW-05**: Outlined filter pills row allows 1-tap filtering by tag or category.
+- [x] **VIEW-03**: All Notes catalog screen adapts `/course-overview` with stacked note cards, timestamps, and favorite heart toggles.
+- [x] **VIEW-04**: `SearchPill` provides instant live search filtering notes by title, tag, or content.
+- [x] **VIEW-05**: Outlined filter pills row allows 1-tap filtering by tag or category.
 
 ### Organization & Backlinks
 - [ ] **ORG-01**: Full-screen slide-up menu adapts `/menu` with giant `.text-menu` typography for Notebooks, Tags, Pinned, Archive, and Trash.
@@ -62,9 +62,9 @@
 | NOTE-05 | Phase 6 | Pending |
 | VIEW-01 | Phase 2 | Passed |
 | VIEW-02 | Phase 2 | Passed |
-| VIEW-03 | Phase 3 | Pending |
-| VIEW-04 | Phase 3 | Pending |
-| VIEW-05 | Phase 3 | Pending |
+| VIEW-03 | Phase 3 | Passed |
+| VIEW-04 | Phase 3 | Passed |
+| VIEW-05 | Phase 3 | Passed |
 | ORG-01 | Phase 7 | Pending |
 | ORG-02 | Phase 7 | Pending |
 | ORG-03 | Phase 8 | Pending |

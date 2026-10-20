@@ -275,13 +275,22 @@ export const notesStore = {
         return false;
       }
 
-      // Search query filter (matches title, content, author, tags)
+      // Search query filter (matches title, content, author, tags, and block contents)
       if (q) {
         const titleMatch = note.title && note.title.toLowerCase().includes(q);
         const authorMatch = note.author && note.author.toLowerCase().includes(q);
         const contentMatch = note.content && note.content.toLowerCase().includes(q);
         const tagMatch = note.tags && note.tags.some((t) => t.toLowerCase().includes(q));
-        if (!titleMatch && !authorMatch && !contentMatch && !tagMatch) {
+        const blockMatch = note.blocks && note.blocks.some((b) => {
+          if (b.content && b.content.toLowerCase().includes(q)) return true;
+          if (b.title && b.title.toLowerCase().includes(q)) return true;
+          if (Array.isArray(b.items)) {
+            return b.items.some((item) => item.text && item.text.toLowerCase().includes(q));
+          }
+          return false;
+        });
+
+        if (!titleMatch && !authorMatch && !contentMatch && !tagMatch && !blockMatch) {
           return false;
         }
       }

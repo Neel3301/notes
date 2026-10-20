@@ -71,18 +71,33 @@ function AppRoutes() {
         }
       />
 
-      {/* 2. Course Overview */}
+      {/* 2. Course Overview / Notes Catalog */}
       <Route
         path="/course-overview"
         element={
           <CourseOverviewScreen
             header={courseOverviewData.header}
-            heading={courseOverviewData.heading}
-            search={courseOverviewData.search}
-            cards={courseOverviewData.cards}
+            heading="All\nNotes"
             onMenuClick={() => navigate('/menu')}
             onCardClick={(card) =>
-              navigate('/course-detail', { state: { course: card } })
+              navigate('/course-detail', {
+                state: { course: card, note: card, noteId: card.id },
+              })
+            }
+          />
+        }
+      />
+      <Route
+        path="/notes"
+        element={
+          <CourseOverviewScreen
+            header={courseOverviewData.header}
+            heading="All\nNotes"
+            onMenuClick={() => navigate('/menu')}
+            onCardClick={(card) =>
+              navigate('/course-detail', {
+                state: { course: card, note: card, noteId: card.id },
+              })
             }
           />
         }
@@ -95,7 +110,7 @@ function AppRoutes() {
           <CourseDetailScreen
             header={courseDetailData.header}
             heading={
-              location.state?.course?.title || courseDetailData.heading
+              location.state?.note?.title || location.state?.course?.title || courseDetailData.heading
             }
             actionButton={courseDetailData.actionButton}
             tabs={courseDetailData.tabs}
