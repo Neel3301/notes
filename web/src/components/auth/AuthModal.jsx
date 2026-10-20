@@ -7,6 +7,7 @@ import {
   getCurrentUser,
   onAuthStateChange,
   isCloudConfigured,
+  formatDisplayUsername,
 } from '../../services/supabaseClient';
 import {
   isSyncEnabled,
@@ -28,7 +29,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
   const [activeTab, setActiveTab] = useState('signIn'); // 'signIn' | 'signUp'
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passphrase, setPassphrase] = useState('');
   const [syncEnabledState, setSyncEnabledState] = useState(() => isSyncEnabled());
@@ -49,8 +50,8 @@ export default function AuthModal({ isOpen, onClose }) {
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setErrorMsg('Please enter both email and password.');
+    if (!username.trim() || !password) {
+      setErrorMsg('Please enter both username and password.');
       return;
     }
 
@@ -60,13 +61,13 @@ export default function AuthModal({ isOpen, onClose }) {
 
     try {
       if (activeTab === 'signUp') {
-        const { user } = await signUp(email, password);
+        const { user } = await signUp(username.trim(), password);
         setCurrentUser(user);
-        setSuccessMsg('Account created successfully!');
+        setSuccessMsg(`Welcome, ${username.trim()}! Account created.`);
       } else {
-        const { user } = await signIn(email, password);
+        const { user } = await signIn(username.trim(), password);
         setCurrentUser(user);
-        setSuccessMsg('Signed in successfully!');
+        setSuccessMsg(`Welcome back, ${formatDisplayUsername(user)}!`);
       }
 
       // Initialize E2EE Master Key if passphrase provided (or default to password)
@@ -185,9 +186,9 @@ export default function AuthModal({ isOpen, onClose }) {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-body font-medium text-text-primary truncate max-w-[200px]">
-                      {currentUser.email}
+                      {formatDisplayUsername(currentUser)}
                     </span>
-                    <span className="text-[11px] text-text-dimmed">Supabase Session Active</span>
+                    <span className="text-[11px] text-text-dimmed">Cloud Sync Connected</span>
                   </div>
                 </div>
 
@@ -312,15 +313,20 @@ export default function AuthModal({ isOpen, onClose }) {
                 </button>
               </div>
 
-              {/* Email Input */}
+              {/* Username Input */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-label text-text-secondary">Email Address</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-label text-text-secondary">Username</label>
+                  <span className="text-[10px] text-text-dimmed">No email required</span>
+                </div>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="e.g. admin or your name"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   className="px-3.5 py-2.5 rounded-card bg-[#161616] border border-border-subtle text-body text-text-primary placeholder:text-text-dimmed outline-none focus:border-cream-bg transition-colors"
                 />
               </div>

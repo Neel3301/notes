@@ -222,22 +222,60 @@ class MockSupabaseService {
 const mockService = new MockSupabaseService();
 
 /**
- * Unified Supabase Auth Service
+ * Normalize username or email into valid auth email
  */
-export async function signUp(email, password) {
+export function normalizeUsernameToAuthEmail(input) {
+  if (!input) return '';
+  const trimmed = input.trim();
+  if (trimmed.includes('@')) {
+    return trimmed.toLowerCase();
+  }
+  const clean = trimmed.toLowerCase().replace(/[^a-z0-9._-]/g, '_');
+  return `${clean}@edsy.app`;
+}
+
+/**
+ * Format user display name (strip internal @edsy.app domain if present)
+ */
+export function formatDisplayUsername(user) {
+  if (!user) return 'Guest';
+  const email = user.email || user.username || '';
+  if (email.endsWith('@edsy.app')) {
+    return email.replace('@edsy.app', '');
+  }
+  return email;
+}
+
+/**
+ * Unified Supabase Auth Service (Supports Username or Email)
+ */
+export async function signUp(identifier, password) {
+  const email = normalizeUsernameToAuthEmail(identifier);
   if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase.auth.signUp({ email, password });
+    const { data, error } = await realSupabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username: identifier.trim().replace(/@.*$/, ''),
+        },
+      },
+    });
     if (error) throw error;
-    return { user: data.user, error: null };
+    return { user: data.user, session: data.session, error: null };
   }
   return mockService.signUp(email, password);
 }
 
-export async function signIn(email, password) {
+export async function signIn(identifier, password) {
+  const email = normalizeUsernameToAuthEmail(identifier);
   if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await realSupabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     if (error) throw error;
-    return { user: data.user, error: null };
+    return { user: data.user, session: data.session, error: null };
   }
   return mockService.signIn(email, password);
 }
@@ -346,5 +384,7 @@ export default {
   publishSharedNote,
   fetchSharedNoteBySlug,
   checkSlugAvailable,
+  normalizeUsernameToAuthEmail,
+  formatDisplayUsername,
   isCloudConfigured,
 };
