@@ -10,6 +10,7 @@ import {
   FileDown,
   FileCode,
   Link2,
+  Sparkles,
 } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
@@ -21,6 +22,7 @@ import BlockList from '../components/note/BlockList';
 import CanvasSketchpad from '../components/note/CanvasSketchpad';
 import AudioMemoBlock from '../components/note/AudioMemoBlock';
 import BacklinksDrawer from '../components/note/BacklinksDrawer';
+import AiAssistantSheet from '../components/note/AiAssistantSheet';
 import { useNotesStore } from '../data/notesStore';
 
 /**
@@ -80,9 +82,38 @@ export default function CourseDetailScreen({
   const [sketchData, setSketchData] = useState(initialNote.sketchData || null);
   const [audioData, setAudioData] = useState(initialNote.audioData || null);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [showAiSheet, setShowAiSheet] = useState(false);
 
   // Compute bi-directional backlinks to this note
   const backlinks = currentStoreNote?.id ? store.getBacklinks(currentStoreNote.id) : [];
+
+  // AI Assistant action handlers
+  const handleAiInsertBlock = (blockData) => {
+    const nextBlock = {
+      ...blockData,
+      id: `block-ai-${Date.now()}`,
+      number: String(blocks.length + 1).padStart(2, '0'),
+    };
+    handleBlocksChange([...blocks, nextBlock]);
+  };
+
+  const handleAiApplyTags = (newTags) => {
+    if (!currentStoreNote?.id) return;
+    const currentTags = currentStoreNote.tags || [];
+    const merged = Array.from(new Set([...currentTags, ...newTags]));
+    store.updateNote(currentStoreNote.id, { tags: merged });
+  };
+
+  const handleAiReplaceContent = (newContent) => {
+    setContent(newContent);
+    handleSave({ content: newContent });
+  };
+
+  const handleAiAppendContent = (appendContent) => {
+    const merged = content ? `${content}\n\n${appendContent}` : appendContent;
+    setContent(merged);
+    handleSave({ content: merged });
+  };
 
   // Sync state if store updates externally
   useEffect(() => {
@@ -214,7 +245,7 @@ export default function CourseDetailScreen({
           )}
         </div>
 
-        {/* Signature Cream Action CTA Button & Export Menu */}
+        {/* Signature Cream Action CTA Button & Export / AI Menu */}
         <div className="mt-7 flex items-center justify-between">
           <Button
             variant="cream"
@@ -224,36 +255,49 @@ export default function CourseDetailScreen({
             {activeTab === 'Write' ? 'Done' : 'Edit note'}
           </Button>
 
-          <div className="relative">
+          <div className="flex items-center gap-2">
+            {/* AI Assistant Button */}
             <button
               type="button"
-              onClick={() => setShowExportMenu((prev) => !prev)}
-              className="p-2.5 rounded-full border border-border-subtle hover:border-cream-bg/60 text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center"
-              title="Export note"
+              onClick={() => setShowAiSheet(true)}
+              className="p-2.5 rounded-full border border-cream-bg/40 bg-cream-bg/10 hover:bg-cream-bg/25 text-cream-bg transition-all flex items-center justify-center group active:scale-95"
+              title="AI Note Assistant"
             >
-              <Download className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             </button>
 
-            {showExportMenu && (
-              <div className="absolute top-11 right-0 z-40 bg-[#161616] border border-border-subtle rounded-card py-1.5 shadow-2xl min-w-[160px] flex flex-col animate-fadeIn">
-                <button
-                  type="button"
-                  onClick={handleExportMarkdown}
-                  className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
-                >
-                  <FileDown className="w-3.5 h-3.5 text-cream-bg" />
-                  <span>Export as .md</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleExportJson}
-                  className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
-                >
-                  <FileCode className="w-3.5 h-3.5 text-accent-yellow" />
-                  <span>Export as .json</span>
-                </button>
-              </div>
-            )}
+            {/* Export Menu */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowExportMenu((prev) => !prev)}
+                className="p-2.5 rounded-full border border-border-subtle hover:border-cream-bg/60 text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center"
+                title="Export note"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+
+              {showExportMenu && (
+                <div className="absolute top-11 right-0 z-40 bg-[#161616] border border-border-subtle rounded-card py-1.5 shadow-2xl min-w-[160px] flex flex-col animate-fadeIn">
+                  <button
+                    type="button"
+                    onClick={handleExportMarkdown}
+                    className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
+                  >
+                    <FileDown className="w-3.5 h-3.5 text-cream-bg" />
+                    <span>Export as .md</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleExportJson}
+                    className="px-3.5 py-2 text-label text-left text-text-secondary hover:text-text-primary hover:bg-divider/50 flex items-center gap-2 transition-colors"
+                  >
+                    <FileCode className="w-3.5 h-3.5 text-accent-yellow" />
+                    <span>Export as .json</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -442,6 +486,18 @@ export default function CourseDetailScreen({
           )}
         </div>
       </div>
+
+      {/* AI Assistant Action Sheet */}
+      {showAiSheet && (
+        <AiAssistantSheet
+          note={currentStoreNote}
+          onClose={() => setShowAiSheet(false)}
+          onInsertBlock={handleAiInsertBlock}
+          onApplyTags={handleAiApplyTags}
+          onReplaceContent={handleAiReplaceContent}
+          onAppendContent={handleAiAppendContent}
+        />
+      )}
     </div>
   );
 }

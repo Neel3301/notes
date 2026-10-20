@@ -28,7 +28,7 @@
 - [x] **ORG-04**: User can pin important notes to top and send unwanted notes to Trash with restore/permanent delete.
 
 ### AI Assistant
-- [ ] **AI-01**: Built-in AI action drawer provides 1-tap assistance (Summarize, Extract Action Items, Auto-generate Tags, Rephrase).
+- [x] **AI-01**: Built-in AI action drawer provides 1-tap assistance (Summarize, Extract Action Items, Auto-generate Tags, Rephrase).
 
 ---
 
@@ -69,4 +69,4 @@
 | ORG-02 | Phase 7 | Passed |
 | ORG-03 | Phase 8 | Passed |
 | ORG-04 | Phase 7 | Passed |
-| AI-01 | Phase 9 | Pending |
+| AI-01 | Phase 9 | Passed |
