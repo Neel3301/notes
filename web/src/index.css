@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Colors mapped to theme variables */
+  --color-page: var(--theme-page);
+  --color-screen: var(--theme-screen);
+  --color-text-primary: var(--theme-text-primary);
+  --color-text-secondary: var(--theme-text-secondary);
+  --color-text-dimmed: var(--theme-text-dimmed);
+  --color-border-subtle: var(--theme-border-subtle);
+  --color-divider: var(--theme-divider);
+
+  --color-card-blue: #6F91B6;
+  --color-card-light: #DCE3EB;
+  --color-card-yellow: #CABC3F;
+  --color-card-text: #111111;
+
+  --color-cream-bg: var(--theme-cream-bg);
+  --color-cream-text: var(--theme-cream-text);
+
+  /* Radius tokens */
+  --radius-card: 8px;
+  --radius-button: 8px;
+  --radius-pill: 9999px;
+  --radius-circle: 9999px;
+}
+
+:root {
+  --theme-page: #DDE3EA;
+  --theme-screen: #000000;
+  --theme-text-primary: #FFFFFF;
+  --theme-text-secondary: #757575;
+  --theme-text-dimmed: #4B4B4B;
+  --theme-border-subtle: #333333;
+  --theme-divider: #222222;
+  --theme-cream-bg: #E5E7DA;
+  --theme-cream-text: #111111;
+}
+
+:root[data-theme="light"], .theme-light {
+  --theme-page: #EAEFF5;
+  --theme-screen: #FFFFFF;
+  --theme-text-primary: #121212;
+  --theme-text-secondary: #6B7280;
+  --theme-text-dimmed: #9CA3AF;
+  --theme-border-subtle: #E5E7EB;
+  --theme-divider: #E5E7EB;
+  --theme-cream-bg: #2B2D26;
+  --theme-cream-text: #FFFFFF;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.text-display {
+  font-size: 46px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.text-title {
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.text-menu {
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.text-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0em;
+}
+
+.text-label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}

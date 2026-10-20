@@ -33,6 +33,11 @@
 ### Architecture & Clean Naming
 - [x] **ARCH-01**: Refactor dummy course screens, routes, and components to clean note-taking semantics (`TimelineScreen`, `NotesCatalogScreen`, `NoteEditorScreen`, `NoteCard`, `/timeline`, `/notes`, `/editor`).
 
+### React Native & Mobile APK
+- [x] **MBL-01**: Restructure workspace into `web/` and `mobile/` subdirectories on dedicated branch `react-native-mobile`.
+- [x] **MBL-02**: Build React Native mobile app using Expo matching Edsy design system tokens, components, and screens.
+- [x] **MBL-03**: Compile native Android `.apk` file using local Android SDK and Gradle, outputting to `apk/` directory for direct installation.
+
 ---
 
 ## v2 Requirements (Deferred)
@@ -74,3 +79,6 @@
 | ORG-04 | Phase 7 | Passed |
 | AI-01 | Phase 9 | Passed |
 | ARCH-01 | Phase 10 | Passed |
+| MBL-01 | Phase 11 | Pending |
+| MBL-02 | Phase 11 | Pending |
+| MBL-03 | Phase 11 | Pending |

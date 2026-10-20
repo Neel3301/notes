@@ -119,6 +119,19 @@ Transform the Edsy prototype into a fully functional, offline-first Advanced Not
   - Refactor `src/data/content.js` to use `timelineData`, `notesCatalogData`, `noteEditorData`.
 - *Requirements covered: ARCH-01*
 
+### Phase 11: React Native Mobile App & Android APK Build
+**Goal**: Build a native React Native (Expo) Android mobile app in `/mobile` while preserving the existing web app in `/web`, on dedicated branch `react-native-mobile`, and compile a standalone `.apk` for installation on physical Android phones.
+- Restructure project: `web/` (preserved web app) and `mobile/` (React Native Expo app).
+- Implement React Native mobile UI strictly adhering to the Edsy dark design system:
+  - `TimelineScreen.js` with swipeable `NoteCard` carousel and `DatePager`.
+  - `NotesCatalogScreen.js` with live search and tag filters.
+  - `NoteEditorScreen.js` with markdown editing, modular blocks, and backlink pills.
+  - `MenuScreen.js` with slide-up drawers for notebooks, tags, and trash.
+- Run `expo prebuild` to generate native `android/` project.
+- Compile standalone Android `.apk` via Gradle (`gradlew assembleDebug` / `assembleRelease`).
+- Output installable `.apk` file into `apk/` directory.
+- *Requirements covered: MBL-01, MBL-02, MBL-03*
+
 ---
 
 ## Verification & Guardrails
