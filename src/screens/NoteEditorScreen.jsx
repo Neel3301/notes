@@ -11,6 +11,7 @@ import {
   FileCode,
   Link2,
   Sparkles,
+  Share2,
 } from 'lucide-react';
 import AppHeader from '../components/layout/AppHeader';
 import Heading from '../components/ui/Heading';
@@ -46,6 +47,7 @@ export default function NoteEditorScreen({
   previewLessons = [],
   details = {},
   onBackClick,
+  onShareNote,
   className = '',
 }) {
   const location = useLocation();
@@ -257,6 +259,16 @@ export default function NoteEditorScreen({
           </Button>
 
           <div className="flex items-center gap-2">
+            {/* Share Note Button */}
+            <button
+              type="button"
+              onClick={() => onShareNote?.(currentStoreNote)}
+              className="p-2.5 rounded-full border border-border-subtle hover:border-cream-bg/60 text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center active:scale-95"
+              title="Share note"
+            >
+              <Share2 className="w-4 h-4 text-cream-bg" />
+            </button>
+
             {/* AI Assistant Button */}
             <button
               type="button"
