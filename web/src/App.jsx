@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HashRouter,
   Routes,
@@ -8,6 +8,9 @@ import {
   useLocation,
 } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
+import AuthModal from './components/auth/AuthModal';
+import { onAuthStateChange, getCurrentUser } from './services/supabaseClient';
+import { onSyncStatusChange, getSyncStatus } from './services/syncService';
 import useIsDesktop from './hooks/useIsDesktop';
 import TokensScreen from './screens/TokensScreen';
 import ComponentsScreen from './screens/ComponentsScreen';
@@ -236,16 +239,32 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
 }
 
 export default function App() {
-  const [syncStatus, setSyncStatus] = useState('local');
-  const [user, setUser] = useState(null);
+  const [syncStatus, setSyncStatus] = useState(() => getSyncStatus());
+  const [user, setUser] = useState(() => getCurrentUser());
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Subscribe to Supabase auth changes
+    const authSub = onAuthStateChange((_event, currentUser) => {
+      setUser(currentUser);
+    });
+
+    // Subscribe to cloud sync status changes
+    const syncSub = onSyncStatusChange((status) => {
+      setSyncStatus(status);
+    });
+
+    return () => {
+      authSub?.unsubscribe?.();
+      syncSub?.();
+    };
+  }, []);
 
   const handleOpenAuth = () => {
-    // Will be wired to AuthModal in Phase 14
-    console.log('Open Auth modal');
+    setIsAuthModalOpen(true);
   };
 
   const handleShareNote = (note) => {
-    // Will be wired to ShareModal in Phase 15
     console.log('Open Share modal for note:', note);
   };
 
@@ -260,6 +279,10 @@ export default function App() {
         <AppRoutes
           onOpenAuth={handleOpenAuth}
           onShareNote={handleShareNote}
+        />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
         />
       </AppLayout>
     </HashRouter>

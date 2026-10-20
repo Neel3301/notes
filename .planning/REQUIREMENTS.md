@@ -9,11 +9,11 @@
 - [x] **DSH-04**: Desktop dashboard strictly preserves Edsy dark aesthetic tokens (`#000000`, `#E5E7DA`, Inter Tight, `#6F91B6`, `#DCE3EB`, `#CABC3F`).
 
 ### Supabase Integration & E2EE Cloud Sync
-- [ ] **SYNC-01**: Local-first note-taking is 100% functional without an account or network connection.
-- [ ] **SYNC-02**: Optional Supabase authentication (email/password sign-up, sign-in, session persistence) to enable cloud features.
-- [ ] **SYNC-03**: End-to-end encryption (E2EE) using Web Crypto (AES-256-GCM + PBKDF2) ensures note titles, bodies, blocks, sketches, and audio are encrypted client-side before upload.
-- [ ] **SYNC-04**: User-controlled cloud sync toggle allows users to opt-in or opt-out, trigger manual "Sync Now", and observe sync status.
-- [ ] **SYNC-05**: Offline sync queue handles offline edits and merges changes smoothly upon reconnection via timestamp-based conflict resolution.
+- [x] **SYNC-01**: Local-first note-taking is 100% functional without an account or network connection.
+- [x] **SYNC-02**: Optional Supabase authentication (email/password sign-up, sign-in, session persistence) to enable cloud features.
+- [x] **SYNC-03**: End-to-end encryption (E2EE) using Web Crypto (AES-256-GCM + PBKDF2) ensures note titles, bodies, blocks, sketches, and audio are encrypted client-side before upload.
+- [x] **SYNC-04**: User-controlled cloud sync toggle allows users to opt-in or opt-out, trigger manual "Sync Now", and observe sync status.
+- [x] **SYNC-05**: Offline sync queue handles offline edits and merges changes smoothly upon reconnection via timestamp-based conflict resolution.
 
 ### Secure Note-Sharing Functionality
 - [ ] **SHR-01**: Public note sharing generates a shareable web link accessible in any browser without requiring an account or app installation.
@@ -80,11 +80,11 @@
 | DSH-02 | Phase 13 | Passed |
 | DSH-03 | Phase 13 | Passed |
 | DSH-04 | Phase 13 | Passed |
-| SYNC-01 | Phase 14 | Pending |
-| SYNC-02 | Phase 14 | Pending |
-| SYNC-03 | Phase 14 | Pending |
-| SYNC-04 | Phase 14 | Pending |
-| SYNC-05 | Phase 14 | Pending |
+| SYNC-01 | Phase 14 | Passed |
+| SYNC-02 | Phase 14 | Passed |
+| SYNC-03 | Phase 14 | Passed |
+| SYNC-04 | Phase 14 | Passed |
+| SYNC-05 | Phase 14 | Passed |
 | SHR-01 | Phase 15 | Pending |
 | SHR-02 | Phase 15 | Pending |
 | SHR-03 | Phase 15 | Pending |
