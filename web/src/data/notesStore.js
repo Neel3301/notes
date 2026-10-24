@@ -2,6 +2,29 @@ import { useSyncExternalStore } from 'react';
 import { initialSeedNotes } from './seedNotes.js';
 
 const STORAGE_KEY = 'edsy_notes_store_v1';
+const TOMBSTONE_KEY = 'edsy_note_tombstones_v1';
+
+/**
+ * Permanently deleted notes are remembered as tombstones until the next cloud
+ * sync has told the server, so deletions propagate to other devices.
+ */
+function readTombstones() {
+  try {
+    const raw = window.localStorage.getItem(TOMBSTONE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeTombstones(list) {
+  try {
+    window.localStorage.setItem(TOMBSTONE_KEY, JSON.stringify(list));
+  } catch {
+    /* ignore */
+  }
+}
 
 // In-memory fallback if localStorage is unavailable
 let memoryStore = null;
@@ -198,6 +221,10 @@ export const notesStore = {
    */
   deleteNote(id, permanent = false) {
     if (permanent) {
+      writeTombstones([
+        ...readTombstones().filter((t) => t.id !== id),
+        { id, deletedAt: Date.now() },
+      ]);
       commit(currentNotes.filter((n) => n.id !== id));
     } else {
       const nextNotes = currentNotes.map((n) =>
@@ -205,6 +232,36 @@ export const notesStore = {
       );
       commit(nextNotes);
     }
+  },
+
+  /**
+   * Cloud-sync hooks. These bypass the updatedAt bump so a note pulled from
+   * the server is not mistaken for a fresh local edit.
+   */
+  applyRemoteNote(note) {
+    const idx = currentNotes.findIndex((n) => n.id === note.id);
+    if (idx >= 0) {
+      const next = [...currentNotes];
+      next[idx] = { ...currentNotes[idx], ...note };
+      commit(next);
+    } else {
+      commit([note, ...currentNotes]);
+    }
+  },
+
+  removeLocalNote(id) {
+    if (currentNotes.some((n) => n.id === id)) {
+      commit(currentNotes.filter((n) => n.id !== id));
+    }
+  },
+
+  getTombstones() {
+    return readTombstones();
+  },
+
+  clearTombstones(ids) {
+    const drop = new Set(ids);
+    writeTombstones(readTombstones().filter((t) => !drop.has(t.id)));
   },
 
   /**

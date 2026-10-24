@@ -1,12 +1,8 @@
 /**
  * supabaseClient.js
- * Supabase client integration for Edsy Notes.
- *
- * Handles:
- * - Supabase Authentication (Sign up, Sign in, Sign out, Session).
- * - Cloud database storage for E2EE encrypted notes.
- * - Graceful fallback / emulation when environment variables are not yet configured,
- *   enabling immediate, full-fidelity end-to-end testing without external network setup.
+ * Supabase integration for Edsy Notes: username/password auth, encrypted note
+ * storage and share links. The app stays fully usable offline / signed out;
+ * every cloud call throws a clear error when Supabase is not configured.
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -14,377 +10,243 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env?.VITE_SUPABASE_ANON_KEY || '';
 
-const isRealConfigured = Boolean(
-  SUPABASE_URL &&
-  SUPABASE_ANON_KEY &&
-  !SUPABASE_URL.includes('your-project-id')
+const isConfigured = Boolean(
+  SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.includes('your-project-id')
 );
 
-// Real Supabase client instance (if configured)
-export const realSupabase = isRealConfigured
+export const supabase = isConfigured
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      },
+      auth: { persistSession: true, autoRefreshToken: true },
     })
   : null;
 
-if (typeof window !== 'undefined') {
-  if (isRealConfigured) {
-    console.info(`[Supabase] Live Supabase cloud client active: ${SUPABASE_URL}`);
-  } else {
-    console.info('[Supabase] Offline emulation mode active. To connect your live project, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to web/.env (see web/.env.example).');
+export const isCloudConfigured = () => isConfigured;
+
+function requireClient() {
+  if (!supabase) {
+    throw new Error('Cloud features are not configured for this build.');
   }
+  return supabase;
 }
 
-// Local Mock Cloud Storage for offline testing & fallback
-const MOCK_AUTH_STORAGE_KEY = 'edsy_mock_supabase_auth';
-const MOCK_NOTES_STORAGE_KEY = 'edsy_mock_supabase_notes';
-const MOCK_SHARED_STORAGE_KEY = 'edsy_mock_supabase_shared';
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
 
-const memoryStore = new Map();
-const safeStorage = {
-  getItem: (key) => {
-    if (typeof localStorage !== 'undefined') {
-      try { return localStorage.getItem(key); } catch { return memoryStore.get(key) || null; }
-    }
-    return memoryStore.get(key) || null;
-  },
-  setItem: (key, val) => {
-    if (typeof localStorage !== 'undefined') {
-      try { localStorage.setItem(key, val); } catch { /* ignore */ }
-    }
-    memoryStore.set(key, String(val));
-  },
-  removeItem: (key) => {
-    if (typeof localStorage !== 'undefined') {
-      try { localStorage.removeItem(key); } catch { /* ignore */ }
-    }
-    memoryStore.delete(key);
-  },
-};
+// Last known user, kept in sync by the auth listener so React can read it synchronously.
+let cachedUser = null;
 
-class MockSupabaseService {
-  constructor() {
-    this.authListeners = new Set();
-  }
-
-  getCurrentUser() {
-    try {
-      const data = safeStorage.getItem(MOCK_AUTH_STORAGE_KEY);
-      return data ? JSON.parse(data) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  async signUp(email, password) {
-    if (!email || !password) throw new Error('Email and password required');
-    const user = {
-      id: `usr_${Date.now()}`,
-      email,
-      created_at: new Date().toISOString(),
-    };
-    safeStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
-    this.notifyAuthListeners('SIGNED_IN', user);
-    return { user, error: null };
-  }
-
-  async signIn(email, password) {
-    if (!email || !password) throw new Error('Email and password required');
-    const existing = this.getCurrentUser();
-    const user = existing && existing.email === email
-      ? existing
-      : { id: `usr_${Date.now()}`, email, created_at: new Date().toISOString() };
-    safeStorage.setItem(MOCK_AUTH_STORAGE_KEY, JSON.stringify(user));
-    this.notifyAuthListeners('SIGNED_IN', user);
-    return { user, error: null };
-  }
-
-  async signOut() {
-    safeStorage.removeItem(MOCK_AUTH_STORAGE_KEY);
-    this.notifyAuthListeners('SIGNED_OUT', null);
-    return { error: null };
-  }
-
-  onAuthStateChange(callback) {
-    this.authListeners.add(callback);
-    const currentUser = this.getCurrentUser();
-    callback(currentUser ? 'SIGNED_IN' : 'SIGNED_OUT', currentUser);
-    return {
-      data: {
-        subscription: {
-          unsubscribe: () => this.authListeners.delete(callback),
-        },
-      },
-    };
-  }
-
-  notifyAuthListeners(event, session) {
-    this.authListeners.forEach((fn) => {
-      try {
-        fn(event, session);
-      } catch (e) {
-        console.error('Auth listener error', e);
-      }
-    });
-  }
-
-  // Cloud Database Operations for Encrypted Notes
-  async upsertEncryptedNotes(encryptedNotes) {
-    const user = this.getCurrentUser();
-    if (!user) throw new Error('Authentication required for cloud sync');
-
-    let allNotes = [];
-    try {
-      const raw = safeStorage.getItem(MOCK_NOTES_STORAGE_KEY);
-      allNotes = raw ? JSON.parse(raw) : [];
-    } catch {
-      allNotes = [];
-    }
-
-    const noteMap = new Map(allNotes.map((n) => [n.id, n]));
-    encryptedNotes.forEach((incoming) => {
-      noteMap.set(incoming.id, {
-        ...incoming,
-        user_id: user.id,
-        synced_at: new Date().toISOString(),
-      });
-    });
-
-    const updated = Array.from(noteMap.values());
-    safeStorage.setItem(MOCK_NOTES_STORAGE_KEY, JSON.stringify(updated));
-    return { data: updated, error: null };
-  }
-
-  async fetchEncryptedNotes(userId) {
-    try {
-      const raw = safeStorage.getItem(MOCK_NOTES_STORAGE_KEY);
-      const allNotes = raw ? JSON.parse(raw) : [];
-      const userNotes = userId ? allNotes.filter((n) => n.user_id === userId) : allNotes;
-      return { data: userNotes, error: null };
-    } catch (e) {
-      return { data: [], error: e };
-    }
-  }
-
-  // Shared Notes Table operations (for Phase 15)
-  async upsertSharedNote(sharedRecord) {
-    let allShared = [];
-    try {
-      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
-      allShared = raw ? JSON.parse(raw) : [];
-    } catch {
-      allShared = [];
-    }
-
-    // Check slug uniqueness
-    const existingIdx = allShared.findIndex((s) => s.slug === sharedRecord.slug);
-    if (existingIdx >= 0) {
-      if (allShared[existingIdx].note_id !== sharedRecord.note_id) {
-        throw new Error(`Slug "${sharedRecord.slug}" is already taken. Please choose another.`);
-      }
-      allShared[existingIdx] = { ...allShared[existingIdx], ...sharedRecord };
-    } else {
-      allShared.push(sharedRecord);
-    }
-
-    safeStorage.setItem(MOCK_SHARED_STORAGE_KEY, JSON.stringify(allShared));
-    return { data: sharedRecord, error: null };
-  }
-
-  async getSharedNote(slug) {
-    try {
-      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
-      const allShared = raw ? JSON.parse(raw) : [];
-      const match = allShared.find((s) => s.slug === slug);
-      if (!match) return { data: null, error: new Error('Shared note not found') };
-      return { data: match, error: null };
-    } catch (e) {
-      return { data: null, error: e };
-    }
-  }
-
-  async isSlugAvailable(slug, currentNoteId) {
-    try {
-      const raw = safeStorage.getItem(MOCK_SHARED_STORAGE_KEY);
-      const allShared = raw ? JSON.parse(raw) : [];
-      const match = allShared.find((s) => s.slug.toLowerCase() === slug.toLowerCase());
-      if (!match) return true;
-      return match.note_id === currentNoteId;
-    } catch {
-      return true;
-    }
-  }
+if (supabase) {
+  supabase.auth.onAuthStateChange((_event, session) => {
+    cachedUser = session?.user || null;
+  });
 }
 
-const mockService = new MockSupabaseService();
+const USERNAME_RE = /^[a-z0-9][a-z0-9._-]{2,31}$/;
 
-/**
- * Normalize username or email into valid auth email
- */
-export function normalizeUsernameToAuthEmail(input) {
-  if (!input) return '';
-  const trimmed = input.trim();
-  if (trimmed.includes('@')) {
-    return trimmed.toLowerCase();
+/** Validate and normalise a username. Throws a user-facing error when invalid. */
+export function normalizeUsername(input) {
+  const username = String(input || '').trim().toLowerCase();
+  if (!USERNAME_RE.test(username)) {
+    throw new Error(
+      'Username must be 3-32 characters: letters, numbers, dot, dash or underscore.'
+    );
   }
-  const clean = trimmed.toLowerCase().replace(/[^a-z0-9._-]/g, '_');
-  return `${clean}@edsy.app`;
+  return username;
 }
 
-/**
- * Format user display name (strip internal @edsy.app domain if present)
- */
+/** Usernames map to a synthetic email, so users never need a real address. */
+export function usernameToAuthEmail(username) {
+  return `${normalizeUsername(username)}@edsy.app`;
+}
+
+/** Display name for a user (the part before the synthetic domain). */
 export function formatDisplayUsername(user) {
   if (!user) return 'Guest';
-  const email = user.email || user.username || '';
-  if (email.endsWith('@edsy.app')) {
-    return email.replace('@edsy.app', '');
-  }
-  return email;
+  const email = user.email || '';
+  return email.endsWith('@edsy.app') ? email.slice(0, -'@edsy.app'.length) : email;
 }
 
-/**
- * Unified Supabase Auth Service (Supports Username or Email)
- */
-export async function signUp(identifier, password) {
-  const email = normalizeUsernameToAuthEmail(identifier);
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username: identifier.trim().replace(/@.*$/, ''),
-        },
-      },
-    });
-    if (error) throw error;
-    return { user: data.user, session: data.session, error: null };
+function friendlyAuthError(error) {
+  const msg = String(error?.message || '');
+  if (/invalid login credentials/i.test(msg)) return new Error('Wrong username or password.');
+  if (/already registered|already exists/i.test(msg)) return new Error('That username is taken.');
+  if (/password should be at least|weak password/i.test(msg)) {
+    return new Error('Password must be at least 8 characters.');
   }
-  return mockService.signUp(email, password);
+  if (error?.status === 429 || /rate limit/i.test(msg)) {
+    return new Error('Too many attempts. Please wait a minute and try again.');
+  }
+  if (/email.*(confirm|not confirmed)/i.test(msg)) {
+    return new Error(
+      'Email confirmation is enabled on this Supabase project. Turn off "Confirm email" in Authentication -> Providers -> Email.'
+    );
+  }
+  return error instanceof Error ? error : new Error(msg || 'Authentication failed');
 }
 
-export async function signIn(identifier, password) {
-  const email = normalizeUsernameToAuthEmail(identifier);
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-    return { user: data.user, session: data.session, error: null };
+export async function signUp(username, password) {
+  const client = requireClient();
+  if (!password || password.length < 8) {
+    throw new Error('Password must be at least 8 characters.');
   }
-  return mockService.signIn(email, password);
+  const { data, error } = await client.auth.signUp({
+    email: usernameToAuthEmail(username),
+    password,
+    options: { data: { username: normalizeUsername(username) } },
+  });
+  if (error) throw friendlyAuthError(error);
+  if (!data.session) {
+    throw new Error(
+      'Email confirmation is enabled on this Supabase project. Turn off "Confirm email" in Authentication -> Providers -> Email.'
+    );
+  }
+  cachedUser = data.user;
+  return { user: data.user, session: data.session };
+}
+
+export async function signIn(username, password) {
+  const client = requireClient();
+  const { data, error } = await client.auth.signInWithPassword({
+    email: usernameToAuthEmail(username),
+    password,
+  });
+  if (error) throw friendlyAuthError(error);
+  cachedUser = data.user;
+  return { user: data.user, session: data.session };
 }
 
 export async function signOut() {
-  if (isRealConfigured && realSupabase) {
-    const { error } = await realSupabase.auth.signOut();
-    if (error) throw error;
-    return { error: null };
-  }
-  return mockService.signOut();
+  if (!supabase) return;
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+  cachedUser = null;
 }
 
-export function getCurrentUser() {
-  if (isRealConfigured && realSupabase) {
-    return realSupabase.auth.getUser().then(({ data }) => data?.user || null);
-  }
-  return mockService.getCurrentUser();
+/** Permanently delete the signed-in account and all of its cloud data. */
+export async function deleteAccount() {
+  const client = requireClient();
+  const { error } = await client.rpc('delete_my_account');
+  if (error) throw error;
+  await client.auth.signOut().catch(() => {});
+  cachedUser = null;
 }
 
-export function onAuthStateChange(callback) {
-  if (isRealConfigured && realSupabase) {
-    const { data } = realSupabase.auth.onAuthStateChange((event, session) => {
-      callback(event, session?.user || null);
-    });
-    return data.subscription;
-  }
-  return mockService.onAuthStateChange(callback);
+/** Synchronous last-known user (null until the session has loaded). */
+export function getCachedUser() {
+  return cachedUser;
+}
+
+/** Authoritative user lookup (reads the stored session, no network call). */
+export async function getCurrentUser() {
+  if (!supabase) return null;
+  const { data } = await supabase.auth.getSession();
+  cachedUser = data?.session?.user || null;
+  return cachedUser;
 }
 
 /**
- * Unified Cloud Database Operations (E2EE Note records)
+ * Subscribe to auth changes. Fires immediately with the current session
+ * (INITIAL_SESSION). Returns a subscription with `unsubscribe()`.
  */
-export async function uploadEncryptedNotes(encryptedNotes) {
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase
-      .from('notes')
-      .upsert(encryptedNotes, { onConflict: 'id' });
-    if (error) throw error;
-    return { data, error: null };
+export function onAuthStateChange(callback) {
+  if (!supabase) {
+    callback('SIGNED_OUT', null);
+    return { unsubscribe() {} };
   }
-  return mockService.upsertEncryptedNotes(encryptedNotes);
+  const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    callback(event, session?.user || null);
+  });
+  return data.subscription;
 }
 
-export async function fetchEncryptedNotes(userId) {
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase
+// ---------------------------------------------------------------------------
+// Encryption key material (salt + passphrase check)
+// ---------------------------------------------------------------------------
+
+export async function fetchUserKeys() {
+  const client = requireClient();
+  const { data, error } = await client.from('user_keys').select('*').maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function createUserKeys(record) {
+  const client = requireClient();
+  const { error } = await client.from('user_keys').insert(record);
+  if (error) throw error;
+}
+
+// ---------------------------------------------------------------------------
+// Encrypted notes
+// ---------------------------------------------------------------------------
+
+export async function uploadEncryptedNotes(records) {
+  const client = requireClient();
+  const { error } = await client.from('notes').upsert(records, { onConflict: 'user_id,id' });
+  if (error) throw error;
+}
+
+/** Fetch every note record changed after `since` (ISO string) - all of them when omitted. */
+export async function fetchEncryptedNotes(since = null) {
+  const client = requireClient();
+  const pageSize = 500;
+  const rows = [];
+  for (let from = 0; ; from += pageSize) {
+    let query = client
       .from('notes')
       .select('*')
-      .order('updated_at', { ascending: false });
+      .order('updated_at', { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (since) query = query.gte('updated_at', since);
+    const { data, error } = await query;
     if (error) throw error;
-    return { data, error: null };
+    rows.push(...data);
+    if (data.length < pageSize) break;
   }
-  return mockService.fetchEncryptedNotes(userId);
+  return rows;
 }
 
-/**
- * Shared Notes operations
- */
-export async function publishSharedNote(sharedRecord) {
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase
-      .from('shared_notes')
-      .upsert(sharedRecord, { onConflict: 'slug' });
-    if (error) throw error;
-    return { data, error: null };
+// ---------------------------------------------------------------------------
+// Shared notes
+// ---------------------------------------------------------------------------
+
+export async function publishSharedNote(record) {
+  const client = requireClient();
+  const { error } = await client.from('shared_notes').upsert(record, { onConflict: 'slug' });
+  if (error) {
+    if (error.code === '42501' || error.code === '23505') {
+      throw new Error('That link name is already taken. Please choose another.');
+    }
+    throw error;
   }
-  return mockService.upsertSharedNote(sharedRecord);
 }
 
 export async function fetchSharedNoteBySlug(slug) {
-  if (isRealConfigured && realSupabase) {
-    const { data, error } = await realSupabase
-      .from('shared_notes')
-      .select('*')
-      .eq('slug', slug)
-      .single();
-    if (error) throw error;
-    return { data, error: null };
-  }
-  return mockService.getSharedNote(slug);
+  const client = requireClient();
+  const { data, error } = await client.rpc('get_shared_note', { p_slug: slug });
+  if (error) throw error;
+  return Array.isArray(data) ? data[0] || null : data;
 }
 
-export async function checkSlugAvailable(slug, currentNoteId) {
-  if (isRealConfigured && realSupabase) {
-    const { data } = await realSupabase
-      .from('shared_notes')
-      .select('id, note_id')
-      .eq('slug', slug);
-    if (!data || data.length === 0) return true;
-    return data[0].note_id === currentNoteId;
-  }
-  return mockService.isSlugAvailable(slug, currentNoteId);
+export async function checkSlugAvailable(slug, noteId) {
+  const client = requireClient();
+  const { data, error } = await client.rpc('is_slug_available', {
+    p_slug: slug,
+    p_note_id: noteId,
+  });
+  if (error) throw error;
+  return Boolean(data);
 }
-
-export const isCloudConfigured = () => isRealConfigured;
 
 export default {
   signUp,
   signIn,
   signOut,
+  deleteAccount,
+  getCachedUser,
   getCurrentUser,
   onAuthStateChange,
-  uploadEncryptedNotes,
-  fetchEncryptedNotes,
-  publishSharedNote,
-  fetchSharedNoteBySlug,
-  checkSlugAvailable,
-  normalizeUsernameToAuthEmail,
-  formatDisplayUsername,
   isCloudConfigured,
+  formatDisplayUsername,
 };

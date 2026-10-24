@@ -4,7 +4,8 @@ import {
   signUp,
   signIn,
   signOut,
-  getCurrentUser,
+  getCachedUser,
+  deleteAccount,
   onAuthStateChange,
   isCloudConfigured,
   formatDisplayUsername,
@@ -14,8 +15,11 @@ import {
   setSyncEnabled,
   getSyncStatus,
   getLastSyncedAt,
+  getLastSyncError,
+  onSyncStatusChange,
   performSync,
-  initializeEncryptionKey,
+  unlockEncryption,
+  lockEncryption,
 } from '../../services/syncService';
 import { useNotesStore } from '../../data/notesStore';
 
@@ -27,7 +31,7 @@ import { useNotesStore } from '../../data/notesStore';
 export default function AuthModal({ isOpen, onClose }) {
   const store = useNotesStore();
 
-  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+  const [currentUser, setCurrentUser] = useState(() => getCachedUser());
   const [activeTab, setActiveTab] = useState('signIn'); // 'signIn' | 'signUp'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,11 +43,21 @@ export default function AuthModal({ isOpen, onClose }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  const [unlockPassphrase, setUnlockPassphrase] = useState('');
+
   useEffect(() => {
     const sub = onAuthStateChange((_event, user) => {
       setCurrentUser(user);
     });
-    return () => sub?.unsubscribe?.();
+    const offStatus = onSyncStatusChange((status, lastSync, error) => {
+      setSyncStatus(status);
+      setLastSyncTime(lastSync);
+      if (status === 'error' && error) setErrorMsg(error);
+    });
+    return () => {
+      sub?.unsubscribe?.();
+      offStatus();
+    };
   }, []);
 
   if (!isOpen) return null;
@@ -70,29 +84,16 @@ export default function AuthModal({ isOpen, onClose }) {
         setSuccessMsg(`Welcome back, ${formatDisplayUsername(user)}!`);
       }
 
-      // Initialize E2EE Master Key if passphrase provided (or default to password)
-      const encSecret = passphrase.trim() || password;
-      await initializeEncryptionKey(encSecret);
-      localStorage.setItem('edsy_session_passphrase', encSecret);
-
-      // Default opt-in to sync once signed in
+      // Derive the E2EE master key (defaults to the account password) and start syncing.
+      await unlockEncryption(passphrase.trim() || password);
       setSyncEnabled(true);
       setSyncEnabledState(true);
-
-      // Trigger initial sync
-      await performSync(store, encSecret);
-      setSyncStatus('synced');
-      setLastSyncTime(new Date().toISOString());
+      setPassword('');
+      setPassphrase('');
+      await performSync(store);
     } catch (err) {
       console.error(err);
-      let msg = err.message || 'Authentication failed';
-      if (
-        err.message?.toLowerCase().includes('rate limit') ||
-        err.error_code === 'over_email_send_rate_limit' ||
-        err.status === 429
-      ) {
-        msg = 'Supabase email rate limit exceeded (free tier limit is 3-4 emails/hr). Fix instantly: In your Supabase Dashboard -> Authentication -> Providers -> Email, turn OFF "Confirm email".';
-      }
+      const msg = err.message || 'Authentication failed';
       setErrorMsg(msg);
     } finally {
       setLoading(false);
@@ -103,10 +104,10 @@ export default function AuthModal({ isOpen, onClose }) {
     setLoading(true);
     try {
       await signOut();
+      await lockEncryption({ reset: true });
       setCurrentUser(null);
       setSyncEnabled(false);
       setSyncEnabledState(false);
-      localStorage.removeItem('edsy_session_passphrase');
       setSuccessMsg('Signed out. Notes remain safely saved on your device.');
     } catch (err) {
       setErrorMsg(err.message || 'Sign out failed');
@@ -118,13 +119,43 @@ export default function AuthModal({ isOpen, onClose }) {
   const handleToggleSync = (enabled) => {
     setSyncEnabled(enabled);
     setSyncEnabledState(enabled);
-    if (enabled) {
-      performSync(store).then(() => {
-        setSyncStatus('synced');
-        setLastSyncTime(new Date().toISOString());
-      });
-    } else {
-      setSyncStatus('local');
+    setErrorMsg('');
+    if (enabled) performSync(store);
+  };
+
+  const handleUnlock = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      await unlockEncryption(unlockPassphrase);
+      setUnlockPassphrase('');
+      await performSync(store);
+    } catch (err) {
+      setErrorMsg(err.message || 'Could not unlock');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const ok = window.confirm(
+      'Permanently delete your account and all cloud data? Notes on this device are kept. This cannot be undone.'
+    );
+    if (!ok) return;
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      await deleteAccount();
+      await lockEncryption({ reset: true });
+      setSyncEnabled(false);
+      setSyncEnabledState(false);
+      setCurrentUser(null);
+      setSuccessMsg('Account deleted. Your notes remain on this device.');
+    } catch (err) {
+      setErrorMsg(err.message || 'Could not delete account');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,9 +165,7 @@ export default function AuthModal({ isOpen, onClose }) {
     try {
       const res = await performSync(store);
       if (res.success) {
-        setSyncStatus('synced');
-        setLastSyncTime(res.timestamp);
-        setSuccessMsg(`Synced ${res.uploaded} notes (0 plaintext leaks)`);
+        setSuccessMsg(`Synced: ${res.uploaded} sent, ${res.merged} updated from cloud.`);
       } else {
         setErrorMsg(res.reason || res.error || 'Sync failed');
       }
@@ -260,6 +289,32 @@ export default function AuthModal({ isOpen, onClose }) {
                 </div>
               )}
 
+              {syncEnabledState && syncStatus === 'locked' && (
+                <form onSubmit={handleUnlock} className="p-4 rounded-card bg-[#141414] border border-accent-yellow/40 flex flex-col gap-2.5">
+                  <span className="text-label text-text-primary font-medium">
+                    Enter your encryption passphrase to unlock sync on this device
+                  </span>
+                  <input
+                    type="password"
+                    value={unlockPassphrase}
+                    onChange={(e) => setUnlockPassphrase(e.target.value)}
+                    placeholder="Passphrase (your password unless you set another)"
+                    autoComplete="current-password"
+                    className="px-3.5 py-2.5 rounded-card bg-[#161616] border border-border-subtle text-text-primary placeholder:text-text-dimmed outline-none focus:border-cream-bg text-xs font-mono"
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading || !unlockPassphrase}
+                    className="py-2 rounded-button bg-cream-bg text-cream-text text-label font-medium disabled:opacity-50"
+                  >
+                    Unlock & Sync
+                  </button>
+                </form>
+              )}
+
+              {errorMsg && <p className="text-xs text-red-400">{errorMsg}</p>}
+              {successMsg && <p className="text-xs text-cream-bg">{successMsg}</p>}
+
               {/* Zero-Knowledge Assurance Banner */}
               <div className="p-3.5 rounded-card bg-[#111111] border border-border-subtle/30 flex items-start gap-2.5 text-[11px] text-text-secondary">
                 <Lock className="w-4 h-4 text-cream-bg shrink-0 mt-0.5" />
@@ -267,6 +322,15 @@ export default function AuthModal({ isOpen, onClose }) {
                   <strong>Zero-Knowledge E2EE:</strong> All titles, markdown bodies, sketches, and audio notes are encrypted with AES-256-GCM before leaving this device. Nobody else can read them.
                 </span>
               </div>
+
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={loading}
+                className="self-start text-[11px] text-text-dimmed hover:text-red-400 underline underline-offset-2 transition-colors"
+              >
+                Delete account & cloud data
+              </button>
             </div>
           ) : (
             /* SIGN IN / SIGN UP FORM */
@@ -280,9 +344,9 @@ export default function AuthModal({ isOpen, onClose }) {
                     Supabase Cloud Connected
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1.5 text-text-dimmed font-mono" title="Configure web/.env to connect live Supabase">
+                  <span className="flex items-center gap-1.5 text-text-dimmed font-mono" title="Cloud sync is not available in this build">
                     <span className="w-2 h-2 rounded-full bg-accent-yellow/80" />
-                    Local Offline Mode (web/.env)
+                    Not configured — local only
                   </span>
                 )}
               </div>

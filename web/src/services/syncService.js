@@ -1,81 +1,85 @@
 /**
  * syncService.js
- * End-to-End Encrypted Cloud Synchronization Manager for Edsy Notes.
+ * End-to-end encrypted cloud sync for Edsy Notes.
  *
- * Requirements:
- * - SYNC-01: Local-first operation preserved 100% when sync is disabled or user is logged out.
- * - SYNC-03: Zero-knowledge encryption: only AES-256-GCM ciphertexts are synced.
- * - SYNC-04: User-controlled toggle to opt in or opt out of cloud synchronization anytime.
- * - SYNC-05: Offline sync queue and timestamp-based conflict resolution.
+ * - Local-first: the app works fully offline / signed out; sync is opt-in.
+ * - Zero-knowledge: notes are AES-256-GCM encrypted in the browser. The
+ *   server only sees ids, timestamps, a version counter and a tombstone flag.
+ * - Incremental: pulls only records changed since the last cursor and pushes
+ *   only notes edited since the last successful push.
+ * - Conflicts: last-write-wins on `updatedAt`.
  */
 
 import {
   generateSalt,
+  deriveKeyFromPassphrase,
   encryptNoteForCloud,
   decryptNoteFromCloud,
+  makeTombstone,
+  createKeyCheck,
+  verifyKeyCheck,
   getActiveMasterKey,
-  deriveKeyFromPassphrase,
   setActiveMasterKey,
+  persistMasterKey,
+  restoreMasterKey,
+  clearActiveMasterKey,
 } from './cryptoService.js';
 import {
+  getCachedUser,
   getCurrentUser,
+  isCloudConfigured,
   uploadEncryptedNotes,
   fetchEncryptedNotes,
+  fetchUserKeys,
+  createUserKeys,
 } from './supabaseClient.js';
 
 const SYNC_ENABLED_KEY = 'edsy_cloud_sync_enabled';
-const SYNC_PASSPHRASE_SALT_KEY = 'edsy_sync_passphrase_salt';
+const CURSOR_KEY = 'edsy_sync_cursor';
+const LAST_PUSH_KEY = 'edsy_sync_last_push_ms';
 const LAST_SYNCED_KEY = 'edsy_last_synced_timestamp';
+const SYNC_USER_KEY = 'edsy_sync_user_id';
 
-let currentStatus = 'local'; // 'local' | 'syncing' | 'synced' | 'offline' | 'error'
+const PUSH_BATCH = 100;
+const AUTO_SYNC_DEBOUNCE_MS = 3000;
+const AUTO_SYNC_POLL_MS = 60000;
+
+let currentStatus = 'local'; // 'local' | 'locked' | 'syncing' | 'synced' | 'offline' | 'error'
 let lastError = null;
+let inFlight = null;
 const statusListeners = new Set();
 
-/**
- * Check if the user has opted in to cloud synchronization
- */
-export function isSyncEnabled() {
+function ls() {
   try {
-    return localStorage.getItem(SYNC_ENABLED_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Enable or disable cloud synchronization (SYNC-04)
- */
-export function setSyncEnabled(enabled) {
-  try {
-    localStorage.setItem(SYNC_ENABLED_KEY, enabled ? 'true' : 'false');
-    updateStatus(enabled ? 'synced' : 'local');
-  } catch (e) {
-    console.error('Failed to update sync enabled flag', e);
-  }
-}
-
-/**
- * Get current sync status
- */
-export function getSyncStatus() {
-  if (!isSyncEnabled()) return 'local';
-  return currentStatus;
-}
-
-/**
- * Get timestamp of last successful sync
- */
-export function getLastSyncedAt() {
-  try {
-    return localStorage.getItem(LAST_SYNCED_KEY) || null;
+    return window.localStorage;
   } catch {
     return null;
   }
 }
+const read = (k) => ls()?.getItem(k) ?? null;
+const write = (k, v) => ls()?.setItem(k, v);
 
-/**
- * Subscribe to status changes
- */
+export function isSyncEnabled() {
+  return read(SYNC_ENABLED_KEY) === 'true';
+}
+
+export function setSyncEnabled(enabled) {
+  write(SYNC_ENABLED_KEY, enabled ? 'true' : 'false');
+  updateStatus(enabled ? (getActiveMasterKey() ? 'synced' : 'locked') : 'local');
+}
+
+export function getSyncStatus() {
+  return isSyncEnabled() ? currentStatus : 'local';
+}
+
+export function getLastSyncedAt() {
+  return read(LAST_SYNCED_KEY);
+}
+
+export function getLastSyncError() {
+  return lastError;
+}
+
 export function onSyncStatusChange(callback) {
   statusListeners.add(callback);
   callback(getSyncStatus(), getLastSyncedAt(), lastError);
@@ -88,118 +92,197 @@ function updateStatus(status, error = null) {
   const lastSync = getLastSyncedAt();
   statusListeners.forEach((fn) => {
     try {
-      fn(status, lastSync, error);
+      fn(getSyncStatus(), lastSync, error);
     } catch (e) {
       console.error('Status listener error', e);
     }
   });
 }
 
-/**
- * Initialize or unlock Master Encryption Key
- */
-export async function initializeEncryptionKey(passphrase) {
-  let salt = localStorage.getItem(SYNC_PASSPHRASE_SALT_KEY);
-  if (!salt) {
-    salt = generateSalt();
-    localStorage.setItem(SYNC_PASSPHRASE_SALT_KEY, salt);
-  }
-
-  const masterKey = await deriveKeyFromPassphrase(passphrase, salt);
-  setActiveMasterKey(masterKey);
-  return masterKey;
+/** Reset sync bookkeeping (new account / sign out) so nothing leaks between users. */
+function resetSyncState() {
+  [CURSOR_KEY, LAST_PUSH_KEY, LAST_SYNCED_KEY, SYNC_USER_KEY].forEach((k) => ls()?.removeItem(k));
 }
 
 /**
- * Full Sync Cycle (Push local changes + Pull remote changes with E2EE)
+ * Derive (or create) the user's master key from their passphrase and keep it
+ * for this session. The same passphrase yields the same key on every device
+ * because the salt is stored server-side in `user_keys`.
  */
-export async function performSync(store, customPassphrase = null) {
-  if (!isSyncEnabled()) {
-    updateStatus('local');
-    return { success: false, reason: 'Sync disabled by user' };
+export async function unlockEncryption(passphrase) {
+  const user = getCachedUser() || (await getCurrentUser());
+  if (!user) throw new Error('Sign in first.');
+  if (!passphrase) throw new Error('Enter your encryption passphrase.');
+
+  let record = await fetchUserKeys();
+  let key;
+
+  if (!record) {
+    const salt = generateSalt();
+    key = await deriveKeyFromPassphrase(passphrase, salt);
+    const check = await createKeyCheck(key);
+    try {
+      await createUserKeys({ salt, ...check });
+    } catch (err) {
+      // Another device created it first: fall through and verify against theirs.
+      if (err?.code !== '23505') throw err;
+      record = await fetchUserKeys();
+      key = null;
+    }
   }
 
-  const user = getCurrentUser();
+  if (record) {
+    key = await deriveKeyFromPassphrase(passphrase, record.salt);
+    if (!(await verifyKeyCheck(key, record))) {
+      throw new Error('Wrong encryption passphrase.');
+    }
+  }
+
+  setActiveMasterKey(key);
+  await persistMasterKey(user.id, key);
+  return key;
+}
+
+/** Re-use a key persisted from an earlier session, if there is one. */
+async function resolveKey(userId) {
+  return getActiveMasterKey() || (await restoreMasterKey(userId));
+}
+
+/** Forget the key and local sync state (on sign out). */
+export async function lockEncryption({ reset = false } = {}) {
+  await clearActiveMasterKey();
+  if (reset) resetSyncState();
+  updateStatus(isSyncEnabled() ? 'locked' : 'local');
+}
+
+async function runSync(store) {
+  if (!isCloudConfigured()) return { success: false, reason: 'Cloud is not configured' };
+  if (!isSyncEnabled()) {
+    updateStatus('local');
+    return { success: false, reason: 'Sync is turned off' };
+  }
+  const user = getCachedUser() || (await getCurrentUser());
   if (!user) {
     updateStatus('local');
-    return { success: false, reason: 'User not signed in' };
+    return { success: false, reason: 'Not signed in' };
+  }
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    updateStatus('offline');
+    return { success: false, reason: 'Offline' };
+  }
+
+  // A different account on this device must not inherit another user's cursor.
+  if (read(SYNC_USER_KEY) !== user.id) {
+    resetSyncState();
+    write(SYNC_USER_KEY, user.id);
+  }
+
+  const key = await resolveKey(user.id);
+  if (!key) {
+    updateStatus('locked', 'Enter your encryption passphrase to sync.');
+    return { success: false, reason: 'Encryption passphrase required' };
   }
 
   updateStatus('syncing');
+  const startedAt = Date.now();
 
   try {
-    // 1. Resolve active encryption key
-    let cryptoKey = getActiveMasterKey();
-    if (!cryptoKey) {
-      const savedPassphrase = customPassphrase || localStorage.getItem('edsy_session_passphrase');
-      if (!savedPassphrase) {
-        updateStatus('error', 'Encryption passphrase required');
-        return { success: false, reason: 'Passphrase required to decrypt/encrypt notes' };
-      }
-      cryptoKey = await initializeEncryptionKey(savedPassphrase);
-    }
+    // 1. Pull everything that changed on the server since our cursor.
+    const cursor = read(CURSOR_KEY);
+    const remote = await fetchEncryptedNotes(cursor);
+    let pulled = 0;
+    let newCursor = cursor;
 
-    // 2. Encrypt all local notes for upload
-    const localNotes = store.notes;
-    const encryptedUploadPayloads = [];
+    for (const record of remote) {
+      if (!newCursor || record.updated_at > newCursor) newCursor = record.updated_at;
+      const remoteMs = new Date(record.updated_at).getTime();
+      const local = store.getNote(record.id);
 
-    for (const note of localNotes) {
-      const encryptedBlob = await encryptNoteForCloud(note, cryptoKey);
-      encryptedUploadPayloads.push(encryptedBlob);
-    }
+      if (local && (local.updatedAt || 0) >= remoteMs) continue; // local is newer or equal
 
-    // 3. Upload encrypted notes to Supabase (Zero-Knowledge)
-    if (encryptedUploadPayloads.length > 0) {
-      await uploadEncryptedNotes(encryptedUploadPayloads);
-    }
-
-    // 4. Download remote notes
-    const { data: remoteEncryptedNotes, error } = await fetchEncryptedNotes(user.id);
-    if (error) throw error;
-
-    // 5. Decrypt and merge remote notes into local store
-    let mergedCount = 0;
-    if (Array.isArray(remoteEncryptedNotes) && remoteEncryptedNotes.length > 0) {
-      for (const remoteRecord of remoteEncryptedNotes) {
-        try {
-          const decryptedNote = await decryptNoteFromCloud(remoteRecord, cryptoKey);
-          const localNote = store.getNote(decryptedNote.id);
-
-          // Conflict resolution: Last-Write-Wins (LWW)
-          if (!localNote) {
-            // New remote note, save locally
-            store.saveNote(decryptedNote);
-            mergedCount++;
-          } else {
-            const localTime = new Date(localNote.updated_at || 0).getTime();
-            const remoteTime = new Date(decryptedNote.updated_at || 0).getTime();
-            if (remoteTime > localTime) {
-              store.saveNote(decryptedNote);
-              mergedCount++;
-            }
-          }
-        } catch (decryptionErr) {
-          console.warn('Could not decrypt remote note (different passphrase?)', decryptionErr);
+      try {
+        const note = await decryptNoteFromCloud(record, key);
+        if (note === null) {
+          store.removeLocalNote(record.id);
+        } else {
+          store.applyRemoteNote({ ...local, ...note });
         }
+        pulled++;
+      } catch (err) {
+        console.warn('Could not decrypt a remote note', record.id, err);
       }
     }
 
+    // 2. Push notes edited since the last successful push, plus deletions.
+    const lastPush = Number(read(LAST_PUSH_KEY) || 0);
+    const dirty = store.notes.filter((n) => (n.updatedAt || 0) > lastPush);
+    const tombstones = store.getTombstones();
+
+    const payloads = [];
+    for (const note of dirty) payloads.push(await encryptNoteForCloud(note, key));
+    for (const t of tombstones) payloads.push(await makeTombstone(t.id, t.deletedAt, key));
+
+    for (let i = 0; i < payloads.length; i += PUSH_BATCH) {
+      await uploadEncryptedNotes(payloads.slice(i, i + PUSH_BATCH));
+    }
+    if (tombstones.length) store.clearTombstones(tombstones.map((t) => t.id));
+
+    // 3. Commit bookkeeping only after everything succeeded.
+    write(LAST_PUSH_KEY, String(startedAt));
+    if (newCursor) write(CURSOR_KEY, newCursor);
     const nowIso = new Date().toISOString();
-    localStorage.setItem(LAST_SYNCED_KEY, nowIso);
+    write(LAST_SYNCED_KEY, nowIso);
     updateStatus('synced');
 
-    return {
-      success: true,
-      uploaded: encryptedUploadPayloads.length,
-      downloaded: remoteEncryptedNotes?.length || 0,
-      merged: mergedCount,
-      timestamp: nowIso,
-    };
+    return { success: true, uploaded: payloads.length, downloaded: remote.length, merged: pulled, timestamp: nowIso };
   } catch (err) {
     console.error('Cloud sync error', err);
-    updateStatus('error', err.message || 'Sync failed');
-    return { success: false, error: err.message };
+    const message = err?.message || 'Sync failed';
+    updateStatus(navigator.onLine === false ? 'offline' : 'error', message);
+    return { success: false, error: message };
   }
+}
+
+/** Run a sync cycle. Concurrent calls share the in-flight cycle. */
+export function performSync(store) {
+  if (!inFlight) {
+    inFlight = runSync(store).finally(() => {
+      inFlight = null;
+    });
+  }
+  return inFlight;
+}
+
+/**
+ * Keep notes in sync automatically: shortly after local edits, when the
+ * connection returns, when the tab regains focus, and on a slow poll.
+ * Returns a function that stops everything.
+ */
+export function startAutoSync(store) {
+  let timer = null;
+  const schedule = () => {
+    if (!isSyncEnabled()) return;
+    clearTimeout(timer);
+    timer = setTimeout(() => performSync(store), AUTO_SYNC_DEBOUNCE_MS);
+  };
+  const syncNow = () => {
+    if (isSyncEnabled()) performSync(store);
+  };
+
+  const unsubscribeStore = store.subscribe(schedule);
+  const poll = setInterval(syncNow, AUTO_SYNC_POLL_MS);
+  const onVisible = () => document.visibilityState === 'visible' && syncNow();
+  window.addEventListener('online', syncNow);
+  document.addEventListener('visibilitychange', onVisible);
+  syncNow();
+
+  return () => {
+    clearTimeout(timer);
+    clearInterval(poll);
+    unsubscribeStore();
+    window.removeEventListener('online', syncNow);
+    document.removeEventListener('visibilitychange', onVisible);
+  };
 }
 
 export default {
@@ -207,7 +290,10 @@ export default {
   setSyncEnabled,
   getSyncStatus,
   getLastSyncedAt,
+  getLastSyncError,
   onSyncStatusChange,
-  initializeEncryptionKey,
+  unlockEncryption,
+  lockEncryption,
   performSync,
+  startAutoSync,
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  HashRouter,
+  BrowserRouter,
   Routes,
   Route,
   Navigate,
@@ -10,11 +10,10 @@ import {
 import AppLayout from './components/layout/AppLayout';
 import AuthModal from './components/auth/AuthModal';
 import ShareNoteModal from './components/note/ShareNoteModal';
-import { onAuthStateChange, getCurrentUser } from './services/supabaseClient';
-import { onSyncStatusChange, getSyncStatus } from './services/syncService';
+import { onAuthStateChange, getCachedUser } from './services/supabaseClient';
+import { onSyncStatusChange, getSyncStatus, startAutoSync } from './services/syncService';
+import { notesStore } from './data/notesStore';
 import useIsDesktop from './hooks/useIsDesktop';
-import TokensScreen from './screens/TokensScreen';
-import ComponentsScreen from './screens/ComponentsScreen';
 import TimelineScreen from './screens/TimelineScreen';
 import NotesCatalogScreen from './screens/NotesCatalogScreen';
 import NoteEditorScreen from './screens/NoteEditorScreen';
@@ -23,11 +22,6 @@ import SharedNotesListScreen from './screens/SharedNotesListScreen';
 import SharedNoteScreen from './screens/SharedNoteScreen';
 import MenuScreen from './screens/MenuScreen';
 import {
-  tokenColors,
-  tokenTypography,
-  tokenShapes,
-  headerDemoData,
-  uiComponentsDemoData,
   timelineData,
   notesCatalogData,
   noteEditorData,
@@ -197,38 +191,6 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
         }
       />
 
-      {/* Showcase & Design System Routes */}
-      <Route
-        path="/components"
-        element={
-          <ComponentsScreen
-            title={headerDemoData.title}
-            subtitle={headerDemoData.subtitle}
-            headerVariants={headerDemoData.variants}
-            pills={uiComponentsDemoData.pills}
-            iconButtons={uiComponentsDemoData.iconButtons}
-            buttons={uiComponentsDemoData.buttons}
-            headings={uiComponentsDemoData.headings}
-            courseCards={uiComponentsDemoData.courseCards}
-            datePager={uiComponentsDemoData.datePager}
-            searchPill={uiComponentsDemoData.searchPill}
-            tabs={uiComponentsDemoData.tabs}
-            menuItems={uiComponentsDemoData.menuItems}
-          />
-        }
-      />
-      <Route
-        path="/tokens"
-        element={
-          <TokensScreen
-            title="Design Tokens"
-            colors={tokenColors}
-            typography={tokenTypography}
-            shapes={tokenShapes}
-          />
-        }
-      />
-
       {/* Backward-compatible redirects */}
       <Route path="/study-planning" element={<Navigate to="/timeline" replace />} />
       <Route path="/course-overview" element={<Navigate to="/notes" replace />} />
@@ -242,7 +204,7 @@ function AppRoutes({ onOpenAuth, onShareNote }) {
 
 export default function App() {
   const [syncStatus, setSyncStatus] = useState(() => getSyncStatus());
-  const [user, setUser] = useState(() => getCurrentUser());
+  const [user, setUser] = useState(() => getCachedUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [sharingNote, setSharingNote] = useState(null);
 
@@ -257,9 +219,12 @@ export default function App() {
       setSyncStatus(status);
     });
 
+    const stopAutoSync = startAutoSync(notesStore);
+
     return () => {
       authSub?.unsubscribe?.();
       syncSub?.();
+      stopAutoSync();
     };
   }, []);
 
@@ -272,7 +237,7 @@ export default function App() {
   };
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AppLayout
         syncStatus={syncStatus}
         user={user}
@@ -293,6 +258,6 @@ export default function App() {
           onClose={() => setSharingNote(null)}
         />
       </AppLayout>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

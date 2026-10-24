@@ -139,87 +139,147 @@ export async function decryptPayload(ciphertextBase64, ivBase64, cryptoKey) {
   return JSON.parse(jsonString);
 }
 
+const KEY_CHECK_PLAINTEXT = { v: 1, check: 'edsy-notes-key-check' };
+
 /**
- * Encrypt a note object before syncing to Supabase.
- * Retains only public non-sensitive sync metadata (id, updated_at, version, deleted).
- * Encrypts title, content, blocks, sketchData, audioData, notebook, tags.
+ * Build the passphrase check record stored next to the salt, so a wrong
+ * passphrase is detected up front instead of silently failing to decrypt.
+ */
+export async function createKeyCheck(cryptoKey) {
+  const { ciphertext, iv } = await encryptPayload(KEY_CHECK_PLAINTEXT, cryptoKey);
+  return { check_blob: ciphertext, check_iv: iv };
+}
+
+/** True when `cryptoKey` decrypts the stored check record. */
+export async function verifyKeyCheck(cryptoKey, { check_blob, check_iv }) {
+  try {
+    const out = await decryptPayload(check_blob, check_iv, cryptoKey);
+    return out?.check === KEY_CHECK_PLAINTEXT.check;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Encrypt a note for cloud storage. The whole note body (including trashed
+ * state) lives inside the ciphertext; only id / timestamps / version / the
+ * tombstone flag are visible to the server.
  */
 export async function encryptNoteForCloud(note, cryptoKey) {
-  const sensitivePayload = {
-    title: note.title || '',
-    content: note.content || '',
-    blocks: note.blocks || [],
-    sketchData: note.sketchData || null,
-    audioData: note.audioData || null,
-    notebook: note.notebook || 'Quick Notes',
-    tags: note.tags || [],
-    color: note.color || 'blue',
-    liked: !!note.liked,
-    pinned: !!note.pinned,
-  };
-
-  const encrypted = await encryptPayload(sensitivePayload, cryptoKey);
-
+  const { id, createdAt, updatedAt, ...body } = note;
+  const encrypted = await encryptPayload(body, cryptoKey);
   return {
-    id: note.id,
-    updated_at: note.updated_at || new Date().toISOString(),
-    version: (note.version || 0) + 1,
-    deleted: !!note.trashed,
+    id,
+    updated_at: new Date(updatedAt || Date.now()).toISOString(),
+    created_at: new Date(createdAt || updatedAt || Date.now()).toISOString(),
+    version: (note.cloudVersion || 0) + 1,
+    deleted: false,
     encrypted_blob: encrypted.ciphertext,
     iv: encrypted.iv,
   };
 }
 
-/**
- * Decrypt a note record downloaded from Supabase back into a local note model.
- */
-export async function decryptNoteFromCloud(cloudRecord, cryptoKey) {
-  if (!cloudRecord.encrypted_blob || !cloudRecord.iv) {
-    throw new Error('Invalid cloud record: missing encrypted_blob or iv');
-  }
-
-  const decrypted = await decryptPayload(
-    cloudRecord.encrypted_blob,
-    cloudRecord.iv,
-    cryptoKey
-  );
-
+/** Tombstone record for a permanently deleted note (carries no content). */
+export async function makeTombstone(id, deletedAt, cryptoKey) {
+  const encrypted = await encryptPayload({ deleted: true }, cryptoKey);
   return {
-    id: cloudRecord.id,
-    title: decrypted.title,
-    content: decrypted.content,
-    blocks: decrypted.blocks,
-    sketchData: decrypted.sketchData,
-    audioData: decrypted.audioData,
-    notebook: decrypted.notebook,
-    tags: decrypted.tags,
-    color: decrypted.color,
-    liked: decrypted.liked,
-    pinned: decrypted.pinned,
-    trashed: !!cloudRecord.deleted,
-    updated_at: cloudRecord.updated_at,
-    version: cloudRecord.version,
-    date: 'Today',
-    time: new Date(cloudRecord.updated_at).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
+    id,
+    updated_at: new Date(deletedAt || Date.now()).toISOString(),
+    version: 1,
+    deleted: true,
+    encrypted_blob: encrypted.ciphertext,
+    iv: encrypted.iv,
   };
 }
 
-/**
- * Master Encryption Key Management in active session
- */
+/** Decrypt a cloud record back into a local note. Returns null for tombstones. */
+export async function decryptNoteFromCloud(cloudRecord, cryptoKey) {
+  if (cloudRecord.deleted) return null;
+  if (!cloudRecord.encrypted_blob || !cloudRecord.iv) {
+    throw new Error('Invalid cloud record: missing encrypted_blob or iv');
+  }
+  const body = await decryptPayload(cloudRecord.encrypted_blob, cloudRecord.iv, cryptoKey);
+  return {
+    ...body,
+    id: cloudRecord.id,
+    createdAt: new Date(cloudRecord.created_at || cloudRecord.updated_at).getTime(),
+    updatedAt: new Date(cloudRecord.updated_at).getTime(),
+    cloudVersion: cloudRecord.version,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Key persistence. The derived key is non-extractable, so it can live in
+// IndexedDB across reloads without the passphrase ever being written to disk.
+// ---------------------------------------------------------------------------
+
+const KEY_DB = 'edsy-keystore';
+const KEY_STORE = 'keys';
+const KEY_ID = 'master';
+
+function openKeyDb() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') return reject(new Error('IndexedDB unavailable'));
+    const req = indexedDB.open(KEY_DB, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(KEY_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function keyDbRun(mode, fn) {
+  const db = await openKeyDb();
+  try {
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(KEY_STORE, mode);
+      const req = fn(tx.objectStore(KEY_STORE));
+      tx.oncomplete = () => resolve(req.result);
+      tx.onerror = () => reject(tx.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+/** Persist the active master key for `userId` (best effort). */
+export async function persistMasterKey(userId, key) {
+  try {
+    await keyDbRun('readwrite', (store) => store.put({ userId, key }, KEY_ID));
+  } catch {
+    /* key simply stays in memory for this session */
+  }
+}
+
+/** Restore a previously persisted master key for `userId`, if any. */
+export async function restoreMasterKey(userId) {
+  try {
+    const row = await keyDbRun('readonly', (store) => store.get(KEY_ID));
+    if (row && row.userId === userId && row.key) {
+      activeMasterKey = row.key;
+      return row.key;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+/** Forget the master key everywhere (sign out / lock). */
+export async function clearActiveMasterKey() {
+  activeMasterKey = null;
+  try {
+    await keyDbRun('readwrite', (store) => store.delete(KEY_ID));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function setActiveMasterKey(key) {
   activeMasterKey = key;
 }
 
 export function getActiveMasterKey() {
   return activeMasterKey;
-}
-
-export function clearActiveMasterKey() {
-  activeMasterKey = null;
 }
 
 export default {
@@ -229,6 +289,11 @@ export default {
   decryptPayload,
   encryptNoteForCloud,
   decryptNoteFromCloud,
+  makeTombstone,
+  createKeyCheck,
+  verifyKeyCheck,
+  persistMasterKey,
+  restoreMasterKey,
   setActiveMasterKey,
   getActiveMasterKey,
   clearActiveMasterKey,

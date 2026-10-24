@@ -53,53 +53,8 @@ export default function SharedNoteScreen() {
       } catch (err) {
         if (!isMounted) return;
 
-        // Fallback for pre-seeded demo slugs
-        if (slug === 'q4-strategy-private') {
-          setIsLocked(true);
-          setNoteData({
-            title: 'Q4 Product Roadmap & Vision',
-            isPrivate: true,
-            correctPassword: 'edsy',
-            author: 'Alex',
-            date: 'Yesterday',
-            content: '## Confidential Q4 Milestones\n\n- E2EE Zero-Knowledge Sync\n- Public and Private Link Sharing\n- Responsive Desktop Dashboard\n- Android APK Parity Release',
-            blocks: [
-              {
-                id: 'b1',
-                number: '01',
-                title: 'Core Philosophy',
-                content: 'Privacy first. User data must never touch unencrypted cloud servers.',
-                items: [],
-              },
-            ],
-          });
-        } else if (slug === 'design-tokens-v2') {
-          setIsLocked(false);
-          setNoteData({
-            id: 'shared-public-1',
-            title: 'Design System & Token Architecture',
-            author: 'Design Team',
-            date: 'Today',
-            color: 'yellow',
-            notebook: 'Design Systems',
-            isPrivate: false,
-            content: '## Edsy Token Guidelines\n\nAll screens use `#000000` canvas background with curated accent card colors:\n- Blue: `#6F91B6`\n- Light: `#DCE3EB`\n- Yellow: `#CABC3F`\n- Primary CTA: `#E5E7DA`\n\nUse typography styles `.text-display` (46px) and `.text-title` (30px).',
-            blocks: [
-              {
-                id: 'b1',
-                number: '01',
-                title: 'Verified Color Tokens',
-                content: 'Pure black canvas, high contrast, minimalist typography.',
-                items: [
-                  { id: 'i1', text: 'Black Canvas (#000000)', completed: true },
-                  { id: 'i2', text: 'Cream CTA (#E5E7DA)', completed: true },
-                ],
-              },
-            ],
-          });
-        } else {
-          setErrorNotFound(true);
-        }
+        console.error(err);
+        setErrorNotFound(true);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -135,16 +90,6 @@ export default function SharedNoteScreen() {
         return;
       }
     } catch {
-      // 2. Check mock/demo password fallback
-      if (noteData?.correctPassword) {
-        if (passwordInput === noteData.correctPassword) {
-          setIsLocked(false);
-          return;
-        } else {
-          setPasswordError('Incorrect password. Please try again.');
-          return;
-        }
-      }
       setPasswordError('Decryption failed. Please check the password.');
     } finally {
       setUnlocking(false);
