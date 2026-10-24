@@ -1,226 +1,165 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'edsy_mobile_notes_v1';
+const STORAGE_KEY = 'edsy_mobile_notes_v2';
+const TOMBSTONE_KEY = 'edsy_mobile_tombstones_v1';
 
-export const initialSeedNotes = [
-  {
-    id: 'note-1',
-    title: 'Intro to Frontend\nDevelopment',
-    author: 'Lena Brooks',
-    notebook: 'Design Systems',
-    color: 'yellow',
-    liked: true,
-    pinned: true,
-    trashed: false,
-    date: 'Mon. 12',
-    time: '10:00 am – 11:30 am',
-    tags: ['Frontend', 'CSS', 'Design'],
-    content: `# Intro to Frontend Development\n\nUnderstand the role of frontend in mobile development and how it interacts with system services.\n\n## Principles\n- [[Color Theory & Visual Hierarchy]]\n- Mobile touch ergonomics\n- Native performance optimization`,
-    blocks: [
-      {
-        id: 'block-1',
-        type: 'text',
-        number: '01',
-        title: 'Core Architecture',
-        content: 'Understand native mobile threading, gesture handlers, and responsive layouts.',
-      },
-      {
-        id: 'block-2',
-        type: 'checklist',
-        number: '02',
-        title: 'Milestone Checklist',
-        items: [
-          { id: 'c1', text: 'Define primitive tokens in tokens.js', completed: true },
-          { id: 'c2', text: 'Build responsive NoteCard component', completed: true },
-          { id: 'c3', text: 'Compile release APK for mobile device', completed: false },
-        ],
-      },
-      {
-        id: 'block-3',
-        type: 'callout',
-        number: '03',
-        title: 'Design Rule',
-        content: 'Preserve high-contrast minimalist dark palette (#000000, #E5E7DA).',
-      },
-    ],
-  },
-  {
-    id: 'note-2',
-    title: 'Digital Illustration:\nVector Art',
-    author: 'Marcus Levin',
-    notebook: 'Design Systems',
-    color: 'light',
-    liked: false,
-    pinned: false,
-    trashed: false,
-    date: 'Mon. 12',
-    time: '2:45 pm – 4:15 pm',
-    tags: ['Art', 'Design'],
-    content: `# Digital Illustration: Vector Art\n\nMastering geometric vector drawing and canvas freehand sketches for mobile touchscreens.`,
-    blocks: [
-      {
-        id: 'b2-1',
-        type: 'text',
-        number: '01',
-        title: 'Canvas Foundations',
-        content: 'Touch coordinates, bezier curves, and pressure sensitivity.',
-      },
-    ],
-  },
-  {
-    id: 'note-3',
-    title: 'Color Theory &\nVisual Hierarchy',
-    author: 'Olivia Bennett',
-    notebook: 'Design Systems',
-    color: 'blue',
-    liked: true,
-    pinned: false,
-    trashed: false,
-    date: 'Tue. 13',
-    time: '5:00 pm – 6:30 pm',
-    tags: ['Design', 'Tokens'],
-    content: `# Color Theory & Visual Hierarchy\n\nEstablishing high-contrast aesthetics across mobile screens without relying on generic saturated colors.`,
-    blocks: [
-      {
-        id: 'b3-1',
-        type: 'callout',
-        number: '01',
-        title: 'Palette Harmony',
-        content: 'Balance primary cream #E5E7DA against card blue #6F91B6 and card yellow #CABC3F.',
-      },
-    ],
-  },
-  {
-    id: 'note-4',
-    title: 'Design Systems &\nToken Architecture',
-    author: 'Sarah Chen',
-    notebook: 'Workflow',
+const welcomeNote = () => {
+  const now = Date.now();
+  return {
+    id: `note-${now}`,
+    title: 'Welcome to\nEdsy Notes',
+    author: 'You',
+    notebook: 'Quick Notes',
     color: 'yellow',
     liked: false,
     pinned: true,
     trashed: false,
-    date: 'Wed. 14',
-    time: '11:00 am – 12:30 pm',
-    tags: ['Workflow', 'Tokens'],
-    content: `# Design Systems & Token Architecture\n\nScalable design tokens for mobile interfaces with seamless dark mode support.`,
+    date: 'Today',
+    time: new Date(now).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    tags: ['Welcome'],
+    content:
+      '# Welcome\n\nNotes live on your device first. Sign in from the menu to sync them across devices, end-to-end encrypted.\n\nLink notes with [[Note Title]].',
     blocks: [],
-  },
-];
+    createdAt: now,
+    updatedAt: now,
+  };
+};
 
-let memoryNotes = [...initialSeedNotes];
+let notes = [];
+let tombstones = [];
+let ready = false;
 const listeners = new Set();
 
-const notify = () => {
-  listeners.forEach((l) => l(memoryNotes));
-};
+const snapshot = () => notes;
+const notify = () => listeners.forEach((l) => l(snapshot()));
+
+let writeChain = Promise.resolve();
+function persist() {
+  const data = JSON.stringify(notes);
+  const tombs = JSON.stringify(tombstones);
+  writeChain = writeChain
+    .then(() =>
+      Promise.all([AsyncStorage.setItem(STORAGE_KEY, data), AsyncStorage.setItem(TOMBSTONE_KEY, tombs)])
+    )
+    .catch((e) => console.warn('Failed to persist notes', e));
+  return writeChain;
+}
+
+function commit(next) {
+  notes = next;
+  notify();
+  return persist();
+}
 
 export const notesStore = {
   async init() {
+    if (ready) return;
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        memoryNotes = JSON.parse(stored);
-      } else {
-        memoryNotes = [...initialSeedNotes];
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(memoryNotes));
-      }
-      notify();
+      const [stored, tombs] = await Promise.all([
+        AsyncStorage.getItem(STORAGE_KEY),
+        AsyncStorage.getItem(TOMBSTONE_KEY),
+      ]);
+      const parsed = stored ? JSON.parse(stored) : null;
+      notes = Array.isArray(parsed) ? parsed : [welcomeNote()];
+      tombstones = tombs ? JSON.parse(tombs) : [];
     } catch (e) {
-      console.warn('AsyncStorage load failed, using memory fallback', e);
+      console.warn('Failed to load notes', e);
+      notes = [welcomeNote()];
     }
+    ready = true;
+    await commit(notes);
   },
 
-  getNotes() {
-    return memoryNotes;
+  get notes() {
+    return notes;
   },
+  getNotes: () => notes,
+  getNote: (id) => notes.find((n) => n.id === id),
 
-  getNote(id) {
-    return memoryNotes.find((n) => n.id === id);
-  },
-
-  async saveNote(noteData) {
+  async saveNote(data) {
     const now = Date.now();
-    const existingIndex = memoryNotes.findIndex((n) => n.id === noteData.id);
+    const idx = notes.findIndex((n) => n.id === data.id);
     let saved;
-
-    if (existingIndex >= 0) {
-      saved = { ...memoryNotes[existingIndex], ...noteData, updatedAt: now };
-      memoryNotes[existingIndex] = saved;
+    if (idx >= 0) {
+      saved = { ...notes[idx], ...data, updatedAt: now };
+      const next = [...notes];
+      next[idx] = saved;
+      await commit(next);
     } else {
       saved = {
-        id: noteData.id || `note-${now}`,
-        title: noteData.title || 'Untitled Note',
-        author: noteData.author || 'You',
-        notebook: noteData.notebook || 'Quick Notes',
-        color: noteData.color || 'blue',
-        liked: Boolean(noteData.liked),
-        pinned: Boolean(noteData.pinned),
+        id: data.id || `note-${now}-${Math.random().toString(36).slice(2, 8)}`,
+        title: data.title || 'Untitled Note',
+        author: data.author || 'You',
+        notebook: data.notebook || 'Quick Notes',
+        color: data.color || 'blue',
+        liked: Boolean(data.liked),
+        pinned: Boolean(data.pinned),
         trashed: false,
-        date: noteData.date || 'Today',
-        time: noteData.time || '10:00 am',
-        tags: noteData.tags || ['Idea'],
-        content: noteData.content || '',
-        blocks: noteData.blocks || [],
+        date: data.date || 'Today',
+        time: data.time || new Date(now).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        content: data.content || '',
+        blocks: Array.isArray(data.blocks) ? data.blocks : [],
         createdAt: now,
         updatedAt: now,
       };
-      memoryNotes.unshift(saved);
+      await commit([saved, ...notes]);
     }
-
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(memoryNotes));
-    } catch (e) {}
-
-    notify();
     return saved;
   },
 
-  async toggleLike(id) {
-    const note = memoryNotes.find((n) => n.id === id);
-    if (note) {
-      note.liked = !note.liked;
-      try {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(memoryNotes));
-      } catch (e) {}
-      notify();
-    }
+  toggleLike(id) {
+    return commit(notes.map((n) => (n.id === id ? { ...n, liked: !n.liked, updatedAt: Date.now() } : n)));
   },
 
-  async deleteNote(id, permanent = false) {
+  togglePin(id) {
+    return commit(notes.map((n) => (n.id === id ? { ...n, pinned: !n.pinned, updatedAt: Date.now() } : n)));
+  },
+
+  deleteNote(id, permanent = false) {
     if (permanent) {
-      memoryNotes = memoryNotes.filter((n) => n.id !== id);
-    } else {
-      memoryNotes = memoryNotes.map((n) => (n.id === id ? { ...n, trashed: true } : n));
+      tombstones = [...tombstones.filter((t) => t.id !== id), { id, deletedAt: Date.now() }];
+      return commit(notes.filter((n) => n.id !== id));
     }
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(memoryNotes));
-    } catch (e) {}
-    notify();
+    return commit(notes.map((n) => (n.id === id ? { ...n, trashed: true, updatedAt: Date.now() } : n)));
   },
 
-  async restoreNote(id) {
-    memoryNotes = memoryNotes.map((n) => (n.id === id ? { ...n, trashed: false } : n));
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(memoryNotes));
-    } catch (e) {}
-    notify();
+  restoreNote(id) {
+    return commit(notes.map((n) => (n.id === id ? { ...n, trashed: false, updatedAt: Date.now() } : n)));
   },
 
   getBacklinks(noteId) {
-    const target = memoryNotes.find((n) => n.id === noteId);
+    const target = notes.find((n) => n.id === noteId);
     if (!target) return [];
-    const normalized = target.title.replace(/\s+/g, ' ').toLowerCase();
-    const results = [];
+    const needle = `[[${target.title.replace(/\s+/g, ' ').toLowerCase()}]]`;
+    return notes
+      .filter((s) => s.id !== noteId && !s.trashed && s.content && s.content.toLowerCase().includes(needle))
+      .map((note) => ({ note }));
+  },
 
-    memoryNotes.forEach((source) => {
-      if (source.id === noteId || source.trashed) return;
-      if (source.content && source.content.toLowerCase().includes(`[[${normalized}]]`)) {
-        results.push({ note: source });
-      }
-    });
+  // ---- cloud-sync hooks (do not bump updatedAt) ----
+  applyRemoteNote(note) {
+    const idx = notes.findIndex((n) => n.id === note.id);
+    if (idx >= 0) {
+      const next = [...notes];
+      next[idx] = { ...notes[idx], ...note };
+      return commit(next);
+    }
+    return commit([note, ...notes]);
+  },
 
-    return results;
+  removeLocalNote(id) {
+    if (notes.some((n) => n.id === id)) return commit(notes.filter((n) => n.id !== id));
+    return Promise.resolve();
+  },
+
+  getTombstones: () => tombstones,
+
+  clearTombstones(ids) {
+    const drop = new Set(ids);
+    tombstones = tombstones.filter((t) => !drop.has(t.id));
+    return persist();
   },
 
   subscribe(listener) {
@@ -230,19 +169,19 @@ export const notesStore = {
 };
 
 export function useNotes() {
-  const [notes, setNotes] = useState(memoryNotes);
+  const [list, setList] = useState(notes);
 
   useEffect(() => {
-    notesStore.init();
-    const unsub = notesStore.subscribe(setNotes);
-    return unsub;
+    notesStore.init().then(() => setList(snapshot()));
+    return notesStore.subscribe(setList);
   }, []);
 
   return {
-    notes,
-    getNote: (id) => notesStore.getNote(id),
-    saveNote: (data) => notesStore.saveNote(data),
+    notes: list,
+    getNote: notesStore.getNote,
+    saveNote: (d) => notesStore.saveNote(d),
     toggleLike: (id) => notesStore.toggleLike(id),
+    togglePin: (id) => notesStore.togglePin(id),
     deleteNote: (id, perm) => notesStore.deleteNote(id, perm),
     restoreNote: (id) => notesStore.restoreNote(id),
     getBacklinks: (id) => notesStore.getBacklinks(id),

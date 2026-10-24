@@ -5,16 +5,16 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AppHeader from '../components/AppHeader';
 import SearchPill from '../components/SearchPill';
 import NoteCard from '../components/NoteCard';
 import { useNotes } from '../data/notesStore';
 import { colors, typography, radius } from '../theme/tokens';
 
-export default function NotesCatalogScreen({ onNavigate, initialFilter }) {
+export default function NotesCatalogScreen({ onNavigate, initialFilter, initialNotebook }) {
   const store = useNotes();
   const [query, setQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState(initialFilter || 'All');
@@ -24,6 +24,7 @@ export default function NotesCatalogScreen({ onNavigate, initialFilter }) {
   const activeNotes = store.notes.filter((n) => !n.trashed);
 
   const filteredNotes = activeNotes.filter((note) => {
+    if (initialNotebook && note.notebook !== initialNotebook) return false;
     if (selectedTag === 'Favorites') {
       if (!note.liked) return false;
     } else if (selectedTag !== 'All') {

@@ -28,6 +28,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { colors, typography, radius } from '../theme/tokens';
 import { notesStore } from '../data/notesStore';
+import ShareSheet from '../components/ShareSheet';
 
 const COLOR_OPTIONS = [
   { key: 'yellow', label: 'Gold', hex: colors.accentYellow },
@@ -46,6 +47,7 @@ export default function NoteEditorScreen({ noteId, onBack, onNavigateToNote }) {
   const [blocks, setBlocks] = useState([]);
   const [mode, setMode] = useState('write'); // 'write' | 'preview'
   const [backlinks, setBacklinks] = useState([]);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     if (noteId) {
@@ -126,7 +128,15 @@ export default function NoteEditorScreen({ noteId, onBack, onNavigateToNote }) {
     );
   };
 
-  const handleShare = async () => {
+  const handleShare = () => {
+    if (!noteId) {
+      Alert.alert('Save first', 'Save this note before sharing it.');
+      return;
+    }
+    setShareOpen(true);
+  };
+
+  const handleExportMarkdown = async () => {
     try {
       const fileUri = `${FileSystem.cacheDirectory || ''}${title.replace(/[^a-zA-Z0-9]/g, '_') || 'note'}.md`;
       const exportContent = `# ${title}\nAuthor: ${author}\nNotebook: ${notebook}\n\n${content}\n`;
@@ -504,6 +514,12 @@ export default function NoteEditorScreen({ noteId, onBack, onNavigateToNote }) {
           </View>
         )}
       </ScrollView>
+      <ShareSheet
+        visible={shareOpen}
+        note={notesStore.getNote(noteId)}
+        onClose={() => setShareOpen(false)}
+        onExportMarkdown={handleExportMarkdown}
+      />
     </KeyboardAvoidingView>
   );
 }

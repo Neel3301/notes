@@ -18,6 +18,7 @@ import {
   RefreshCw,
   ChevronRight,
   Plus,
+  User,
 } from 'lucide-react-native';
 import { colors, typography, radius } from '../theme/tokens';
 import { useNotes, notesStore } from '../data/notesStore';
@@ -153,6 +154,18 @@ export default function MenuScreen({ onClose, onNavigate }) {
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>{likedNotes.length}</Text>
                 </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => handleSelectSection('account')}
+                activeOpacity={0.7}
+              >
+                <View style={styles.menuItemLeft}>
+                  <User size={20} color={colors.bgCream} />
+                  <Text style={styles.menuItemTitle}>Account & Sync</Text>
+                </View>
+                <ChevronRight size={18} color={colors.textMuted} />
               </TouchableOpacity>
 
               <TouchableOpacity
